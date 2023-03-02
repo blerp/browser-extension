@@ -1,0 +1,17 @@
+{
+    "extends": [
+        "stylelint-config-standard",
+        "stylelint-config-styled-components"
+    ],
+    "rules": {
+        "declaration-colon-newline-after": null,
+        "value-list-comma-newline-after": null,
+        "value-list-max-empty-lines": null,
+        "value-keyword-case": null,
+        "function-comma-space-after": null,
+        "indentation": null
+    },
+    "syntax": "scss",
+    "ignoreFiles": ["node_modules/**"],
+    "defaultSeverity": "warning"
+}
