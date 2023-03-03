@@ -1,10 +1,13 @@
-import { render } from 'react-dom';
+import { render } from "react-dom";
 
-import Newtab from './Newtab';
-import './index.css';
+import Newtab from "./Newtab";
+import "./index.css";
 
-import withBlerp from "../../withBlerp";
+import WithBlerp from "../../WithBlerp";
 
-render(withBlerp({ Component: Newtab, pageProps: {} }), window.document.querySelector('#app-container'));
+render(
+    WithBlerp({ Component: Newtab, pageProps: {} }),
+    window.document.querySelector("#app-container"),
+);
 
 if (module.hot) module.hot.accept();

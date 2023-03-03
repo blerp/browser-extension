@@ -1,5 +1,3 @@
-console.log("ENVIRONMENT", process.env.NODE_ENV);
-
 const projectConfig = {
     production: {
         apiHost: "https://api.blerp.com",
@@ -195,6 +193,8 @@ const projectConfig = {
 
 const isBrowser = typeof window !== "undefined";
 
-let selectedProject = projectConfig[process.env.NODE_ENV];
+let selectedProject = projectConfig["development"];
+
+// console.log("PROCESCHEC", process.env && process.env.BROWSER_NODE_ENV);
 
 module.exports = selectedProject;

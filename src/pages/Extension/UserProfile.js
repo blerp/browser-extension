@@ -48,7 +48,6 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
     const [loggingOut, setLoggingOut] = useState(false);
-
     const apolloClient = useApollo();
 
     const logOut = async () => {
@@ -94,10 +93,11 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                     rel='noreferrer'
                     sx={{
                         margin: "8px 12px 8px 16px",
-                        fontSize: "18px",
                     }}
                 >
-                    <Text sx={{ color: "white" }}>Login to See Profile</Text>
+                    <Text sx={{ color: "white", fontSize: "3vh" }}>
+                        Login to See Profile
+                    </Text>
                 </Button>
             </Stack>
         );
@@ -146,7 +146,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                             maxWidth: "460px",
                             textOverflow: "ellipsis",
                             overflow: "hidden",
-                            fontSize: "28px",
+                            fontSize: "6vh",
                         }}
                     >
                         {userSignedIn.username &&
@@ -158,11 +158,16 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
             <Button
                 variant='outlined'
                 color='whiteOverride'
-                sx={{ whiteSpace: "nowrap", margin: "8px" }}
+                sx={{
+                    whiteSpace: "nowrap",
+                    margin: "8px",
+                }}
                 startIcon={
                     <OpenInNewRoundedIcon
+                        style={{ fontSize: "5vh" }}
                         sx={{
                             color: "whiteOverride.main",
+                            fontSize: "5vh",
                         }}
                     />
                 }
@@ -174,13 +179,20 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 }}
                 target='_blank'
             >
-                {"View Account"}
+                <Text
+                    fontColor='notBlack'
+                    style={{
+                        fontSize: "5vh",
+                    }}
+                >
+                    {"View Account"}
+                </Text>
             </Button>
 
             <Button
                 variant='text'
                 color='whiteOverride'
-                sx={{ marginTop: "12px" }}
+                sx={{ marginTop: "12px", fontSize: "5vh" }}
                 onClick={async () => {
                     try {
                         setLoggingOut(true);

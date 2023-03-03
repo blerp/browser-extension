@@ -3,19 +3,12 @@
 
 import Popup from "./Popup";
 import "./index.css";
+import { createRoot } from "react-dom/client";
 
-// const container = document.getElementById('app-container');
-// const root = createRoot(container); // createRoot(container!) if you use TypeScript
-// root.render(<Popup />);
+import WithBlerp from "../../WithBlerp";
 
-import { render } from "react-dom";
-import "./index.css";
-
-import withBlerp from "../../withBlerp";
-
-render(
-    withBlerp({ Component: Popup, pageProps: {} }),
-    window.document.querySelector("#app-container"),
-);
+const container = document.getElementById("app-container");
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(WithBlerp({ Component: Popup, pageProps: {} }));
 
 if (module.hot) module.hot.accept();

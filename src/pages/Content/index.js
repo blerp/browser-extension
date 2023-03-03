@@ -1,8 +1,6 @@
-import { printLine } from "./modules/print";
-
 import { render } from "react-dom";
 import ChatPopUpButton from "../Extension/ChatPopUpButton";
-import withBlerp from "../../withBlerp";
+import WithBlerp from "../../WithBlerp";
 import { setGlobalCacheJwt, setStreamerInfo } from "../../globalCache";
 
 let CURRENT_PLATFORM;
@@ -69,7 +67,7 @@ let CURRENT_PLATFORM;
                     );
 
                     render(
-                        withBlerp({
+                        WithBlerp({
                             Component: ChatPopUpButton,
                             pageProps: {
                                 userId: null,
@@ -110,7 +108,7 @@ let CURRENT_PLATFORM;
                     );
 
                     render(
-                        withBlerp({
+                        WithBlerp({
                             Component: ChatPopUpButton,
                             pageProps: {
                                 userId: null,
@@ -149,7 +147,7 @@ let CURRENT_PLATFORM;
 
                     render(
                         // <ChatPopUpButton/>
-                        withBlerp({
+                        WithBlerp({
                             Component: ChatPopUpButton,
                             pageProps: {
                                 userId: null,
@@ -199,7 +197,7 @@ let CURRENT_PLATFORM;
                     );
 
                     render(
-                        withBlerp({
+                        WithBlerp({
                             Component: ChatPopUpButton,
                             pageProps: {
                                 userId: null,
