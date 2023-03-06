@@ -170,7 +170,6 @@ const Popup = () => {
                                 />
                             )}
                         </Stack>
-
                         <Button
                             href={`${selectedProject.host}/soundboard-browser-extension`}
                             target='_blank'
@@ -197,7 +196,6 @@ const Popup = () => {
                         >
                             Call Query
                         </Button> */}
-
                         {/* <Button
                             onClick={async () => {
                                 const token = await getGlobalCacheJwt();
@@ -210,7 +208,6 @@ const Popup = () => {
                         >
                             Check Token
                         </Button> */}
-
                         <Button
                             target='_blank'
                             rel='noreferrer'
@@ -222,7 +219,6 @@ const Popup = () => {
                         >
                             Open Modal
                         </Button>
-
                         <Button
                             // href={`${selectedProject.host}/tradeBeets`}
                             // target='_blank'

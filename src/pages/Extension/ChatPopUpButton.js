@@ -20,6 +20,8 @@ import BlerpModalShare from "./BlerpModalShare";
 import CloseIcon from "@mui/icons-material/Close";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+
 import ExtensionRoot from "./ExtensionRoot";
 
 import ChannelPointsCollector from "./ChannelPointsCollector";
@@ -505,13 +507,110 @@ const ChatPopUpButton = ({
                                     currentStreamerBlerpUser?.soundEmotesObject
                                 }
                                 refetching={loading}
+                                showSaved={false}
                             />
                         )}
                     </>
                 );
 
-            case "LIBRARY":
-                return <></>;
+            case "FAVES":
+                return (
+                    <>
+                        {renderBlerpNav()}
+
+                        {currentStreamerBlerpUser && (
+                            <Stack
+                                direction='row'
+                                sx={{
+                                    backgroundColor:
+                                        currentStreamerBlerpUser?.browserOnline
+                                            ? "seafoam.main"
+                                            : "ibisRed.main",
+                                    width: "100%",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "24px",
+                                    margin: "6px 0",
+                                    cursor: "pointer",
+                                }}
+                                onClick={async () => {
+                                    await refetch();
+                                }}
+                            >
+                                <Text
+                                    sx={{
+                                        fontSize: "10px",
+                                        fontWeight: "300",
+                                        color: "notBlack.override",
+                                    }}
+                                >
+                                    Sharing to{" "}
+                                    <Text
+                                        sx={{
+                                            color: "notBlack.override",
+                                            fontSize: "10px",
+                                            cursor: "pointer",
+                                            fontWeight: "600",
+                                            display: "inline",
+
+                                            "&:hover": {
+                                                color: "buntingBlue.main",
+                                            },
+                                        }}
+                                        onClick={() => {
+                                            window.open(
+                                                `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
+                                                "_blank",
+                                            );
+                                        }}
+                                    >
+                                        {currentStreamerBlerpUser?.username}
+                                    </Text>{" "}
+                                    stream!
+                                </Text>
+
+                                {currentStreamerBlerpUser?.browserOnline ? (
+                                    <Text
+                                        sx={{
+                                            fontSize: "10px",
+                                            fontWeight: "300",
+                                            color: "notBlack.override",
+                                            margin: "2px",
+                                        }}
+                                    >
+                                        - Online
+                                    </Text>
+                                ) : (
+                                    <Text
+                                        sx={{
+                                            fontSize: "10px",
+                                            fontWeight: "300",
+                                            color: "notBlack.override",
+                                            margin: "2px",
+                                        }}
+                                    >
+                                        - Offline
+                                    </Text>
+                                )}
+                            </Stack>
+                        )}
+
+                        {!!anchorEl && (
+                            <ExtensionRoot
+                                activeBlerp={activeBlerp}
+                                setActiveBlerp={setActiveBlerp}
+                                searchTerm={searchTerm}
+                                setSearchTerm={setSearchTerm}
+                                blerpSoundEmotesStreamer={
+                                    currentStreamerBlerpUser?.soundEmotesObject
+                                }
+                                refetching={loading}
+                                showSaved={true}
+                            />
+                        )}
+                    </>
+                );
+
             case "SETTINGS":
                 return (
                     <>
@@ -541,10 +640,16 @@ const ChatPopUpButton = ({
                             Modal Open
                         </Button> */}
 
-                        <UserProfile
-                            userSignedIn={signedInUser}
-                            refetchAll={refetch}
-                        />
+                        <Stack
+                            sx={{
+                                overflowY: "scroll",
+                            }}
+                        >
+                            <UserProfile
+                                userSignedIn={signedInUser}
+                                refetchAll={refetch}
+                            />
+                        </Stack>
 
                         {/* <StreamerNeedsToSetup /> */}
                     </>
@@ -714,38 +819,41 @@ const ChatPopUpButton = ({
                                         : "rgba(255,255,255,0.5)",
                             }}
                         />
-                        {/* <Tab
-                    value='LIBRARY'
-                    label='Library'
-                    icon={
-                        <BookmarkAddRoundedIcon
+
+                        <Tab
+                            value='FAVES'
+                            label='Faves'
+                            icon={
+                                <FavoriteRoundedIcon
+                                    sx={{
+                                        margin: "0 6px 0 0 !important",
+                                        fontSize: "18px",
+                                        color:
+                                            tabState === "FAVES"
+                                                ? "notBlack.main"
+                                                : "rgba(255,255,255,0.5)",
+                                    }}
+                                />
+                            }
+                            iconPosition='start'
                             sx={{
-                                margin: "0 6px 0 0 !important",
-                                fontSize: "18px",
+                                "& > .MuiTab-iconWrapper": {
+                                    margin: "0 6px 0 0 !important",
+                                },
+                                fontWeight: "600",
+                                minHeight: "0px !important",
+                                padding: "5px",
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                fontSize: "16px",
                                 color:
-                                    tabState === "LIBRARY"
+                                    tabState === "FAVES"
                                         ? "notBlack.main"
                                         : "rgba(255,255,255,0.5)",
                             }}
                         />
-                    }
-                    iconPosition='start'
-                    sx={{
-                        "& > .MuiTab-iconWrapper": {
-                            margin: "0 6px 0 0 !important",
-                        },
-                        fontWeight: "600",
-                        minHeight: "0px !important",
-                        padding: "5px",
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        color:
-                            tabState === "LIBRARY"
-                                ? "notBlack.main"
-                                : "rgba(255,255,255,0.5)",
-                    }}
-                /> */}
+
                         <Tab
                             value='SETTINGS'
                             label='Profile'

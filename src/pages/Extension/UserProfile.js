@@ -146,7 +146,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                             maxWidth: "460px",
                             textOverflow: "ellipsis",
                             overflow: "hidden",
-                            fontSize: "6vh",
+                            fontSize: "5vh",
                         }}
                     >
                         {userSignedIn.username &&
@@ -164,10 +164,10 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 }}
                 startIcon={
                     <OpenInNewRoundedIcon
-                        style={{ fontSize: "5vh" }}
+                        style={{ fontSize: "3vh" }}
                         sx={{
                             color: "whiteOverride.main",
-                            fontSize: "5vh",
+                            fontSize: "3vh",
                         }}
                     />
                 }
@@ -182,7 +182,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 <Text
                     fontColor='notBlack'
                     style={{
-                        fontSize: "5vh",
+                        fontSize: "3vh",
                     }}
                 >
                     {"View Account"}
@@ -192,7 +192,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
             <Button
                 variant='text'
                 color='whiteOverride'
-                sx={{ marginTop: "12px", fontSize: "5vh" }}
+                sx={{ marginTop: "12px", fontSize: "3vh" }}
                 onClick={async () => {
                     try {
                         setLoggingOut(true);

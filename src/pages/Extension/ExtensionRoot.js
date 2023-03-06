@@ -1,6 +1,14 @@
 import React, { useState, useRef } from "react";
 
-import { Stack, Button, Text, BlerpyIcon } from "@blerp/design";
+import {
+    Stack,
+    Button,
+    Text,
+    BlerpyIcon,
+    Dropdown,
+    Select,
+    MenuItem,
+} from "@blerp/design";
 import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 
@@ -10,6 +18,10 @@ import CoolNewSearchBar from "./CoolNewSearchBar";
 
 import EllipsisLoader from "./EllipsisLoader";
 import StreamerNeedsToSetup from "./StreamerNeedsToSetup";
+
+import CloseIcon from "@mui/icons-material/Close";
+
+import CustomDropdown from "./CustomDropdown";
 
 const ALL_CONTENT = gql`
     ${BITE_WITH_SOUND_EMOTES}
@@ -21,6 +33,7 @@ const ALL_CONTENT = gql`
         $audioDuration: Int
         $streamerId: MongoID
         $analytics: JSON
+        $showUserContent: Boolean
     ) {
         browserExtension {
             biteElasticSearch(
@@ -32,6 +45,7 @@ const ALL_CONTENT = gql`
                 analytics: { data: $analytics }
                 userId: $streamerId
                 viewerSide: true
+                showUserContent: $showUserContent
             ) {
                 pageInfo {
                     perPage
@@ -52,12 +66,16 @@ const GET_FEATURED_LIST_SOUND_EMOTES = gql`
         $page: Int
         $perPage: Int
         $streamerId: MongoID!
+        $showSaved: Boolean
+        $sortOverride: String
     ) {
         browserExtension {
             soundEmotesFeaturedContentPagination(
                 page: $page
                 perPage: $perPage
                 userId: $streamerId
+                showSavedOnly: $showSaved
+                sortOverride: $sortOverride
             ) {
                 count
                 items {
@@ -127,7 +145,7 @@ export const getArrayOfMpaaRatings = (rating) => {
     }
 };
 
-const PER_PAGE = 20;
+const PER_PAGE = 120;
 
 const renderBite = ({ bite, activeBlerp, setActiveBlerp }) => {
     if (!bite) {
@@ -243,6 +261,7 @@ const SearchPage = ({
     activeBlerp,
     searchTerm,
     blerpSoundEmotesStreamer,
+    showSaved,
 }) => {
     const { loading, data, error } = useQuery(ALL_CONTENT, {
         variables: {
@@ -254,6 +273,7 @@ const SearchPage = ({
             perPage: PER_PAGE,
             streamerId: blerpSoundEmotesStreamer?.ownerId,
             fetchPolicy: "network-only",
+            showUserContent: showSaved,
         },
     });
 
@@ -273,6 +293,25 @@ const SearchPage = ({
                 width: "100%",
             }}
         >
+            {showSaved && (
+                <Stack direction='row' sx={{ width: "100%" }}>
+                    <Text sx={{ width: "100%", margin: "4px 12px 12px" }}>
+                        Your Favorite Sounds on this Channel
+                    </Text>
+                </Stack>
+            )}
+
+            {searchTerm && !showSaved && (
+                <Stack
+                    direction='row'
+                    sx={{ width: "100%", margin: "4px 12px 12px" }}
+                >
+                    <Text sx={{ width: "98%" }}>
+                        Search Results for {searchTerm}
+                    </Text>
+                </Stack>
+            )}
+
             {loading && <EllipsisLoader />}
             {data?.browserExtension?.biteElasticSearch?.items &&
                 data?.browserExtension?.biteElasticSearch?.items.map((bite) => {
@@ -322,7 +361,15 @@ const FeaturedPage = ({
     activeBlerp,
     searchTerm,
     blerpSoundEmotesStreamer,
+    showSaved,
 }) => {
+    const [featuredSort, setFeaturedSort] = useState({
+        name: "Newest",
+        value: "CREATEDAT_DESC",
+    });
+
+    // figure out how to add featuredSort to variables only when it is not null
+
     const { loading, data, error } = useQuery(GET_FEATURED_LIST_SOUND_EMOTES, {
         variables: {
             searchTerm: searchTerm,
@@ -332,6 +379,7 @@ const FeaturedPage = ({
             page: 1,
             perPage: PER_PAGE,
             streamerId: blerpSoundEmotesStreamer?.ownerId,
+            sortOverride: featuredSort?.value, // make sure to only pass in if it's not null
         },
         fetchPolicy: "network-only",
     });
@@ -352,9 +400,42 @@ const FeaturedPage = ({
                 width: "100%",
             }}
         >
-            <Text sx={{ width: "100%", margin: "4px 12px 12px" }}>
-                Streamer Featured Sounds
-            </Text>
+            <Stack
+                direction='row'
+                sx={{ width: "100%", margin: "4px 12px 12px" }}
+            >
+                <Text>Streamer Featured Sounds</Text>
+
+                <CustomDropdown
+                    buttonTitle={featuredSort?.name || "Newest"}
+                    title={"Sort By"}
+                    buttonStyle={{
+                        width: "118px",
+                        // color: "notBlack.main",
+                        // fontColor: "notBlack.main",
+                        backgroundColor: "grey3.main",
+                    }}
+                    paperStyle={{}}
+                    onChange={async (option) => {
+                        console.log("CHEKCINg", option);
+                        setFeaturedSort(option);
+                    }}
+                    options={[
+                        { name: "Newest", value: "CREATEDAT_DESC" },
+                        { name: "Oldest", value: "CREATEDAT_ASC" },
+                        { name: "Beet Amount", value: "BEETAMOUNT_DESC" },
+                        // { name: "Beet Amount Reverse", value: "BEETAMOUNT_ASC" },
+                        {
+                            name: "Channel Points",
+                            value: "CHANNELPOINTSAMOUNT_DESC",
+                        },
+                        // {
+                        //     name: "Channel Points Reverse",
+                        //     value: "CHANNELPOINTSAMOUNT_ASC",
+                        // },
+                    ]}
+                />
+            </Stack>
 
             {loading && <EllipsisLoader />}
             {data?.browserExtension?.soundEmotesFeaturedContentPagination
@@ -373,7 +454,7 @@ const FeaturedPage = ({
                     },
                 )}
 
-            {!blerpSoundEmotesStreamer?.simpleMode && (
+            {!blerpSoundEmotesStreamer?.simpleMode && !showSaved && (
                 <>
                     <Text sx={{ width: "100%", margin: "4px 12px 12px" }}>
                         Global Sounds
@@ -397,6 +478,7 @@ const ExtensionRoot = ({
     searchTerm,
     setSearchTerm,
     blerpSoundEmotesStreamer,
+    showSaved,
 }) => {
     const pageProps = {
         setActiveBlerp: setActiveBlerp,
@@ -404,6 +486,7 @@ const ExtensionRoot = ({
         searchTerm: searchTerm,
         setSearchTerm: setSearchTerm,
         blerpSoundEmotesStreamer: blerpSoundEmotesStreamer,
+        showSaved,
     };
 
     return (
@@ -422,7 +505,6 @@ const ExtensionRoot = ({
                     alignItems: "center",
                     justifyContent: "center",
                     width: "100%",
-                    pb: "4px",
                 }}
             >
                 <Stack
@@ -440,6 +522,8 @@ const ExtensionRoot = ({
 
             {!blerpSoundEmotesStreamer ? (
                 <StreamerNeedsToSetup {...pageProps} />
+            ) : showSaved ? (
+                <SearchPage {...pageProps} />
             ) : searchTerm && searchTerm.length ? (
                 <SearchPage {...pageProps} />
             ) : (

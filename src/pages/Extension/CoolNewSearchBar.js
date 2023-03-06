@@ -6,6 +6,7 @@ import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useRouter } from "next/router";
+import CloseIcon from "@mui/icons-material/Close";
 
 const TextFieldWrapper = styled(Input)`
     fieldset {
@@ -157,6 +158,22 @@ const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
                     },
                     endAdornment: (
                         <InputAdornment position='end'>
+                            {searchTerm && (
+                                <CloseRoundedIcon
+                                    sx={{
+                                        width: "20px",
+                                        height: "20px",
+
+                                        cursor: "pointer",
+                                        color: "notBlack.main",
+                                    }}
+                                    onClick={() => {
+                                        setSearchTerm("");
+                                        setSearchInput("");
+                                    }}
+                                />
+                            )}
+
                             <Stack
                                 direction='row'
                                 alignItems='center'
