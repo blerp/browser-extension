@@ -11,9 +11,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
 import { useApollo } from "../../networking/apolloClient";
-import { BITE } from "../../mainGraphQl";
-
 import {
+    BITE,
     BLERP_USER_SELF,
     BLERP_USER_STREAMER,
     EARN_SNOOT_POINTS,
@@ -32,14 +31,13 @@ const StreamerNeedsToSetup = ({}) => {
         <Stack
             sx={{
                 display: "flex",
-                flexWrap: "wrap",
                 flexDirection: "column",
                 overflowY: "scroll",
                 maxHeight: "200px",
                 alignItems: "center",
                 justifyContent: "center",
                 display: "flex",
-                paddingBottom: "120px",
+                paddingBottom: "32px",
                 maxWidth: "440px",
                 margin: "12px auto",
                 width: "100%",
@@ -57,6 +55,15 @@ const StreamerNeedsToSetup = ({}) => {
                 sx={{ margin: "8px 12px 8px 16px" }}
             >
                 Streamer Setup Here
+            </Button>
+
+            <Button
+                variant='contained'
+                color='buntingBlue'
+                sx={{ margin: "8px 12px 8px 16px" }}
+                onClick={() => window.location.reload()}
+            >
+                Reload Page
             </Button>
         </Stack>
     );

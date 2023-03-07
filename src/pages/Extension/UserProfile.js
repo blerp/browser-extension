@@ -11,9 +11,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
 import { useApollo } from "../../networking/apolloClient";
-import { BITE } from "../../mainGraphQl";
-
 import {
+    BITE,
     BLERP_USER_SELF,
     BLERP_USER_STREAMER,
     EARN_SNOOT_POINTS,
@@ -146,7 +145,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                             maxWidth: "460px",
                             textOverflow: "ellipsis",
                             overflow: "hidden",
-                            fontSize: "5vh",
+                            fontSize: "3vh",
                         }}
                     >
                         {userSignedIn.username &&
@@ -164,10 +163,10 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 }}
                 startIcon={
                     <OpenInNewRoundedIcon
-                        style={{ fontSize: "3vh" }}
+                        style={{ fontSize: "2vh" }}
                         sx={{
                             color: "whiteOverride.main",
-                            fontSize: "3vh",
+                            fontSize: "2vh",
                         }}
                     />
                 }
@@ -182,7 +181,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 <Text
                     fontColor='notBlack'
                     style={{
-                        fontSize: "3vh",
+                        fontSize: "2vh",
                     }}
                 >
                     {"View Account"}
@@ -192,7 +191,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
             <Button
                 variant='text'
                 color='whiteOverride'
-                sx={{ marginTop: "12px", fontSize: "3vh" }}
+                sx={{ marginTop: "12px", fontSize: "2vh" }}
                 onClick={async () => {
                     try {
                         setLoggingOut(true);

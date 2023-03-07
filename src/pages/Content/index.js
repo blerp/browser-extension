@@ -1,9 +1,13 @@
-import { render } from "react-dom";
+import { createRoot } from "react-dom";
 import ChatPopUpButton from "../Extension/ChatPopUpButton";
 import WithBlerp from "../../WithBlerp";
 import { setGlobalCacheJwt, setStreamerInfo } from "../../globalCache";
 
 let CURRENT_PLATFORM;
+let TWITCH_NAV_BUTTON_CONTAINER;
+let TWITCH_CHAT_BUTTON_CONTAINER;
+let YT_NAV_BUTTON_CONTAINER;
+let YT_CHAT_BUTTON_CONTAINER;
 
 //[data-a-target="top-nav-container"]
 (() => {
@@ -23,8 +27,6 @@ let CURRENT_PLATFORM;
     } else {
         CURRENT_PLATFORM = "Unknown";
     }
-
-    console.log("HOSTYY1!!", host, CURRENT_PLATFORM);
 
     if (CURRENT_PLATFORM === "BLERP") {
         console.log("MESSAGE_CALL_LOGIN_AGAIN");
@@ -47,182 +49,237 @@ let CURRENT_PLATFORM;
         isStreaming = true;
     }
 
-    console.log("STREAMING", isStreaming);
+    console.log("STREAMING_CHECK", isStreaming);
 
-    const renderTwitchChat = ({ twitchUsername }) => {
-        let counter = 0;
-        setTimeout(function () {
-            const intervalId = setInterval(() => {
-                let target = document.querySelector(
-                    `div[data-test-selector="chat-input-buttons-container"]`,
+    const getElementByIdOrCreate = (id, target) => {
+        // const existingElement = document.getElementById(id);
+        if (false) {
+            return existingElement;
+        } else {
+            const newElement = document.createElement("div");
+
+            if (target) {
+                target.insertBefore(
+                    newElement,
+                    target.children[target.children.length - 2],
                 );
+            }
 
-                if (target) {
-                    clearInterval(intervalId);
-
-                    const container = document.createElement("div");
-                    target.insertBefore(
-                        container,
-                        target.children[target.children.length - 2],
-                    );
-
-                    render(
-                        WithBlerp({
-                            Component: ChatPopUpButton,
-                            pageProps: {
-                                userId: null,
-                                youtubeChannelId: null,
-                                twitchUsername: twitchUsername,
-                                platform: CURRENT_PLATFORM,
-                                isStreaming,
-                            },
-                        }),
-                        container,
-                    );
-                } else if (counter >= 20) {
-                    clearInterval(intervalId);
-                }
-
-                counter++;
-                console.log("CHECK_RENDERER", target, counter);
-            }, 5000);
-        }, 1000);
+            return newElement;
+        }
     };
 
+    let twitchChatIntervalId = null;
+    const renderTwitchChat = ({ twitchUsername }) => {
+        let counter = 0;
+
+        // setTimeout(() => {
+        console.log("TIMEOUT_CALLED_CHAT_WITH_REPEAT", counter);
+        if (twitchChatIntervalId) {
+            return;
+        }
+
+        twitchChatIntervalId = setInterval(() => {
+            let target = document.querySelector(
+                `div[data-test-selector="chat-input-buttons-container"]`,
+            );
+
+            if (target) {
+                clearInterval(twitchChatIntervalId);
+                twitchChatIntervalId = null;
+
+                if (!TWITCH_CHAT_BUTTON_CONTAINER) {
+                    const container = getElementByIdOrCreate(
+                        "twitch-chat-button-container-blerp",
+                        target,
+                    );
+
+                    TWITCH_CHAT_BUTTON_CONTAINER = createRoot(container);
+                }
+
+                TWITCH_CHAT_BUTTON_CONTAINER.render(
+                    WithBlerp({
+                        Component: ChatPopUpButton,
+                        pageProps: {
+                            userId: null,
+                            youtubeChannelId: null,
+                            twitchUsername: twitchUsername,
+                            platform: CURRENT_PLATFORM,
+                            isStreaming,
+                        },
+                    }),
+                );
+            } else if (counter >= 20) {
+                clearInterval(twitchChatIntervalId);
+                twitchChatIntervalId = null;
+            }
+
+            counter++;
+            console.log("CHECK_RENDERER", target, counter);
+        }, 5000);
+        // }, 1000);
+    };
+
+    let twitchNavIntervalId = null;
     const renderTwitchNav = ({ twitchUsername }) => {
         // Nav Bar
         let counter = 0;
-        setTimeout(function () {
-            const intervalId = setInterval(() => {
-                let targetNav = document.querySelector(
-                    `[data-a-target="top-nav-container"]`,
-                )?.firstChild?.lastChild;
+        // setTimeout(function () {
+        if (twitchNavIntervalId) {
+            return;
+        }
 
-                if (targetNav) {
-                    clearInterval(intervalId);
+        twitchNavIntervalId = setInterval(() => {
+            let targetNav = document.querySelector(
+                `[data-a-target="top-nav-container"]`,
+            )?.firstChild?.lastChild;
 
-                    const container = document.createElement("div");
-                    targetNav.insertBefore(
-                        container,
-                        targetNav.children[targetNav.children.length - 2],
+            if (targetNav) {
+                console.log("NAV_RENDERED", twitchNavIntervalId);
+                clearInterval(twitchNavIntervalId);
+                twitchNavIntervalId = null;
+
+                if (!TWITCH_NAV_BUTTON_CONTAINER) {
+                    const container = getElementByIdOrCreate(
+                        "twitch-nav-button-container-blerp",
+                        targetNav,
                     );
 
-                    render(
-                        WithBlerp({
-                            Component: ChatPopUpButton,
-                            pageProps: {
-                                userId: null,
-                                youtubeChannelId: null,
-                                twitchUsername: twitchUsername,
-                                platform: CURRENT_PLATFORM,
-                                isStreaming,
-                            },
-                        }),
-                        container,
-                    );
-                } else if (counter >= 20) {
-                    clearInterval(intervalId);
+                    TWITCH_NAV_BUTTON_CONTAINER = createRoot(container);
                 }
 
-                counter++;
-            }, 5000);
-        }, 1500);
+                TWITCH_NAV_BUTTON_CONTAINER.render(
+                    WithBlerp({
+                        Component: ChatPopUpButton,
+                        pageProps: {
+                            userId: null,
+                            youtubeChannelId: null,
+                            twitchUsername: twitchUsername,
+                            platform: CURRENT_PLATFORM,
+                            isStreaming,
+                        },
+                    }),
+                );
+            } else if (counter >= 20) {
+                clearInterval(twitchNavIntervalId);
+                twitchNavIntervalId = null;
+            }
+
+            counter++;
+        }, 5000);
+        // }, 1500);
     };
+
+    let ytNavIntervalId = null;
 
     const renderYTNav = ({ youtubeChannelId }) => {
         let counter = 0;
-        setTimeout(function () {
-            const intervalId = setInterval(() => {
-                let targetNav = document.querySelector("#buttons");
+        // setTimeout(function () {
+        if (ytNavIntervalId) {
+            return;
+        }
 
-                if (targetNav) {
-                    clearInterval(intervalId);
+        ytNavIntervalId = setInterval(() => {
+            let targetNav = document.querySelector("#buttons");
 
-                    const container = document.createElement("div");
+            if (targetNav) {
+                clearInterval(ytNavIntervalId);
+                ytNavIntervalId = null;
 
-                    targetNav.insertBefore(
-                        container,
-                        targetNav.children[targetNav.children.length - 2],
+                if (!YT_NAV_BUTTON_CONTAINER) {
+                    const container = getElementByIdOrCreate(
+                        "yt-nav-button-container-blerp",
+                        targetNav,
                     );
 
-                    render(
-                        // <ChatPopUpButton/>
-                        WithBlerp({
-                            Component: ChatPopUpButton,
-                            pageProps: {
-                                userId: null,
-                                youtubeChannelId: youtubeChannelId,
-                                twitchUsername: null,
-                                platform: CURRENT_PLATFORM,
-                                isStreaming,
-                            },
-                        }),
-                        container,
-                    );
-                } else if (counter >= 100) {
-                    clearInterval(intervalId);
+                    YT_NAV_BUTTON_CONTAINER = createRoot(container);
                 }
 
-                counter++;
-                console.log("CHECK_RENDERER_NAV", counter);
-            }, 5000);
-        }, 3200);
+                YT_NAV_BUTTON_CONTAINER.render(
+                    // <ChatPopUpButton/>
+                    WithBlerp({
+                        Component: ChatPopUpButton,
+                        pageProps: {
+                            userId: null,
+                            youtubeChannelId: youtubeChannelId,
+                            twitchUsername: null,
+                            platform: CURRENT_PLATFORM,
+                            isStreaming,
+                        },
+                    }),
+                );
+            } else if (counter >= 100) {
+                clearInterval(ytNavIntervalId);
+                ytNavIntervalId = null;
+            }
+
+            counter++;
+            console.log("CHECK_RENDERER_NAV", targetNav, counter);
+        }, 5000);
+        // }, 3200);
     };
 
+    let ytChatIntervalId = null;
     const renderYTChat = ({ youtubeChannelId }) => {
         let counter = 0;
-        setTimeout(function () {
-            const intervalId = setInterval(() => {
-                const youtubeChatIframe = window.frames["chatframe"]
-                    ?.contentDocument
-                    ? window.frames["chatframe"]?.contentDocument
-                    : document.querySelector("#chatframe")?.contentDocument;
 
-                let target =
-                    document.querySelector("#top-level-buttons-computed")
-                        ?.firstChild ??
-                    youtubeChatIframe?.querySelector(
-                        "#picker-buttons.yt-live-chat-message-input-renderer",
-                    )?.parentElement ??
-                    youtubeChatIframe?.querySelector("#message-buttons")
-                        ?.parentElement;
+        // setTimeout(function () {
+        if (ytChatIntervalId) {
+            return;
+        }
 
-                if (target) {
-                    clearInterval(intervalId);
+        ytChatIntervalId = setInterval(() => {
+            const youtubeChatIframe = window.frames["chatframe"]
+                ?.contentDocument
+                ? window.frames["chatframe"]?.contentDocument
+                : document.querySelector("#chatframe")?.contentDocument;
 
-                    const container = document.createElement("div");
-                    target.insertBefore(
-                        container,
-                        target.children[target.children.length - 2],
+            let target =
+                document.querySelector("#top-level-buttons-computed")
+                    ?.firstChild ??
+                youtubeChatIframe?.querySelector(
+                    "#picker-buttons.yt-live-chat-message-input-renderer",
+                )?.parentElement ??
+                youtubeChatIframe?.querySelector("#message-buttons")
+                    ?.parentElement;
+
+            if (target) {
+                clearInterval(ytChatIntervalId);
+                ytChatIntervalId = null;
+
+                if (!YT_CHAT_BUTTON_CONTAINER) {
+                    const container = getElementByIdOrCreate(
+                        "yt-nav-button-container-blerp",
+                        target,
                     );
 
-                    render(
-                        WithBlerp({
-                            Component: ChatPopUpButton,
-                            pageProps: {
-                                userId: null,
-                                youtubeChannelId: youtubeChannelId,
-                                twitchUsername: null,
-                                platform: CURRENT_PLATFORM,
-                                isStreaming,
-                            },
-                        }),
-                        container,
-                    );
-                } else if (counter >= 100) {
-                    clearInterval(intervalId);
+                    YT_CHAT_BUTTON_CONTAINER = createRoot(container);
                 }
 
-                counter++;
-                console.log("CHECK_RENDERER", target, counter);
-            }, 5000);
-        }, 1000);
+                YT_CHAT_BUTTON_CONTAINER.render(
+                    WithBlerp({
+                        Component: ChatPopUpButton,
+                        pageProps: {
+                            userId: null,
+                            youtubeChannelId: youtubeChannelId,
+                            twitchUsername: null,
+                            platform: CURRENT_PLATFORM,
+                            isStreaming,
+                        },
+                    }),
+                );
+            } else if (counter >= 100) {
+                clearInterval(ytChatIntervalId);
+                ytChatIntervalId = null;
+            }
+
+            counter++;
+        }, 5000);
+        // }, 1000);
     };
 
     const renderAllContentPage = () => {
         if (CURRENT_PLATFORM === "TWITCH") {
-            console.log("BLERP_TWITCH_INITIATE");
-
             let twitchUsername = null;
 
             // If the username was still not found, try to get it from the page URL
@@ -272,6 +329,15 @@ let CURRENT_PLATFORM;
             let searchParams = new URLSearchParams(window.location.search);
             let youtubeChannelId = searchParams.get("channel");
 
+            let channelLink = document.querySelector("a.ytp-ce-channel-title");
+            if (channelLink) {
+                let regex = /\/channel\/([\w-]+)/;
+                let match = channelLink.href.match(regex);
+                if (match) {
+                    youtubeChannelId = match[1];
+                }
+            }
+
             // If the channelId was not found in the URL, try to find it in the page metadata
             if (!youtubeChannelId) {
                 let meta = document.querySelector('meta[itemprop="channelId"]');
@@ -303,9 +369,6 @@ let CURRENT_PLATFORM;
                 currentPlatform: CURRENT_PLATFORM,
             });
 
-            // Finally, log or display the channelId as needed
-            console.log(`YouTube channel ID: ${youtubeChannelId}`);
-
             renderYTChat({ youtubeChannelId: youtubeChannelId });
         } else {
         }
@@ -313,7 +376,98 @@ let CURRENT_PLATFORM;
 
     renderAllContentPage();
 
-    console.log("Popstate registered");
+    let locationUpdatesRegistered = false;
+
+    const handleLocationUpdates = () => {
+        if (!locationUpdatesRegistered) {
+            // window.addEventListener("hashchange", renderAllContentPage);
+            // window.addEventListener("popstate", renderAllContentPage);
+
+            let lastUrl = location.href;
+
+            // https://stackoverflow.com/questions/2844565/is-there-a-javascript-jquery-dom-change-listener/39508954#39508954
+            new MutationObserver(() => {
+                const url = location.href;
+                if (url !== lastUrl) {
+                    lastUrl = url;
+                    onUrlChange();
+                }
+            }).observe(document, { subtree: true, childList: true });
+
+            const onUrlChange = () => {
+                if (YT_NAV_BUTTON_CONTAINER) {
+                    YT_NAV_BUTTON_CONTAINER.unmount();
+                    YT_NAV_BUTTON_CONTAINER = null;
+                }
+
+                if (YT_CHAT_BUTTON_CONTAINER) {
+                    YT_CHAT_BUTTON_CONTAINER.unmount();
+                    YT_CHAT_BUTTON_CONTAINER = null;
+                }
+                if (TWITCH_CHAT_BUTTON_CONTAINER) {
+                    TWITCH_CHAT_BUTTON_CONTAINER.unmount();
+                    TWITCH_CHAT_BUTTON_CONTAINER = null;
+                }
+                if (TWITCH_NAV_BUTTON_CONTAINER) {
+                    TWITCH_NAV_BUTTON_CONTAINER.unmount();
+                    TWITCH_NAV_BUTTON_CONTAINER = null;
+                }
+
+                clearInterval(ytNavIntervalId);
+                ytNavIntervalId = null;
+
+                clearInterval(ytChatIntervalId);
+                ytChatIntervalId = null;
+
+                clearInterval(twitchChatIntervalId);
+                twitchChatIntervalId = null;
+
+                clearInterval(twitchNavIntervalId);
+                twitchNavIntervalId = null;
+
+                renderAllContentPage();
+            };
+
+            // or, if neither of those work, you might have to poll:
+
+            // const aDelayValueThatWorksForYou = 500;
+            // setInterval(render, aDelayValueThatWorksForYou);
+
+            locationUpdatesRegistered = true;
+        }
+    };
+
+    handleLocationUpdates();
+
+    // Listen for changes to the page using a MutationObserver
+    // const chatObserver = new MutationObserver((mutationsList, observer) => {
+    //     for (let mutation of mutationsList) {
+    //         if (
+    //             mutation.type === "childList" &&
+    //             mutation.addedNodes.length > 0
+    //         ) {
+    //             for (let addedNode of mutation.addedNodes) {
+    //                 const nodeClassList = addedNode.classList;
+    //                 if (
+    //                     nodeClassList &&
+    //                     nodeClassList.contains(
+    //                         "yt-live-chat-item-list-renderer",
+    //                     ) &&
+    //                     nodeClassList.contains("style-scope") &&
+    //                     nodeClassList.contains("ytd-live-chat-frame")
+    //                 ) {
+    //                     observer.disconnect();
+    //                     renderYTChat({ youtubeChannelId });
+    //                 }
+    //             }
+    //         }
+    //     }
+    // });
+
+    // chatObserver.observe(document.body, {
+    //     childList: true,
+    //     subtree: true,
+    // });
 })();
 
 console.log("Power of the awesomness!!!!!!!!");

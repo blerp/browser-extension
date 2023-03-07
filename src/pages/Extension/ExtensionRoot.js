@@ -404,7 +404,7 @@ const FeaturedPage = ({
                 direction='row'
                 sx={{ width: "100%", margin: "4px 12px 12px" }}
             >
-                <Text>Streamer Featured Sounds</Text>
+                <Text sx={{ width: "100%" }}>Streamer Featured Sounds</Text>
 
                 <CustomDropdown
                     buttonTitle={featuredSort?.name || "Newest"}
@@ -417,7 +417,6 @@ const FeaturedPage = ({
                     }}
                     paperStyle={{}}
                     onChange={async (option) => {
-                        console.log("CHEKCINg", option);
                         setFeaturedSort(option);
                     }}
                     options={[
