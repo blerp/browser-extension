@@ -437,7 +437,7 @@ const BlerpModalShare = ({
                     <Stack
                         sx={{
                             margin: "12px",
-                            width: "200px",
+                            width: "160px",
                         }}
                     >
                         {activeBlerp?.audio?.mp3?.url && (

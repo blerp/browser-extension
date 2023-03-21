@@ -1,0 +1,374 @@
+import React, { useState, useRef, useEffect, useContext } from "react";
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
+
+import {
+    Stack,
+    Button,
+    Text,
+    BlerpyIcon,
+    Dropdown,
+    Select,
+    MenuItem,
+    SnackbarContext,
+} from "@blerp/design";
+import gql from "graphql-tag";
+import { useMutation } from "@apollo/client";
+
+const SAVE_BITE = gql`
+    mutation webSaveBite($biteId: MongoID!, $data: JSON) {
+        web {
+            saveBite(biteId: $biteId, analytics: { data: $data }) {
+                _id
+                bite {
+                    _id
+                    saved
+                }
+            }
+        }
+    }
+`;
+
+const UNSAVE_BITE = gql`
+    mutation webSaveBite($biteId: MongoID!, $data: JSON) {
+        web {
+            unsaveBite(biteId: $biteId, analytics: { data: $data }) {
+                _id
+                bite {
+                    _id
+                    saved
+                }
+            }
+        }
+    }
+`;
+
+const BiteComponent = ({
+    bite,
+    activeBlerp,
+    setActiveBlerp,
+    currencyGlobalState,
+    userSignedIn,
+    searchQuery,
+}) => {
+    const [isHovered, setIsHovered] = useState(false);
+    const [localCurrencyType, setLocalCurrencyType] = useState(
+        currencyGlobalState || "BEETS",
+    );
+
+    const snackbarContext = useContext(SnackbarContext);
+    const [saveBlerp] = useMutation(SAVE_BITE);
+    const [unsaveBlerp] = useMutation(UNSAVE_BITE);
+
+    useEffect(() => {
+        if (currencyGlobalState) {
+            setLocalCurrencyType(currencyGlobalState);
+        }
+    }, []);
+
+    if (!bite) {
+        return <></>;
+    }
+
+    const handleSave = async (bite) => {
+        try {
+            saveBlerp({
+                variables: {
+                    biteId: bite?._id,
+                    data: {
+                        searchQuery,
+                    },
+                },
+            })
+                .then((res) => {
+                    if (res.data.web.saveBite?.bite?.saved) {
+                        snackbarContext.triggerSnackbar({
+                            message: "Saved!",
+                            severity: "success",
+                            position: {
+                                vertical: "bottom",
+                                horizontal: "right",
+                            },
+                        });
+                    }
+                })
+                .catch((err) => {});
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    const handleUnsave = async (bite) => {
+        try {
+            await unsaveBlerp({
+                variables: {
+                    biteId: bite?._id,
+                    data: {
+                        searchQuery,
+                    },
+                },
+            }).then((res) => {
+                snackbarContext.triggerSnackbar({
+                    message: "Removed from Saved!",
+                    severity: "success",
+                    position: {
+                        vertical: "bottom",
+                        horizontal: "right",
+                    },
+                });
+            });
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    return (
+        <Stack
+            className='outer-component'
+            key={bite?._id}
+            sx={{
+                width: "86px",
+                height: "120px",
+                position: "relative",
+                borderRadius: "12px",
+                margin: "8px 8px 4px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                cursor: "pointer",
+                borderColor: "seafoam.main",
+                borderStyle: "solid",
+                borderWidth: activeBlerp?._id === bite?._id ? "8px" : "0px",
+
+                "&:hover": {
+                    opacity: 1,
+                },
+                "&:hover .MuiSvgIcon-root": {
+                    visibility: "visible",
+                    opacity: 1,
+                },
+            }}
+        >
+            {bite?.saved ? (
+                <FavoriteRoundedIcon
+                    sx={{
+                        position: "absolute",
+                        top: -10,
+                        right: -10,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        borderRadius: "12px",
+                        zIndex: 2,
+                        "&:hover": { opacity: 0.7 },
+                        visibility: bite?.saved ? "visible" : "hidden",
+                    }}
+                    onClick={async (e) => {
+                        e.stopPropagation();
+                        if (!userSignedIn) {
+                            return;
+                        }
+
+                        if (bite?.saved) {
+                            await handleUnsave(bite);
+                        } else {
+                            await handleSave(bite);
+                        }
+                    }}
+                />
+            ) : (
+                <FavoriteBorderRoundedIcon
+                    sx={{
+                        position: "absolute",
+                        top: -10,
+                        right: -10,
+                        backgroundColor: "rgba(0, 0, 0, 0.5)",
+                        borderRadius: "12px",
+                        zIndex: 2,
+                        "&:hover": { opacity: 0.7 },
+                        visibility: bite?.saved ? "visible" : "hidden",
+                    }}
+                    onClick={async (e) => {
+                        e.stopPropagation();
+                        if (!userSignedIn) {
+                            return;
+                        }
+
+                        if (bite?.saved) {
+                            await handleUnsave(bite);
+                        } else {
+                            await handleSave(bite);
+                        }
+                    }}
+                />
+            )}
+
+            {bite?.image?.original?.url ? (
+                <Stack
+                    sx={{
+                        width: "90px",
+                        height: "90px",
+                        borderRadius: "12px",
+                        position: "relative",
+                    }}
+                    onClick={() => {
+                        setActiveBlerp(bite);
+                    }}
+                >
+                    <div
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            borderRadius: "12px",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                        }}
+                    ></div>
+                    <img
+                        style={{
+                            width: "100%",
+                            height: "100%",
+                            borderRadius: "12px",
+                            position: "absolute",
+                            top: 0,
+                            left: 0,
+                        }}
+                        src={bite?.image?.original?.url}
+                    />
+                </Stack>
+            ) : (
+                <Stack
+                    sx={{
+                        width: "90px",
+                        height: "90px",
+                        borderRadius: "0 0 12px 12px",
+                        position: "relative",
+                    }}
+                ></Stack>
+            )}
+
+            {true ? (
+                <Stack
+                    direction='row'
+                    sx={{
+                        borderRadius: "4px",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        position: "absolute",
+                        bottom: 22,
+                        alignItems: "center",
+                        overflow: "hidden",
+                        justifyContent: "center",
+                        zIndex: 3,
+                    }}
+                >
+                    <Stack
+                        direction='row'
+                        sx={{
+                            backgroundColor: "#B43757",
+                        }}
+                        onClick={() => {
+                            setLocalCurrencyType("BEETS");
+                        }}
+                    >
+                        <img
+                            src='https://cdn.blerp.com/design/browser-extension/beet.svg'
+                            style={{
+                                width: "16px",
+                                height: "16px",
+                            }}
+                        />
+
+                        {localCurrencyType === "BEETS" && (
+                            <Text
+                                sx={{
+                                    color: "white",
+                                    textAlign: "center",
+                                    fontSize: "12px",
+                                    paddingRight: "4px",
+                                }}
+                            >
+                                {bite?.soundEmotesContext?.beetAmount}
+                            </Text>
+                        )}
+                    </Stack>
+
+                    <Stack
+                        direction='row'
+                        sx={{
+                            backgroundColor: "grey6.main",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                        onClick={() => {
+                            setLocalCurrencyType("POINTS");
+                        }}
+                    >
+                        <img
+                            src='https://cdn.blerp.com/design/browser-extension/cp_2.svg'
+                            style={{
+                                width: "16px",
+                                height: "16px",
+                            }}
+                        />
+
+                        {localCurrencyType === "POINTS" && (
+                            <Text
+                                sx={{
+                                    color: "white",
+                                    textAlign: "center",
+                                    fontSize: "12px",
+                                    paddingLeft: "4px",
+                                }}
+                            >
+                                {bite?.soundEmotesContext?.channelPointsAmount}
+                            </Text>
+                        )}
+                    </Stack>
+                </Stack>
+            ) : (
+                <></>
+            )}
+
+            <Stack
+                onMouseEnter={() => setIsHovered(true)}
+                onMouseLeave={() => setIsHovered(false)}
+                sx={{
+                    paddingTop: "1em",
+                    height: "1.75em",
+                    width: "100%",
+                    overflow: "hidden",
+                    position: "relative",
+                    backgroundColor: "grey7.real",
+
+                    // add border radius to bottom two corners
+                    borderRadius: "0 0 12px 12px",
+                }}
+                onClick={() => {
+                    setActiveBlerp(bite);
+                }}
+            >
+                <Text
+                    sx={{
+                        color: "white",
+                        textAlign: "left",
+                        fontSize: "11px",
+                        textOverflow: "ellipsis",
+                        lineHeight: "1.75em",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        transition: "transform 3s linear",
+                        transform: isHovered
+                            ? "translateX(-100%)"
+                            : "translateX(0%)",
+                        padding: "0 6px",
+                    }}
+                >
+                    {bite?.title}
+                </Text>
+            </Stack>
+        </Stack>
+    );
+};
+
+export default BiteComponent;

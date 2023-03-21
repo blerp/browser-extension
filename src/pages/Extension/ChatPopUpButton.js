@@ -400,7 +400,7 @@ const ChatPopUpButton = ({
                     >
                         <ChevronLeftRoundedIcon
                             sx={{
-                                width: "32px",
+                                width: "28px",
                                 height: "32px",
                                 cursor: "pointer",
                                 color: "notBlack.main",
@@ -436,9 +436,13 @@ const ChatPopUpButton = ({
                             cursor: "pointer",
                             color: "notBlack.main",
                             marginRight: "8px",
+                            "&:hover": { opacity: 0.7 },
                         }}
                         onClick={() => {
-                            setTabState("HOME");
+                            window.open(
+                                `${selectedProject.host}/soundbites/${activeBlerp?._id}`,
+                                "_blank",
+                            );
                         }}
                     />
 
@@ -482,7 +486,7 @@ const ChatPopUpButton = ({
                         >
                             <ChevronLeftRoundedIcon
                                 sx={{
-                                    width: "32px",
+                                    width: "28px",
                                     height: "32px",
                                     cursor: "pointer",
                                     color: "notBlack.main",
@@ -529,9 +533,13 @@ const ChatPopUpButton = ({
                                 cursor: "pointer",
                                 color: "notBlack.main",
                                 marginRight: "8px",
+                                "&:hover": { opacity: 0.7 },
                             }}
                             onClick={() => {
-                                setTabState("HOME");
+                                window.open(
+                                    `${selectedProject.host}/u/${signedInUser?.username}`,
+                                    "_blank",
+                                );
                             }}
                         />
                     </Stack>
@@ -561,7 +569,7 @@ const ChatPopUpButton = ({
                             <ChevronLeftRoundedIcon
                                 sx={{
                                     width: "28px",
-                                    height: "28px",
+                                    height: "32px",
                                     cursor: "pointer",
                                     color: "notBlack.main",
                                     marginLeft: "8px",
@@ -631,8 +639,8 @@ const ChatPopUpButton = ({
                             ) : (
                                 <SearchRoundedIcon
                                     sx={{
-                                        width: "28px",
-                                        height: "28px",
+                                        width: "24px",
+                                        height: "24px",
                                         cursor: "pointer",
                                         color: "notBlack.main",
                                         marginRight: "8px",
@@ -643,17 +651,15 @@ const ChatPopUpButton = ({
                                 />
                             )}
 
-                            <MoreVertRoundedIcon
+                            <CloseIcon
                                 sx={{
-                                    width: "28px",
-                                    height: "28px",
+                                    width: "24px",
+                                    height: "24px",
                                     cursor: "pointer",
                                     color: "notBlack.main",
                                     marginRight: "8px",
                                 }}
-                                onClick={() => {
-                                    setTabState("HOME");
-                                }}
+                                onClick={handleClose}
                             />
                         </Stack>
                     </Stack>
@@ -700,8 +706,8 @@ const ChatPopUpButton = ({
 
                         <CloseIcon
                             sx={{
-                                width: "28px",
-                                height: "28px",
+                                width: "24px",
+                                height: "24px",
                                 cursor: "pointer",
                                 color: "notBlack.main",
                                 marginRight: "8px",
@@ -839,6 +845,7 @@ const ChatPopUpButton = ({
                                 showFavorites={false}
                                 setCurrencyGlobal={setCurrencyGlobal}
                                 currencyGlobalState={currencyGlobalState}
+                                userSignedIn={signedInUser}
                             />
                         )}
                     </>

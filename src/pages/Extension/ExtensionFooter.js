@@ -62,6 +62,7 @@ const ExtensionFooter = ({
                 boxShadow: "0px -2px 4px rgba(0, 0, 0, 0.25)",
                 backdropFilter: "blur(10px)",
                 bottom: "0px",
+                zIndex: 5,
             }}
         >
             <Box
@@ -120,7 +121,7 @@ const ExtensionFooter = ({
                 spacing={1}
                 sx={{
                     padding: "4px 4px",
-                    backgroundColor: "grey5.real",
+                    backgroundColor: "rgba(103, 111, 112, 0.6);",
                     borderRadius: "8px",
                 }}
             >
@@ -134,8 +135,8 @@ const ExtensionFooter = ({
                                 : "none",
                         backgroundColor:
                             currencyGlobalState === "POINTS"
-                                ? "#FD295C"
-                                : "grey5.real",
+                                ? "#B43757"
+                                : "transparent",
 
                         color:
                             currencyGlobalState === "POINTS"
@@ -146,8 +147,8 @@ const ExtensionFooter = ({
                         "&:hover": {
                             backgroundColor:
                                 currencyGlobalState === "POINTS"
-                                    ? "#FD295C"
-                                    : "grey5.real",
+                                    ? "#B43757"
+                                    : "trans",
                         },
                     }}
                 >
@@ -174,8 +175,8 @@ const ExtensionFooter = ({
                                 : "none",
                         backgroundColor:
                             currencyGlobalState === "BEETS"
-                                ? "#FD295C"
-                                : "grey5.real",
+                                ? "#B43757"
+                                : "trans",
                         color:
                             currencyGlobalState === "BEETS"
                                 ? "#fff"
@@ -183,8 +184,8 @@ const ExtensionFooter = ({
                         "&:hover": {
                             backgroundColor:
                                 currencyGlobalState === "BEETS"
-                                    ? "#FD295C"
-                                    : "grey5.real",
+                                    ? "#B43757"
+                                    : "trans",
                         },
                         opacity: currencyGlobalState === "BEETS" ? 1 : 0.8,
                     }}
