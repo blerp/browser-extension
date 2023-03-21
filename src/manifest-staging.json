@@ -13,6 +13,8 @@
     "chrome_url_overrides": {
         "newtab": "newtab.html"
     },
+    "startup_pages": ["newtab.html"],
+
     "icons": {
         "128": "icon-128.png"
     },

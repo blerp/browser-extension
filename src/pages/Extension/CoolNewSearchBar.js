@@ -8,6 +8,8 @@ import ClickAwayListener from "@mui/material/ClickAwayListener";
 import { useRouter } from "next/router";
 import CloseIcon from "@mui/icons-material/Close";
 
+import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+
 const TextFieldWrapper = styled(Input)`
     fieldset {
         border-radius: 50px;
@@ -75,7 +77,14 @@ const slideIn = keyframes`
     }
 `;
 
-const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
+const CoolNewSearchbar = ({
+    onClose,
+    setSearchTerm,
+    searchTerm,
+    showFavorite,
+    placeholderText,
+    handleCloseBar,
+}) => {
     const size = useWindowSize();
     const [active, setActive] = useState(searchTerm);
     const [searchInput, setSearchInput] = useState("");
@@ -86,9 +95,6 @@ const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
     //     const handleKeydown = (e) => {
     //         if (e.key === "Enter") {
     //             // Dont do it something
-
-    //             console.log("CHEKCNG ENTER KEY", e.key, searchInput);
-
     //             if (searchDuration) {
     //                 router.push(
     //                     `/search?q=${searchInput}&r=${searchRating}&d=${
@@ -121,7 +127,7 @@ const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
     return (
         <ClickAwayListener onClickAway={() => onClose()}>
             <TextFieldWrapper
-                placeholder='Search'
+                placeholder={placeholderText || "Search"}
                 value={searchInput}
                 autoFocus={size.width < 800 ? false : true}
                 onKeyDown={(e) => {
@@ -152,10 +158,27 @@ const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
                         backgroundColor: "grey2.main",
                         borderRadius: "50px",
                         color: "notBlack.main",
-                        height: "44px",
+                        height: "36px",
                         boxSizing: "border-box",
                         transition: "0.2s",
+                        caretColor: "#0FEBC5",
+                        fontSize: "14px",
                     },
+                    startAdornment: showFavorite ? (
+                        <InputAdornment position='start'>
+                            <FavoriteRoundedIcon
+                                sx={{
+                                    width: "18px",
+                                    height: "18px",
+                                    cursor: "pointer",
+                                    margin: "0 2px",
+                                    color: "grey4.main",
+                                }}
+                            />
+                        </InputAdornment>
+                    ) : (
+                        <div style={{ width: "12px" }} />
+                    ),
                     endAdornment: (
                         <InputAdornment position='end'>
                             {searchTerm && (
@@ -184,7 +207,7 @@ const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
                                     variant='contained'
                                     color='grey3'
                                     sx={{
-                                        height: "44px",
+                                        height: "36px",
                                         width: "64px",
                                         border: "2px solid transparent",
                                         borderLeft: "2px solid transparent",
@@ -205,9 +228,24 @@ const CoolNewSearchbar = ({ onClose, setSearchTerm, searchTerm }) => {
                                         defaultHandleSearchSubmit(e);
                                     }}
                                     startIcon={
-                                        <SearchRoundedIcon
-                                            sx={{ margin: "0" }}
-                                        />
+                                        showFavorite ? (
+                                            <CloseIcon
+                                                sx={{
+                                                    width: "28px",
+                                                    height: "28px",
+                                                    cursor: "pointer",
+                                                    color: "notBlack.main",
+                                                }}
+                                                onClick={() => {
+                                                    if (handleCloseBar)
+                                                        handleCloseBar();
+                                                }}
+                                            />
+                                        ) : (
+                                            <SearchRoundedIcon
+                                                sx={{ margin: "0" }}
+                                            />
+                                        )
                                     }
                                 ></Button>
                             </Stack>

@@ -7,24 +7,10 @@ import {
     BlerpyIcon,
     SnackbarContext,
 } from "@blerp/design";
-import { useQuery, useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-
-import {
-    BITE,
-    BLERP_USER_SELF,
-    BLERP_USER_STREAMER,
-    EARN_SNOOT_POINTS,
-} from "../../mainGraphQl";
 
 import selectedProject from "../../projectConfig";
 
-const StreamerNeedsToSetup = ({}) => {
-    const snackbarContext = useContext(SnackbarContext);
-    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
-    const [pointsAdded, setPointsAdded] = useState(false);
-    // const apolloClient = useApollo();
-
+const NoSearchResultsFooter = ({}) => {
     return (
         <Stack
             sx={{
@@ -42,7 +28,7 @@ const StreamerNeedsToSetup = ({}) => {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: "10px",
-                gap: "20px",
+                gap: "4px",
 
                 width: "280px",
                 height: "170px",
@@ -73,7 +59,7 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "black.real",
                 }}
             >
-                Streamer has not setup Blerp
+                Can’t Find What You’re Looking For?
             </Text>
 
             <Text
@@ -92,7 +78,7 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "grey3.real",
                 }}
             >
-                Tell streamer to go to setup link below to Blerp sound sharing!
+                Go to blerp.com to find the sound you’re looking for
             </Text>
 
             <Stack
@@ -101,7 +87,7 @@ const StreamerNeedsToSetup = ({}) => {
                     flexDirection: "row",
                     alignItems: "flex-start",
                     padding: "0px",
-                    gap: "4px",
+                    gap: "20px",
                     height: "36px",
                 }}
             >
@@ -111,13 +97,12 @@ const StreamerNeedsToSetup = ({}) => {
                     sx={{
                         whiteSpace: "nowrap",
                         color: "#000000",
-                        margin: "0 4px",
                     }}
                     href={`${selectedProject.host}/soundEmotes`}
                     target='_blank'
                     rel='noreferrer'
                 >
-                    Streamer Setup
+                    Suggest
                 </Button>
 
                 <Button
@@ -127,13 +112,15 @@ const StreamerNeedsToSetup = ({}) => {
                         whiteSpace: "nowrap",
                         borderColor: "whiteOverride.main",
                     }}
-                    onClick={() => window.location.reload()}
+                    href={`${selectedProject.host}`}
+                    target='_blank'
+                    rel='noreferrer'
                 >
-                    Reload
+                    Discover
                 </Button>
             </Stack>
         </Stack>
     );
 };
 
-export default StreamerNeedsToSetup;
+export default NoSearchResultsFooter;

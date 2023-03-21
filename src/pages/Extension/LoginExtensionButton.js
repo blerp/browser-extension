@@ -28,9 +28,7 @@ const COMPLETE_SIGN_UP = gql`
 const LoginExtensionButton = ({}) => {
     const apolloClient = useApollo();
     const [completeLogin] = useMutation(COMPLETE_SIGN_UP);
-
     const [completedLoginClicked, setShowCompleteLogin] = useState(false);
-
     const snackbarContext = useContext(SnackbarContext);
 
     return (

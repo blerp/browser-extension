@@ -6,7 +6,7 @@ import selectedProject from "../../projectConfig";
 import gql from "graphql-tag";
 import { useQuery } from "@apollo/client";
 import { useApollo } from "../../networking/apolloClient";
-import LoginScreen from "./LoginScreen";
+import UserLoginScreen from "../Extension/UserLoginScreen";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -17,13 +17,18 @@ import {
 } from "../../globalCache";
 import BlerpModal from "../Extension/BlerpModal";
 import ChatPopUpButton from "../Extension/ChatPopUpButton";
-import { BLERP_USER_SELF } from "../../mainGraphQl";
+import { BLERP_USER_SELF, BLERP_USER_STREAMER } from "../../mainGraphQl";
 import EllipsisLoader from "../Extension/EllipsisLoader";
 import UserProfile from "../Extension/UserProfile";
 
 const HOME_PAGE_POPUP = gql`
+    ${BLERP_USER_STREAMER}
     ${BLERP_USER_SELF}
-    query getRandomBite {
+    query viewerBrowserExtensionPopup(
+        $userId: MongoID
+        $youtubeChannelId: String
+        $twitchUsername: String
+    ) {
         browserExtension {
             biteRandomOne {
                 _id
@@ -33,24 +38,14 @@ const HOME_PAGE_POPUP = gql`
             userSignedIn {
                 ...UserFragment
             }
-        }
-    }
-`;
-
-function eraseCookie({ name, sDomain, sPath }) {
-    document.cookie =
-        name +
-        "=; Max-Age=-99999999;" +
-        "expires=Thu, 01 Jan 1970 00:00:01 GMT;" +
-        (sDomain ? "; domain=" + sDomain : "") +
-        (sPath ? "; path=" + sPath : "");
-}
-
-const LOG_OUT_QUERY = gql`
-    query websiteLogout {
-        web {
-            userSignOut {
-                complete
+            currentStreamerPage(
+                userId: $userId
+                youtubeChannelId: $youtubeChannelId
+                twitchUsername: $twitchUsername
+            ) {
+                streamerBlerpUser {
+                    ...BlerpStreamerFragment
+                }
             }
         }
     }
@@ -62,7 +57,13 @@ const Popup = () => {
     const [twitchUsername, setTwitchUsername] = useState(null);
 
     const { loading, data, error, refetch } = useQuery(HOME_PAGE_POPUP, {
-        variables: {},
+        variables: {
+            userId: null,
+            youtubeChannelId:
+                currentPlatform === "YOUTUBE" ? youtubeChannelId : null,
+            twitchUsername:
+                currentPlatform === "TWITCH" ? twitchUsername : null,
+        },
         errorPolicy: "all",
     });
 
@@ -73,6 +74,8 @@ const Popup = () => {
     const [showPopup, setShowPopup] = useState();
 
     const signedInUser = data?.browserExtension?.userSignedIn;
+    const currentStreamerBlerpUser =
+        data?.browserExtension?.currentStreamerPage?.streamerBlerpUser;
 
     React.useEffect(() => {
         getStreamerInfo()
@@ -92,7 +95,7 @@ const Popup = () => {
         }
 
         if (!signedInUser) {
-            return <LoginScreen refetchAll={refetch} />;
+            return <UserLoginScreen refetchAll={refetch} />;
         }
 
         switch (tabState) {
@@ -112,7 +115,6 @@ const Popup = () => {
                             <Stack
                                 sx={{
                                     display: "flex",
-                                    // width: "100%",
                                     flexDirection: "row",
                                     alignItems: "center",
                                     justifyContent: "center",
@@ -170,6 +172,7 @@ const Popup = () => {
                                 />
                             )}
                         </Stack>
+
                         <Button
                             href={`${selectedProject.host}/soundboard-browser-extension`}
                             target='_blank'
@@ -208,6 +211,7 @@ const Popup = () => {
                         >
                             Check Token
                         </Button> */}
+
                         <Button
                             target='_blank'
                             rel='noreferrer'
@@ -219,6 +223,7 @@ const Popup = () => {
                         >
                             Open Modal
                         </Button>
+
                         <Button
                             // href={`${selectedProject.host}/tradeBeets`}
                             // target='_blank'
@@ -277,6 +282,7 @@ const Popup = () => {
                     <>
                         <UserProfile
                             userSignedIn={signedInUser}
+                            currentStreamerBlerpUser={currentStreamerBlerpUser}
                             refetchAll={refetch}
                         />
                     </>
@@ -297,6 +303,7 @@ const Popup = () => {
                     alignItems: "center",
                     borderRadius: "0 0 16px 16px",
                     alignSelf: "center",
+                    backgroundColor: "grey7.real",
                 }}
             >
                 <img
@@ -328,7 +335,7 @@ const Popup = () => {
 
             <Stack
                 sx={{
-                    backgroundColor: "grey7.real",
+                    backgroundColor: "grey8.real",
                     height: "100%",
                 }}
             >

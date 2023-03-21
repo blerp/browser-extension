@@ -13,16 +13,22 @@ import {
     SnackbarContext,
 } from "@blerp/design";
 
+import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+
 import selectedProject from "../../projectConfig";
 import BlerpModal from "./BlerpModal";
 import BlerpModalShare from "./BlerpModalShare";
+import BlerpModalScreen from "./BlerpModalScreen";
 
 import CloseIcon from "@mui/icons-material/Close";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
 
 import ExtensionRoot from "./ExtensionRoot";
+import ExtensionFooter from "./ExtensionFooter";
 
 import ChannelPointsCollector from "./ChannelPointsCollector";
 
@@ -35,6 +41,8 @@ import {
 } from "../../mainGraphQl";
 import StreamerNeedsToSetup from "./StreamerNeedsToSetup";
 import UserProfile from "./UserProfile";
+
+import CoolNewSearchBar from "./CoolNewSearchBar";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -61,6 +69,11 @@ const VIEWER_BROWSER_EXTENSION = gql`
     }
 `;
 
+const capitalizeFirstLetter = (string) => {
+    if (!string) return "";
+    return string.charAt(0).toUpperCase() + string.slice(1);
+};
+
 const ChatPopUpButton = ({
     userId,
     youtubeChannelId,
@@ -85,7 +98,10 @@ const ChatPopUpButton = ({
     const [searchTerm, setSearchTerm] = useState("");
 
     const [isOpen, setIsOpen] = useState(false);
+    const [showSearch, setShowSearch] = useState("");
     const [tabState, setTabState] = useState("HOME");
+    const [currencyGlobalState, setCurrencyGlobal] = useState("BEETS");
+
     const [activeBlerp, setActiveBlerp] = useState(null);
 
     const [pointsAdded, setPointsAdded] = useState(false);
@@ -359,33 +375,441 @@ const ChatPopUpButton = ({
     };
 
     const renderBlerpNav = () => {
+        if (activeBlerp) {
+            return (
+                <Stack
+                    sx={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        justifyContent: "space-around",
+                        position: "relative",
+                        backgroundColor: "grey7.real",
+                        width: "100%",
+                        minHeight: "44px",
+                        padding: "2px 0",
+                    }}
+                >
+                    <Stack
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <ChevronLeftRoundedIcon
+                            sx={{
+                                width: "32px",
+                                height: "32px",
+                                cursor: "pointer",
+                                color: "notBlack.main",
+                                marginRight: "4px",
+                            }}
+                            onClick={() => {
+                                setActiveBlerp(null);
+                            }}
+                        />
+
+                        <Text
+                            sx={{
+                                fontSize: "18px",
+                                lineHeight: "130%",
+                                letterSpacing: "0.1em",
+                                fontWeight: "600",
+                                color: "white.override",
+                                margin: "2px",
+                                height: "24px",
+                                width: "198px",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                            }}
+                        >
+                            {activeBlerp?.title}
+                        </Text>
+                    </Stack>
+
+                    <MoreVertRoundedIcon
+                        sx={{
+                            width: "28px",
+                            height: "28px",
+                            cursor: "pointer",
+                            color: "notBlack.main",
+                            marginRight: "8px",
+                        }}
+                        onClick={() => {
+                            setTabState("HOME");
+                        }}
+                    />
+
+                    <CloseIcon
+                        sx={{
+                            width: "28px",
+                            height: "28px",
+                            cursor: "pointer",
+                            color: "notBlack.main",
+                            marginRight: "8px",
+                        }}
+                        onClick={handleClose}
+                    />
+                </Stack>
+            );
+        }
+
+        switch (tabState) {
+            case "PROFILE":
+                return (
+                    <Stack
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-around",
+                            position: "relative",
+                            backgroundColor: "grey7.real",
+                            width: "100%",
+                            minHeight: "44px",
+                            padding: "2px 0",
+                        }}
+                    >
+                        <Stack
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <ChevronLeftRoundedIcon
+                                sx={{
+                                    width: "32px",
+                                    height: "32px",
+                                    cursor: "pointer",
+                                    color: "notBlack.main",
+                                    marginRight: "4px",
+                                }}
+                                onClick={() => {
+                                    setTabState("HOME");
+                                }}
+                            />
+
+                            <Text
+                                sx={{
+                                    fontSize: "18px",
+                                    lineHeight: "130%",
+                                    letterSpacing: "0.1em",
+                                    fontWeight: "600",
+                                    color: "white.override",
+                                    margin: "2px",
+                                    height: "24px",
+                                    width: "198px",
+                                    overflow: "hidden",
+                                    textOverflow: "ellipsis",
+                                }}
+                            >
+                                Profile
+                            </Text>
+                        </Stack>
+                        {/* <SearchRoundedIcon
+                            sx={{
+                                width: "28px",
+                                height: "28px",
+                                cursor: "pointer",
+                                color: "notBlack.main",
+                                marginRight: "8px",
+                            }}
+                            onClick={() => {
+                            }}
+                        /> */}
+
+                        <MoreVertRoundedIcon
+                            sx={{
+                                width: "28px",
+                                height: "28px",
+                                cursor: "pointer",
+                                color: "notBlack.main",
+                                marginRight: "8px",
+                            }}
+                            onClick={() => {
+                                setTabState("HOME");
+                            }}
+                        />
+                    </Stack>
+                );
+            case "FAVES":
+                return (
+                    <Stack
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            position: "relative",
+                            backgroundColor: "grey7.real",
+                            width: "100%",
+                            minHeight: "44px",
+                            padding: "2px 0",
+                        }}
+                    >
+                        <Stack
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                            }}
+                        >
+                            <ChevronLeftRoundedIcon
+                                sx={{
+                                    width: "28px",
+                                    height: "28px",
+                                    cursor: "pointer",
+                                    color: "notBlack.main",
+                                    marginLeft: "8px",
+                                }}
+                                onClick={() => {
+                                    setTabState("HOME");
+                                }}
+                            />
+
+                            {showSearch ? (
+                                <Stack
+                                    sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        width: "100%",
+                                    }}
+                                >
+                                    <Stack
+                                        sx={{
+                                            width: "96%",
+                                        }}
+                                    >
+                                        <CoolNewSearchBar
+                                            setSearchTerm={setSearchTerm}
+                                            searchTerm={searchTerm}
+                                            onClose={() => {
+                                                setShowSearch(false);
+                                            }}
+                                            handleCloseBar={() => {
+                                                setShowSearch(false);
+                                            }}
+                                            showFavorite={true}
+                                            placeholderText='Search'
+                                        />
+                                    </Stack>
+                                </Stack>
+                            ) : (
+                                <Text
+                                    sx={{
+                                        fontSize: "18px",
+                                        lineHeight: "130%",
+                                        letterSpacing: "0.1em",
+                                        fontWeight: "600",
+                                        color: "white.override",
+                                        margin: "2px",
+                                        height: "24px",
+                                        width: "198px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                    }}
+                                >
+                                    Favorites
+                                </Text>
+                            )}
+                        </Stack>
+
+                        <Stack
+                            sx={{
+                                display: "flex",
+                                flexDirection: "row",
+                                alignItems: "center",
+                            }}
+                        >
+                            {showSearch ? (
+                                <></>
+                            ) : (
+                                <SearchRoundedIcon
+                                    sx={{
+                                        width: "28px",
+                                        height: "28px",
+                                        cursor: "pointer",
+                                        color: "notBlack.main",
+                                        marginRight: "8px",
+                                    }}
+                                    onClick={() => {
+                                        setShowSearch(true);
+                                    }}
+                                />
+                            )}
+
+                            <MoreVertRoundedIcon
+                                sx={{
+                                    width: "28px",
+                                    height: "28px",
+                                    cursor: "pointer",
+                                    color: "notBlack.main",
+                                    marginRight: "8px",
+                                }}
+                                onClick={() => {
+                                    setTabState("HOME");
+                                }}
+                            />
+                        </Stack>
+                    </Stack>
+                );
+            case "HOME":
+            default:
+                return (
+                    <Stack
+                        sx={{
+                            display: "flex",
+                            flexDirection: "row",
+                            alignItems: "center",
+                            justifyContent: "space-around",
+                            position: "relative",
+                            backgroundColor: "grey7.real",
+                            width: "100%",
+                            minHeight: "44px",
+                            padding: "2px 0",
+                        }}
+                    >
+                        <Stack
+                            sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: "100%",
+                            }}
+                        >
+                            <Stack
+                                sx={{
+                                    width: "96%",
+                                }}
+                            >
+                                <CoolNewSearchBar
+                                    setSearchTerm={setSearchTerm}
+                                    searchTerm={searchTerm}
+                                    onClose={() => {}}
+                                    placeholderText={`${capitalizeFirstLetter(
+                                        currentStreamerBlerpUser?.username,
+                                    )} Sounds`}
+                                />
+                            </Stack>
+                        </Stack>
+
+                        <CloseIcon
+                            sx={{
+                                width: "28px",
+                                height: "28px",
+                                cursor: "pointer",
+                                color: "notBlack.main",
+                                marginRight: "8px",
+                            }}
+                            onClick={handleClose}
+                        />
+                    </Stack>
+                );
+        }
+    };
+
+    const renderOnlineBanner = () => {
+        if (!currentStreamerBlerpUser) {
+            return <></>;
+        }
+
         return (
             <Stack
+                direction='row'
                 sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    position: "relative",
-                    backgroundColor: "grey7.real",
+                    backgroundColor: currentStreamerBlerpUser?.browserOnline
+                        ? "seafoam.main"
+                        : "ibisRed.main",
                     width: "100%",
-                    minHeight: "40px",
-                    padding: "2px 0",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "24px",
+                    margin: "6px 0",
+                    cursor: "pointer",
+                }}
+                onClick={async () => {
+                    await refetch();
                 }}
             >
-                {renderBlerpBasket()}
-                <CloseIcon
+                <Text
                     sx={{
-                        position: "absolute",
-                        width: "20px",
-                        height: "20px",
-                        top: "12px",
-                        right: "12px",
-                        cursor: "pointer",
-                        color: "notBlack.main",
+                        fontSize: "10px",
+                        fontWeight: "300",
+                        color: "notBlack.override",
                     }}
-                    onClick={handleClose}
-                />
+                >
+                    Sharing to{" "}
+                    <Text
+                        sx={{
+                            color: "notBlack.override",
+                            fontSize: "10px",
+                            cursor: "pointer",
+                            fontWeight: "600",
+                            display: "inline",
+
+                            "&:hover": {
+                                color: "buntingBlue.main",
+                            },
+                        }}
+                        onClick={() => {
+                            window.open(
+                                `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
+                                "_blank",
+                            );
+                        }}
+                    >
+                        {currentStreamerBlerpUser?.username}
+                    </Text>{" "}
+                    stream!
+                </Text>
+
+                {currentStreamerBlerpUser?.browserOnline ? (
+                    <Text
+                        sx={{
+                            fontSize: "10px",
+                            fontWeight: "300",
+                            color: "notBlack.override",
+                            margin: "2px",
+                        }}
+                    >
+                        - Online
+                    </Text>
+                ) : (
+                    <Text
+                        sx={{
+                            fontSize: "10px",
+                            fontWeight: "300",
+                            color: "notBlack.override",
+                            margin: "2px",
+                        }}
+                    >
+                        - Offline
+                    </Text>
+                )}
+
+                {/* 
+            <Text
+                sx={{
+                    textDecoration: "underline",
+                    cursor: "pointer",
+                    "&:hover": { opacity: 0.7 },
+                    fontSize: "10px",
+                    color: "notBlack.override",
+                }}
+                onClick={() => {
+                    window.open(
+                        `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
+                        "_blank",
+                    );
+                }}
+            >
+                or share sounds here
+            </Text> */}
             </Stack>
         );
     };
@@ -399,104 +823,6 @@ const ChatPopUpButton = ({
             case "HOME":
                 return (
                     <>
-                        {renderBlerpNav()}
-
-                        {currentStreamerBlerpUser && (
-                            <Stack
-                                direction='row'
-                                sx={{
-                                    backgroundColor:
-                                        currentStreamerBlerpUser?.browserOnline
-                                            ? "seafoam.main"
-                                            : "ibisRed.main",
-                                    width: "100%",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "24px",
-                                    margin: "6px 0",
-                                    cursor: "pointer",
-                                }}
-                                onClick={async () => {
-                                    await refetch();
-                                }}
-                            >
-                                <Text
-                                    sx={{
-                                        fontSize: "10px",
-                                        fontWeight: "300",
-                                        color: "notBlack.override",
-                                    }}
-                                >
-                                    Sharing to{" "}
-                                    <Text
-                                        sx={{
-                                            color: "notBlack.override",
-                                            fontSize: "10px",
-                                            cursor: "pointer",
-                                            fontWeight: "600",
-                                            display: "inline",
-
-                                            "&:hover": {
-                                                color: "buntingBlue.main",
-                                            },
-                                        }}
-                                        onClick={() => {
-                                            window.open(
-                                                `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
-                                                "_blank",
-                                            );
-                                        }}
-                                    >
-                                        {currentStreamerBlerpUser?.username}
-                                    </Text>{" "}
-                                    stream!
-                                </Text>
-
-                                {currentStreamerBlerpUser?.browserOnline ? (
-                                    <Text
-                                        sx={{
-                                            fontSize: "10px",
-                                            fontWeight: "300",
-                                            color: "notBlack.override",
-                                            margin: "2px",
-                                        }}
-                                    >
-                                        - Online
-                                    </Text>
-                                ) : (
-                                    <Text
-                                        sx={{
-                                            fontSize: "10px",
-                                            fontWeight: "300",
-                                            color: "notBlack.override",
-                                            margin: "2px",
-                                        }}
-                                    >
-                                        - Offline
-                                    </Text>
-                                )}
-
-                                {/* 
-                            <Text
-                                sx={{
-                                    textDecoration: "underline",
-                                    cursor: "pointer",
-                                    "&:hover": { opacity: 0.7 },
-                                    fontSize: "10px",
-                                    color: "notBlack.override",
-                                }}
-                                onClick={() => {
-                                    window.open(
-                                        `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
-                                        "_blank",
-                                    );
-                                }}
-                            >
-                                or share sounds here
-                            </Text> */}
-                            </Stack>
-                        )}
-
                         {!!anchorEl && (
                             <ExtensionRoot
                                 activeBlerp={activeBlerp}
@@ -506,8 +832,13 @@ const ChatPopUpButton = ({
                                 blerpSoundEmotesStreamer={
                                     currentStreamerBlerpUser?.soundEmotesObject
                                 }
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
                                 refetching={loading}
-                                showSaved={false}
+                                showFavorites={false}
+                                setCurrencyGlobal={setCurrencyGlobal}
+                                currencyGlobalState={currencyGlobalState}
                             />
                         )}
                     </>
@@ -516,85 +847,6 @@ const ChatPopUpButton = ({
             case "FAVES":
                 return (
                     <>
-                        {renderBlerpNav()}
-
-                        {currentStreamerBlerpUser && (
-                            <Stack
-                                direction='row'
-                                sx={{
-                                    backgroundColor:
-                                        currentStreamerBlerpUser?.browserOnline
-                                            ? "seafoam.main"
-                                            : "ibisRed.main",
-                                    width: "100%",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    height: "24px",
-                                    margin: "6px 0",
-                                    cursor: "pointer",
-                                }}
-                                onClick={async () => {
-                                    await refetch();
-                                }}
-                            >
-                                <Text
-                                    sx={{
-                                        fontSize: "10px",
-                                        fontWeight: "300",
-                                        color: "notBlack.override",
-                                    }}
-                                >
-                                    Sharing to{" "}
-                                    <Text
-                                        sx={{
-                                            color: "notBlack.override",
-                                            fontSize: "10px",
-                                            cursor: "pointer",
-                                            fontWeight: "600",
-                                            display: "inline",
-
-                                            "&:hover": {
-                                                color: "buntingBlue.main",
-                                            },
-                                        }}
-                                        onClick={() => {
-                                            window.open(
-                                                `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
-                                                "_blank",
-                                            );
-                                        }}
-                                    >
-                                        {currentStreamerBlerpUser?.username}
-                                    </Text>{" "}
-                                    stream!
-                                </Text>
-
-                                {currentStreamerBlerpUser?.browserOnline ? (
-                                    <Text
-                                        sx={{
-                                            fontSize: "10px",
-                                            fontWeight: "300",
-                                            color: "notBlack.override",
-                                            margin: "2px",
-                                        }}
-                                    >
-                                        - Online
-                                    </Text>
-                                ) : (
-                                    <Text
-                                        sx={{
-                                            fontSize: "10px",
-                                            fontWeight: "300",
-                                            color: "notBlack.override",
-                                            margin: "2px",
-                                        }}
-                                    >
-                                        - Offline
-                                    </Text>
-                                )}
-                            </Stack>
-                        )}
-
                         {!!anchorEl && (
                             <ExtensionRoot
                                 activeBlerp={activeBlerp}
@@ -604,55 +856,29 @@ const ChatPopUpButton = ({
                                 blerpSoundEmotesStreamer={
                                     currentStreamerBlerpUser?.soundEmotesObject
                                 }
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
                                 refetching={loading}
-                                showSaved={true}
+                                showFavorites={true}
                             />
                         )}
                     </>
                 );
 
-            case "SETTINGS":
+            case "PROFILE":
                 return (
-                    <>
-                        {renderBlerpNav()}
-
-                        {/* <Button
-                            variant='contained'
-                            color='starling'
-                            sx={{
-                                padding: "2px 8px",
-                                cursor: "pointer",
-                                fontSize: "1em",
-                                width: "160px",
-                                marginTop: "12px",
-                            }}
-                            onClick={() => {
-                                setIsOpen(true);
-                            }}
-                        >
-                            <ChannelPointsIcon
-                                sx={{
-                                    width: "24px",
-                                    height: "24px",
-                                    padding: "4px",
-                                }}
-                            />
-                            Modal Open
-                        </Button> */}
-
-                        <Stack
-                            sx={{
-                                overflowY: "scroll",
-                            }}
-                        >
-                            <UserProfile
-                                userSignedIn={signedInUser}
-                                refetchAll={refetch}
-                            />
-                        </Stack>
-
-                        {/* <StreamerNeedsToSetup /> */}
-                    </>
+                    <Stack
+                        sx={{
+                            overflowY: "scroll",
+                        }}
+                    >
+                        <UserProfile
+                            userSignedIn={signedInUser}
+                            refetchAll={refetch}
+                            currentStreamerBlerpUser={currentStreamerBlerpUser}
+                        />
+                    </Stack>
                 );
             case "DEFAULT":
                 return <></>;
@@ -662,8 +888,8 @@ const ChatPopUpButton = ({
     return (
         <Stack
             sx={{
-                cursor: "pointer",
                 padding: "4px",
+                position: "relative",
             }}
         >
             <Button
@@ -705,7 +931,7 @@ const ChatPopUpButton = ({
                         flexDirection: "column",
                         alignItems: "center",
                         justifyContent: "flex-start",
-                        backgroundColor: "grey7.real",
+                        backgroundColor: "grey8.real",
                         minWidth: "320px",
                         minHeight: "320px",
                         height: "100%",
@@ -721,8 +947,80 @@ const ChatPopUpButton = ({
                                 ?.standardMS
                         }
                     />
-                    {renderTabPage()}
 
+                    {renderBlerpNav()}
+
+                    {activeBlerp ? (
+                        <BlerpModalScreen
+                            activeBlerp={activeBlerp}
+                            setActiveBlerp={setActiveBlerp}
+                            isOpen={activeBlerp?._id}
+                            blerpStreamer={currentStreamerBlerpUser}
+                            userSignedIn={signedInUser}
+                            refetchAll={async () => {
+                                await refetch();
+                            }}
+                            activeSearchQuery={searchTerm}
+                            beetBasket={
+                                signedInUser &&
+                                signedInUser.userWallet &&
+                                signedInUser.userWallet
+                            }
+                            pointsBasket={
+                                currentStreamerBlerpUser &&
+                                currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                                currentStreamerBlerpUser.loggedInChannelPointBasket
+                            }
+                        />
+                    ) : (
+                        renderTabPage()
+                    )}
+
+                    <ExtensionFooter
+                        setTabState={(tabState) => {
+                            setTabState(tabState);
+                            setShowSearch(false);
+                        }}
+                        tabState={tabState}
+                        setCurrencyGlobal={setCurrencyGlobal}
+                        currencyGlobalState={currencyGlobalState}
+                        userSignedIn={signedInUser}
+                    />
+                </Stack>
+            </Popover>
+
+            {/* 
+            <BlerpModalShare
+                activeBlerp={activeBlerp}
+                setActiveBlerp={setActiveBlerp}
+                isOpen={activeBlerp?._id}
+                blerpStreamer={currentStreamerBlerpUser}
+                userSignedIn={signedInUser}
+                refetchAll={async () => {
+                    await refetch();
+                }}
+                activeSearchQuery={searchTerm}
+                beetBasket={
+                    signedInUser &&
+                    signedInUser.userWallet &&
+                    signedInUser.userWallet
+                }
+                pointsBasket={
+                    currentStreamerBlerpUser &&
+                    currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                    currentStreamerBlerpUser.loggedInChannelPointBasket
+                }
+            /> */}
+
+            <BlerpModal setIsOpen={setIsOpen} isOpen={isOpen} />
+        </Stack>
+    );
+};
+
+export default ChatPopUpButton;
+
+{
+    /* 
                     <Tabs
                         value={tabState}
                         onChange={(e, newValue) => {
@@ -742,12 +1040,12 @@ const ChatPopUpButton = ({
                             margin: "0 auto",
                             backgroundColor: "#000",
                             width: "100%",
-                            height: "40px",
+                            height: "44px",
                             minHeight: "0px",
                             borderRadius: false ? "0px" : "0 0 0 0",
 
                             "& .MuiTabs-flexContainer": {
-                                height: "40px",
+                                height: "44px",
                             },
                             "& .MuiTabs-indicator": {
                                 backgroundColor: "notBlack.main",
@@ -885,66 +1183,5 @@ const ChatPopUpButton = ({
                                         : "rgba(255,255,255,0.5)",
                             }}
                         />
-
-                        {/* {!showSearchBar && (
-                    <ImageOverview
-                        onClick={() => {
-                            setShowSearchBar(false);
-                            setShowViewerSideBar(!showViewerSideBar);
-                        }}
-                    >
-                        <PendingSuggestionsDot
-                            style={{
-                                top: "3px",
-                                left: "",
-                                right: "3px",
-                                width: "7px",
-                                height: "7px",
-                                backgroundColor: "ibisRed.main",
-                            }}
-                        />
-                        <DragHandleIcon
-                            sx={{
-                                fontSize: "32px",
-                                padding: "4px",
-                                cursor: "pointer",
-                                color: showSearchBar
-                                    ? "white.override"
-                                    : "notBlack.main",
-                                "&:hover": { color: "grey4.main" },
-                            }}
-                        />
-                    </ImageOverview>
-                )} */}
-                    </Tabs>
-                </Stack>
-            </Popover>
-
-            <BlerpModalShare
-                activeBlerp={activeBlerp}
-                setActiveBlerp={setActiveBlerp}
-                isOpen={activeBlerp?._id}
-                blerpStreamer={currentStreamerBlerpUser}
-                userSignedIn={signedInUser}
-                refetchAll={async () => {
-                    await refetch();
-                }}
-                activeSearchQuery={searchTerm}
-                beetBasket={
-                    signedInUser &&
-                    signedInUser.userWallet &&
-                    signedInUser.userWallet
-                }
-                pointsBasket={
-                    currentStreamerBlerpUser &&
-                    currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                    currentStreamerBlerpUser.loggedInChannelPointBasket
-                }
-            />
-
-            <BlerpModal setIsOpen={setIsOpen} isOpen={isOpen} />
-        </Stack>
-    );
-};
-
-export default ChatPopUpButton;
+                    </Tabs> */
+}

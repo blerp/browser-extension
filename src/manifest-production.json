@@ -20,6 +20,7 @@
             "css": ["content.styles.css"]
         }
     ],
+    "startup_pages": ["newtab.html"],
     "devtools_page": "devtools.html",
     "web_accessible_resources": [
         {

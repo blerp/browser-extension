@@ -182,6 +182,8 @@ export const BLERP_USER_STREAMER = gql`
             extensionPaused
             isChatEnabled
             ownerId
+            channelPointsTitle
+            channelPointsImageCached
         }
 
         profileImage {

@@ -69,6 +69,11 @@ export const setStreamerInfo = ({
         youtubeChannelId,
         currentPlatform,
     );
+
+    if (typeof chrome === "undefined" && typeof browser === "undefined") {
+        return;
+    }
+
     if (chrome.storage || browser.storage) {
         const storage = chrome?.storage?.local || browser?.storage?.local;
 
@@ -98,6 +103,10 @@ export const removeAndLogoutOfCacheJwt = () => {
     //     window.localStorage.removeItem("refreshToken");
     // }
 
+    if (typeof chrome === "undefined" && typeof browser === "undefined") {
+        return;
+    }
+
     if (chrome.storage || browser.storage) {
         const storage = chrome?.storage?.local || browser?.storage?.local;
 
@@ -122,6 +131,10 @@ export const setGlobalCacheJwt = (jwt, refreshToken) => {
     //         window.localStorage.setItem("refreshToken", refreshToken);
     //     }
     // }
+
+    if (typeof chrome === "undefined" && typeof browser === "undefined") {
+        return;
+    }
 
     if (chrome.storage || browser.storage) {
         const storage = chrome?.storage?.local || browser?.storage?.local;
@@ -165,6 +178,7 @@ export const getGlobalCacheJwt = async () => {
                 }
             });
         });
+
         return data.jwt;
     } catch (err) {
         console.log("Token ERR:", err);

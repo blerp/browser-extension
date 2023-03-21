@@ -4,7 +4,6 @@ import { ApolloProvider } from "@apollo/client";
 import { initializeApolloSync } from "./networking/apolloClient";
 
 function WithBlerp({ Component, pageProps, initialState = {} }) {
-    console.log("WITHBLER_PAGE_PROPS", pageProps);
     const client = initializeApolloSync(initialState);
 
     return (

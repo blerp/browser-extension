@@ -6,6 +6,8 @@ import {
     Text,
     BlerpyIcon,
     SnackbarContext,
+    Tooltip,
+    DiscordIcon,
 } from "@blerp/design";
 import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
@@ -22,6 +24,9 @@ import EllipsisLoader from "./EllipsisLoader";
 import selectedProject from "../../projectConfig";
 import { removeAndLogoutOfCacheJwt } from "../../globalCache";
 import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
+import UserBeetsWallet from "./UserBeetsWallet";
+import UserChannelPointsBasket from "./UserChannelPointsBasket";
+import UserLoginScreen from "./UserLoginScreen";
 
 const LOG_OUT_QUERY = gql`
     query websiteLogout {
@@ -42,7 +47,11 @@ function eraseCookie({ name, sDomain, sPath }) {
         (sPath ? "; path=" + sPath : "");
 }
 
-const UserProfile = ({ userSignedIn, refetchAll }) => {
+const UserProfile = ({
+    userSignedIn,
+    refetchAll,
+    currentStreamerBlerpUser,
+}) => {
     const snackbarContext = useContext(SnackbarContext);
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
@@ -73,33 +82,8 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
         }
     };
 
-    if (!userSignedIn) {
-        return (
-            <Stack
-                sx={{
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "space-around",
-                    mt: "12px",
-                }}
-            >
-                <Button
-                    variant='ouline'
-                    href={`${
-                        selectedProject.host
-                    }/login?returnTo=${`/soundboard-browser-extension`}`}
-                    target='_blank'
-                    rel='noreferrer'
-                    sx={{
-                        margin: "8px 12px 8px 16px",
-                    }}
-                >
-                    <Text sx={{ color: "white", fontSize: "3vh" }}>
-                        Login to See Profile
-                    </Text>
-                </Button>
-            </Stack>
-        );
+    if (false) {
+        return <UserLoginScreen />;
     }
 
     return (
@@ -113,20 +97,30 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 mt: "12px",
             }}
         >
-            <Stack width='80%' sx={{ margin: "8px" }}>
+            <Stack width='80%' sx={{ margin: "8px", alignSelf: "flex-start" }}>
                 <Stack
                     direction='row'
                     sx={{
                         alignItems: "center",
-                        justifyContent: "center",
+                        justifyContent: "flex-start",
                         width: "100%",
+                        cursor: "pointer",
+                        "&:hover": {
+                            opacity: 0.8,
+                        },
+                    }}
+                    onClick={() => {
+                        window.open(
+                            `${selectedProject?.host}/u/${userSignedIn?.username}`,
+                            "_blank",
+                        );
                     }}
                 >
                     {userSignedIn.profileImage && (
                         <img
                             style={{
-                                width: "60px",
-                                height: "60px",
+                                width: "40px",
+                                height: "40px",
                                 marginRight: "10px",
                                 borderRadius: "100px",
                             }}
@@ -145,7 +139,7 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                             maxWidth: "460px",
                             textOverflow: "ellipsis",
                             overflow: "hidden",
-                            fontSize: "3vh",
+                            fontSize: "24px",
                         }}
                     >
                         {userSignedIn.username &&
@@ -154,61 +148,88 @@ const UserProfile = ({ userSignedIn, refetchAll }) => {
                 </Stack>
             </Stack>
 
-            <Button
-                variant='outlined'
-                color='whiteOverride'
+            <UserBeetsWallet userSignedIn={userSignedIn} />
+
+            <UserChannelPointsBasket
+                userSignedIn={userSignedIn}
+                currentStreamerBlerpUser={currentStreamerBlerpUser}
+            />
+
+            <Stack
+                direction='row'
                 sx={{
-                    whiteSpace: "nowrap",
-                    margin: "8px",
+                    width: "100%",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    mt: "12px",
                 }}
-                startIcon={
-                    <OpenInNewRoundedIcon
-                        style={{ fontSize: "2vh" }}
-                        sx={{
-                            color: "whiteOverride.main",
-                            fontSize: "2vh",
-                        }}
-                    />
-                }
-                onClick={() => {
-                    window.open(
-                        `${selectedProject?.host}/u/${userSignedIn.username}`,
-                        "_blank",
-                    );
-                }}
-                target='_blank'
             >
-                <Text
-                    fontColor='notBlack'
-                    style={{
-                        fontSize: "2vh",
+                <Button
+                    variant='text'
+                    color='whiteOverride'
+                    sx={{
+                        whiteSpace: "nowrap",
+                        margin: "8px",
                     }}
-                >
-                    {"View Account"}
-                </Text>
-            </Button>
-
-            <Button
-                variant='text'
-                color='whiteOverride'
-                sx={{ marginTop: "12px", fontSize: "2vh" }}
-                onClick={async () => {
-                    try {
-                        setLoggingOut(true);
-
-                        await logOut();
-                        if (refetchAll) await refetchAll();
-
-                        setLoggingOut(false);
-                    } catch (err) {
-                        setLoggingOut(false);
-                        console.log("Logging out error", err);
+                    startIcon={
+                        <DiscordIcon
+                            style={{ fontSize: "16px" }}
+                            sx={{
+                                color: "whiteOverride.main",
+                                fontSize: "16px",
+                            }}
+                        />
                     }
-                }}
-                target='_blank'
-            >
-                {loggingOut ? "Logging Out" : "Logout"}
-            </Button>
+                    onClick={() => {
+                        window.open(`https://discord.gg/zsa7nSdx6X`, "_blank");
+                    }}
+                    target='_blank'
+                >
+                    <Text
+                        fontColor='notBlack'
+                        style={{
+                            fontSize: "16px",
+                            fontWeight: "600",
+                        }}
+                    >
+                        {"Help Center"}
+                    </Text>
+                </Button>
+
+                <Button
+                    variant='outlined'
+                    color='whiteOverride'
+                    sx={{
+                        whiteSpace: "nowrap",
+                        margin: "8px",
+                        borderColor: "whiteOverride.main",
+                    }}
+                    onClick={async () => {
+                        try {
+                            setLoggingOut(true);
+
+                            await logOut();
+                            if (refetchAll) await refetchAll();
+
+                            setLoggingOut(false);
+                        } catch (err) {
+                            setLoggingOut(false);
+                            console.log("Logging out error", err);
+                        }
+                    }}
+                    target='_blank'
+                >
+                    <Text
+                        fontColor='notBlack'
+                        style={{
+                            fontSize: "16px",
+                            fontWeight: "600",
+                        }}
+                    >
+                        {loggingOut ? "Logging Out" : "Log Out"}
+                    </Text>
+                </Button>
+            </Stack>
         </Stack>
     );
 };
