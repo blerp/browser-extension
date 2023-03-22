@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Box, Tab, Tabs, Stack } from "@mui/material";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
+import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
+
 import styled from "styled-components";
 
 const CurrencyTab = styled(Box)`
@@ -33,13 +35,11 @@ const ExtensionFooter = ({
     const beets = 50;
 
     const handleIconClick = (state) => {
-        setTabState(state);
-
-        // if (tabState === state) {
-        //     setTabState("HOME");
-        // } else {
-        //     setTabState(state);
-        // }
+        if (tabState === state) {
+            setTabState("HOME");
+        } else {
+            setTabState(state);
+        }
     };
 
     const handleCurrencyChange = (event, newValue) => {
@@ -75,10 +75,14 @@ const ExtensionFooter = ({
                 {userSignedIn?.profileImage ? (
                     <ImageStyle
                         style={{
-                            width: "28px",
-                            height: "28px",
+                            width: "26px",
+                            height: "26px",
                             borderRadius: "100px",
                             cursor: "pointer",
+                            boxShadow:
+                                tabState !== "PROFILE"
+                                    ? "0px 4px 0px -1px rgba(0,0,0,0)"
+                                    : "0px 4px 0px -1px rgba(0,0,0,1)",
                         }}
                         src={
                             userSignedIn.profileImage &&
@@ -90,11 +94,15 @@ const ExtensionFooter = ({
                 ) : (
                     <Stack
                         sx={{
-                            width: "28px",
-                            height: "28px",
+                            width: "26px",
+                            height: "26px",
                             borderRadius: "100px",
                             backgroundColor: "grey4.real",
                             cursor: "pointer",
+                            boxShadow:
+                                tabState !== "PROFILE"
+                                    ? "0px 4px 0px -1px rgba(0,0,0,0)"
+                                    : "0px 4px 0px -1px rgba(0,0,0,1)",
                             "&:hover": {
                                 opacity: 0.7,
                             },
@@ -102,18 +110,33 @@ const ExtensionFooter = ({
                         onClick={() => handleIconClick("PROFILE")}
                     />
                 )}
-                <FavoriteRoundedIcon
-                    sx={{
-                        width: "28px",
-                        height: "28px",
-                        cursor: "pointer",
-                        margin: "0 8px",
-                        "&:hover": {
-                            opacity: 0.7,
-                        },
-                    }}
-                    onClick={() => handleIconClick("FAVES")}
-                />
+                {tabState === "FAVES" ? (
+                    <FavoriteRoundedIcon
+                        sx={{
+                            width: "28px",
+                            height: "28px",
+                            cursor: "pointer",
+                            margin: "0 8px",
+                            "&:hover": {
+                                opacity: 0.7,
+                            },
+                        }}
+                        onClick={() => handleIconClick("FAVES")}
+                    />
+                ) : (
+                    <FavoriteBorderRoundedIcon
+                        sx={{
+                            width: "28px",
+                            height: "28px",
+                            cursor: "pointer",
+                            margin: "0 8px",
+                            "&:hover": {
+                                opacity: 0.7,
+                            },
+                        }}
+                        onClick={() => handleIconClick("FAVES")}
+                    />
+                )}
             </Box>
 
             <Stack

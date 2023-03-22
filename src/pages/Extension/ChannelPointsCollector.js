@@ -11,9 +11,8 @@ import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
 import { useApollo } from "../../networking/apolloClient";
-import { BITE } from "../../mainGraphQl";
-
 import {
+    BITE,
     BLERP_USER_SELF,
     BLERP_USER_STREAMER,
     EARN_SNOOT_POINTS,
@@ -87,14 +86,7 @@ const ChannelPointsCollector = ({
     }, [intervalMs, loading]);
 
     return (
-        <Stack
-            sx={{
-                height: "100%",
-                display: "flex",
-                alignItems: "flex-start",
-                padding: "0 4px 4px",
-            }}
-        >
+        <Stack sx={{}}>
             {pointsAdded && (
                 <Text sx={{ color: "seafoam.main", fontSize: "18px" }}>
                     +{pointsAdded} points

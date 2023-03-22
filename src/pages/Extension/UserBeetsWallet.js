@@ -75,6 +75,7 @@ const UserProfile = ({
                                 sx: {
                                     width: "500px",
                                     backgroundColor: "notBlack.override",
+                                    zIndex: 11,
                                 },
                             },
                         }}

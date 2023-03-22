@@ -87,6 +87,7 @@ const GET_FEATURED_LIST_SOUND_EMOTES = gql`
         $streamerId: MongoID!
         $showSaved: Boolean
         $sortOverride: String
+        $searchTerm: String
     ) {
         browserExtension {
             soundEmotesFeaturedContentPagination(
@@ -95,6 +96,7 @@ const GET_FEATURED_LIST_SOUND_EMOTES = gql`
                 userId: $streamerId
                 showSavedOnly: $showSaved
                 sortOverride: $sortOverride
+                searchQuery: $searchTerm
             ) {
                 count
                 items {
@@ -263,9 +265,9 @@ const SearchPage = ({
             page: 1,
             perPage: PER_PAGE,
             streamerId: blerpSoundEmotesStreamer?.ownerId,
-            fetchPolicy: "network-only",
             showUserContent: showFavorites,
         },
+        fetchPolicy: "network-only",
     });
 
     if (loading) {
@@ -516,7 +518,7 @@ const FeaturedPageNew = ({
     activeBlerp,
     searchTerm,
     blerpSoundEmotesStreamer,
-    showSaved,
+    showSavedOnly,
     currencyGlobalState,
     userSignedIn,
 }) => {
@@ -536,6 +538,7 @@ const FeaturedPageNew = ({
             page: 1,
             perPage: PER_PAGE,
             streamerId: blerpSoundEmotesStreamer?.ownerId,
+            showSaved: showSavedOnly,
             sortOverride: featuredSort?.value, // make sure to only pass in if it's not null
         },
         fetchPolicy: "network-only",
@@ -660,16 +663,16 @@ const ExtensionRoot = ({
         >
             {!blerpSoundEmotesStreamer && !searchTerm ? (
                 showFavorites ? (
-                    <NoSearchResultsFavorites {...pageProps} />
+                    <StreamerNeedsToSetup {...pageProps} />
                 ) : (
                     <StreamerNeedsToSetup {...pageProps} />
                 )
             ) : showFavorites ? (
-                <SearchPage {...pageProps} />
+                <FeaturedPageNew {...pageProps} showSavedOnly={true} />
             ) : searchTerm && searchTerm.length ? (
                 <SearchPage {...pageProps} />
             ) : (
-                <FeaturedPageNew {...pageProps} />
+                <FeaturedPageNew {...pageProps} showSavedOnly={false} />
             )}
         </Stack>
     );

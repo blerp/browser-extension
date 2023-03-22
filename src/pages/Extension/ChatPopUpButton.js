@@ -40,9 +40,14 @@ import {
     EARN_SNOOT_POINTS,
 } from "../../mainGraphQl";
 import StreamerNeedsToSetup from "./StreamerNeedsToSetup";
+import StreamerBlocked from "./StreamerBlocked";
+
 import UserProfile from "./UserProfile";
 
 import CoolNewSearchBar from "./CoolNewSearchBar";
+
+import StreamerPaused from "./StreamerPaused";
+import EllipsisLoader from "./EllipsisLoader";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -103,6 +108,7 @@ const ChatPopUpButton = ({
     const [currencyGlobalState, setCurrencyGlobal] = useState("BEETS");
 
     const [activeBlerp, setActiveBlerp] = useState(null);
+    const [hideStreamerPaused, setHideStreamerPaused] = useState(false);
 
     const [pointsAdded, setPointsAdded] = useState(false);
 
@@ -119,6 +125,7 @@ const ChatPopUpButton = ({
     const handleClose = () => {
         setSearchTerm("");
         setAnchorEl(null);
+        setHideStreamerPaused(false);
     };
 
     const open = Boolean(anchorEl);
@@ -827,30 +834,6 @@ const ChatPopUpButton = ({
 
         switch (tabState) {
             case "HOME":
-                return (
-                    <>
-                        {!!anchorEl && (
-                            <ExtensionRoot
-                                activeBlerp={activeBlerp}
-                                setActiveBlerp={setActiveBlerp}
-                                searchTerm={searchTerm}
-                                setSearchTerm={setSearchTerm}
-                                blerpSoundEmotesStreamer={
-                                    currentStreamerBlerpUser?.soundEmotesObject
-                                }
-                                currentStreamerBlerpUser={
-                                    currentStreamerBlerpUser
-                                }
-                                refetching={loading}
-                                showFavorites={false}
-                                setCurrencyGlobal={setCurrencyGlobal}
-                                currencyGlobalState={currencyGlobalState}
-                                userSignedIn={signedInUser}
-                            />
-                        )}
-                    </>
-                );
-
             case "FAVES":
                 return (
                     <>
@@ -867,7 +850,10 @@ const ChatPopUpButton = ({
                                     currentStreamerBlerpUser
                                 }
                                 refetching={loading}
-                                showFavorites={true}
+                                showFavorites={tabState === "FAVES"}
+                                userSignedIn={signedInUser}
+                                setCurrencyGlobal={setCurrencyGlobal}
+                                currencyGlobalState={currencyGlobalState}
                             />
                         )}
                     </>
@@ -889,6 +875,106 @@ const ChatPopUpButton = ({
                 );
             case "DEFAULT":
                 return <></>;
+        }
+    };
+
+    const renderMainPage = () => {
+        // return (
+        //     <StreamerBlocked
+        //         currentStreamerBlerpUser={currentStreamerBlerpUser}
+        //     />
+        // );
+
+        if (loading) {
+            return <EllipsisLoader />;
+        }
+
+        switch (signedInUser?.isBanned) {
+            case true:
+                return (
+                    <StreamerBlocked
+                        currentStreamerBlerpUser={currentStreamerBlerpUser}
+                    />
+                );
+            case false:
+            default:
+                return (
+                    <Stack
+                        sx={{
+                            display: "flex",
+                            width: "100%",
+                            flexDirection: "column",
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            backgroundColor: "grey8.real",
+                            minWidth: "320px",
+                            minHeight: "320px",
+                            height: "100%",
+                        }}
+                    >
+                        <ChannelPointsCollector
+                            blerpStreamer={currentStreamerBlerpUser}
+                            onTriggerSuccess={() => {}}
+                            onTriggerFail={() => {}}
+                            isStreaming={isStreaming}
+                            intervalMs={
+                                currentStreamerBlerpUser
+                                    ?.loggedInChannelPointBasket?.standardMS
+                            }
+                        />
+
+                        {renderBlerpNav()}
+
+                        {!hideStreamerPaused && (
+                            <StreamerPaused
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
+                                handleClose={() => {
+                                    setHideStreamerPaused(true);
+                                }}
+                            />
+                        )}
+
+                        {activeBlerp ? (
+                            <BlerpModalScreen
+                                currencyGlobalState={currencyGlobalState}
+                                activeBlerp={activeBlerp}
+                                setActiveBlerp={setActiveBlerp}
+                                isOpen={activeBlerp?._id}
+                                blerpStreamer={currentStreamerBlerpUser}
+                                userSignedIn={signedInUser}
+                                refetchAll={async () => {
+                                    await refetch();
+                                }}
+                                activeSearchQuery={searchTerm}
+                                beetBasket={
+                                    signedInUser &&
+                                    signedInUser.userWallet &&
+                                    signedInUser.userWallet
+                                }
+                                pointsBasket={
+                                    currentStreamerBlerpUser &&
+                                    currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                                    currentStreamerBlerpUser.loggedInChannelPointBasket
+                                }
+                            />
+                        ) : (
+                            renderTabPage()
+                        )}
+
+                        <ExtensionFooter
+                            setTabState={(tabState) => {
+                                setTabState(tabState);
+                                setShowSearch(false);
+                            }}
+                            tabState={tabState}
+                            setCurrencyGlobal={setCurrencyGlobal}
+                            currencyGlobalState={currencyGlobalState}
+                            userSignedIn={signedInUser}
+                        />
+                    </Stack>
+                );
         }
     };
 
@@ -931,72 +1017,18 @@ const ChatPopUpButton = ({
                 }}
                 style={{ zIndex: 100000 }}
             >
-                <Stack
-                    sx={{
-                        display: "flex",
-                        width: "100%",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        backgroundColor: "grey8.real",
-                        minWidth: "320px",
-                        minHeight: "320px",
-                        height: "100%",
-                    }}
-                >
-                    <ChannelPointsCollector
-                        blerpStreamer={currentStreamerBlerpUser}
-                        onTriggerSuccess={() => {}}
-                        onTriggerFail={() => {}}
-                        isStreaming={isStreaming}
-                        intervalMs={
-                            currentStreamerBlerpUser?.loggedInChannelPointBasket
-                                ?.standardMS
-                        }
-                    />
-
-                    {renderBlerpNav()}
-
-                    {activeBlerp ? (
-                        <BlerpModalScreen
-                            activeBlerp={activeBlerp}
-                            setActiveBlerp={setActiveBlerp}
-                            isOpen={activeBlerp?._id}
-                            blerpStreamer={currentStreamerBlerpUser}
-                            userSignedIn={signedInUser}
-                            refetchAll={async () => {
-                                await refetch();
-                            }}
-                            activeSearchQuery={searchTerm}
-                            beetBasket={
-                                signedInUser &&
-                                signedInUser.userWallet &&
-                                signedInUser.userWallet
-                            }
-                            pointsBasket={
-                                currentStreamerBlerpUser &&
-                                currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                                currentStreamerBlerpUser.loggedInChannelPointBasket
-                            }
-                        />
-                    ) : (
-                        renderTabPage()
-                    )}
-
-                    <ExtensionFooter
-                        setTabState={(tabState) => {
-                            setTabState(tabState);
-                            setShowSearch(false);
-                        }}
-                        tabState={tabState}
-                        setCurrencyGlobal={setCurrencyGlobal}
-                        currencyGlobalState={currencyGlobalState}
-                        userSignedIn={signedInUser}
-                    />
-                </Stack>
+                {renderMainPage()}
             </Popover>
 
-            {/* 
+            <BlerpModal setIsOpen={setIsOpen} isOpen={isOpen} />
+        </Stack>
+    );
+};
+
+export default ChatPopUpButton;
+
+{
+    /* 
             <BlerpModalShare
                 activeBlerp={activeBlerp}
                 setActiveBlerp={setActiveBlerp}
@@ -1017,14 +1049,8 @@ const ChatPopUpButton = ({
                     currentStreamerBlerpUser.loggedInChannelPointBasket &&
                     currentStreamerBlerpUser.loggedInChannelPointBasket
                 }
-            /> */}
-
-            <BlerpModal setIsOpen={setIsOpen} isOpen={isOpen} />
-        </Stack>
-    );
-};
-
-export default ChatPopUpButton;
+            /> */
+}
 
 {
     /* 

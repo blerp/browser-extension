@@ -97,51 +97,7 @@ const GET_RANDOM_BITE = gql`
     }
 `;
 
-const ModalContainer = styled.div`
-    box-sizing: border-box;
-    * {
-        box-sizing: border-box;
-    }
-    position: relative;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    align-content: center;
-    justify-content: center;
-    max-width: fit-content;
-    padding: 30px 40px;
-    margin: auto;
-    border-radius: 12px;
-
-    @media (max-width: 800px) {
-        justify-content: start;
-        max-height: 90%;
-        padding: 12px;
-        margin: 0 auto;
-        overflow: scroll;
-        width: 80%;
-
-        .plansContainer {
-            flex-wrap: wrap;
-        }
-    }
-
-    @media (max-width: 600px) {
-        width: 90%;
-
-        .subscriptionProsContainer {
-            flex-direction: column;
-            width: 100%;
-        }
-
-        .subscriptionProsItem {
-            width: 100%;
-        }
-    }
-`;
-
-const BlerpModalShare = ({
+const BlerpModalScreen = ({
     isOpen,
     setActiveBlerp,
     activeBlerp,
@@ -153,7 +109,11 @@ const BlerpModalShare = ({
 
     beetBasket,
     pointsBasket,
+    currencyGlobalState,
 }) => {
+    const [localCurrencyType, setLocalCurrencyType] =
+        useState(currencyGlobalState);
+
     const { loading, data, error } = useQuery(GET_RANDOM_BITE, {
         variables: {},
     });
@@ -436,8 +396,8 @@ const BlerpModalShare = ({
                 >
                     <Stack
                         sx={{
-                            margin: "12px",
-                            width: "160px",
+                            margin: "0",
+                            width: "100px",
                         }}
                     >
                         {activeBlerp?.audio?.mp3?.url && (
@@ -653,7 +613,102 @@ const BlerpModalShare = ({
                         </Button>
                     )}
 
-                    {!showShared && (
+                    {true ? (
+                        <Stack
+                            direction='row'
+                            sx={{
+                                borderRadius: "4px",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                alignItems: "center",
+                                overflow: "hidden",
+                                justifyContent: "center",
+                                zIndex: 3,
+                            }}
+                        >
+                            <Stack
+                                direction='row'
+                                sx={{
+                                    backgroundColor: "#B43757",
+                                    height: "24px",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                onClick={() => {
+                                    setLocalCurrencyType("BEETS");
+                                }}
+                            >
+                                <img
+                                    src='https://cdn.blerp.com/design/browser-extension/beet.svg'
+                                    style={{
+                                        width: "16px",
+                                        height: "16px",
+                                        paddingRight: "4px",
+                                    }}
+                                />
+
+                                {localCurrencyType === "BEETS" && (
+                                    <Text
+                                        sx={{
+                                            color: "white",
+                                            textAlign: "center",
+                                            fontSize: "18px",
+                                            paddingRight: "4px",
+                                        }}
+                                    >
+                                        {
+                                            activeBlerp?.soundEmotesContext
+                                                ?.beetAmount
+                                        }
+                                    </Text>
+                                )}
+                            </Stack>
+
+                            <Stack
+                                direction='row'
+                                sx={{
+                                    backgroundColor: "grey6.main",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "24px",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                onClick={() => {
+                                    setLocalCurrencyType("POINTS");
+                                }}
+                            >
+                                <img
+                                    src='https://cdn.blerp.com/design/browser-extension/cp_2.svg'
+                                    style={{
+                                        width: "16px",
+                                        height: "16px",
+                                        paddingLeft: "4px",
+                                    }}
+                                />
+
+                                {localCurrencyType === "POINTS" && (
+                                    <Text
+                                        sx={{
+                                            color: "white",
+                                            textAlign: "center",
+                                            fontSize: "18px",
+                                            paddingLeft: "4px",
+                                        }}
+                                    >
+                                        {
+                                            activeBlerp?.soundEmotesContext
+                                                ?.channelPointsAmount
+                                        }
+                                    </Text>
+                                )}
+                            </Stack>
+                        </Stack>
+                    ) : (
+                        <></>
+                    )}
+
+                    {/* {!showShared && (
                         <Button
                             onClick={async () => {
                                 setActiveBlerp(null);
@@ -662,11 +717,11 @@ const BlerpModalShare = ({
                         >
                             Cancel
                         </Button>
-                    )}
+                    )} */}
                 </Stack>
             )}
         </Stack>
     );
 };
 
-export default BlerpModalShare;
+export default BlerpModalScreen;

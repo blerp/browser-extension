@@ -50,8 +50,10 @@ const BiteComponent = ({
     currencyGlobalState,
     userSignedIn,
     searchQuery,
+    showSavedIcon = true,
 }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const [savingBlerp, setIsBlerpSaving] = useState(false);
     const [localCurrencyType, setLocalCurrencyType] = useState(
         currencyGlobalState || "BEETS",
     );
@@ -60,11 +62,11 @@ const BiteComponent = ({
     const [saveBlerp] = useMutation(SAVE_BITE);
     const [unsaveBlerp] = useMutation(UNSAVE_BITE);
 
-    useEffect(() => {
-        if (currencyGlobalState) {
-            setLocalCurrencyType(currencyGlobalState);
-        }
-    }, []);
+    // useEffect(() => {
+    //     if (currencyGlobalState) {
+    //         setLocalCurrencyType(currencyGlobalState);
+    //     }
+    // }, []);
 
     if (!bite) {
         return <></>;
@@ -72,6 +74,7 @@ const BiteComponent = ({
 
     const handleSave = async (bite) => {
         try {
+            setIsBlerpSaving(true);
             saveBlerp({
                 variables: {
                     biteId: bite?._id,
@@ -81,6 +84,8 @@ const BiteComponent = ({
                 },
             })
                 .then((res) => {
+                    setIsBlerpSaving(false);
+
                     if (res.data.web.saveBite?.bite?.saved) {
                         snackbarContext.triggerSnackbar({
                             message: "Saved!",
@@ -92,7 +97,9 @@ const BiteComponent = ({
                         });
                     }
                 })
-                .catch((err) => {});
+                .catch((err) => {
+                    setIsBlerpSaving(false);
+                });
         } catch (err) {
             console.log(err);
         }
@@ -100,6 +107,8 @@ const BiteComponent = ({
 
     const handleUnsave = async (bite) => {
         try {
+            setIsBlerpSaving(true);
+
             await unsaveBlerp({
                 variables: {
                     biteId: bite?._id,
@@ -108,14 +117,20 @@ const BiteComponent = ({
                     },
                 },
             }).then((res) => {
-                snackbarContext.triggerSnackbar({
-                    message: "Removed from Saved!",
-                    severity: "success",
-                    position: {
-                        vertical: "bottom",
-                        horizontal: "right",
-                    },
-                });
+                setIsBlerpSaving(false);
+
+                snackbarContext
+                    .triggerSnackbar({
+                        message: "Removed from Saved!",
+                        severity: "success",
+                        position: {
+                            vertical: "bottom",
+                            horizontal: "right",
+                        },
+                    })
+                    .catch((err) => {
+                        setIsBlerpSaving(false);
+                    });
             });
         } catch (err) {
             console.log(err);
@@ -149,64 +164,108 @@ const BiteComponent = ({
                 },
             }}
         >
-            {bite?.saved ? (
-                <FavoriteRoundedIcon
-                    sx={{
-                        position: "absolute",
-                        top: -10,
-                        right: -10,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        borderRadius: "12px",
-                        zIndex: 2,
-                        "&:hover": { opacity: 0.7 },
-                        visibility: bite?.saved ? "visible" : "hidden",
-                    }}
-                    onClick={async (e) => {
-                        e.stopPropagation();
-                        if (!userSignedIn) {
-                            return;
-                        }
+            {showSavedIcon &&
+                (savingBlerp ? (
+                    <FavoriteRoundedIcon
+                        sx={{
+                            position: "absolute",
+                            top: -10,
+                            right: -10,
+                            color: "grey4.real",
+                            borderRadius: "12px",
+                            zIndex: 2,
+                            "&:hover": { opacity: 0.7 },
+                            visibility: bite?.saved ? "visible" : "hidden",
+                        }}
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!userSignedIn) {
+                                snackbarContext.triggerSnackbar({
+                                    message: "You must be logged in!",
+                                    severity: "error",
+                                    position: {
+                                        vertical: "bottom",
+                                        horizontal: "right",
+                                    },
+                                });
+                                return;
+                            }
 
-                        if (bite?.saved) {
-                            await handleUnsave(bite);
-                        } else {
-                            await handleSave(bite);
-                        }
-                    }}
-                />
-            ) : (
-                <FavoriteBorderRoundedIcon
-                    sx={{
-                        position: "absolute",
-                        top: -10,
-                        right: -10,
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                        borderRadius: "12px",
-                        zIndex: 2,
-                        "&:hover": { opacity: 0.7 },
-                        visibility: bite?.saved ? "visible" : "hidden",
-                    }}
-                    onClick={async (e) => {
-                        e.stopPropagation();
-                        if (!userSignedIn) {
-                            return;
-                        }
+                            if (bite?.saved) {
+                                await handleUnsave(bite);
+                            } else {
+                                await handleSave(bite);
+                            }
+                        }}
+                    />
+                ) : bite?.saved ? (
+                    <FavoriteRoundedIcon
+                        sx={{
+                            position: "absolute",
+                            top: -10,
+                            right: -10,
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
+                            borderRadius: "12px",
+                            zIndex: 2,
+                            opacity: savingBlerp ? 0.5 : 1,
+                            "&:hover": { opacity: 0.7 },
+                            visibility: bite?.saved ? "visible" : "hidden",
+                        }}
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!userSignedIn) {
+                                snackbarContext.triggerSnackbar({
+                                    message: "You must be logged in!",
+                                    severity: "error",
+                                    position: {
+                                        vertical: "bottom",
+                                        horizontal: "right",
+                                    },
+                                });
+                                return;
+                            }
 
-                        if (bite?.saved) {
-                            await handleUnsave(bite);
-                        } else {
-                            await handleSave(bite);
-                        }
-                    }}
-                />
-            )}
+                            if (bite?.saved) {
+                                await handleUnsave(bite);
+                            } else {
+                                await handleSave(bite);
+                            }
+                        }}
+                    />
+                ) : (
+                    <FavoriteBorderRoundedIcon
+                        sx={{
+                            position: "absolute",
+                            top: -10,
+                            right: -10,
+                            backgroundColor: "rgba(0, 0, 0, 1)",
+                            borderRadius: "12px",
+                            zIndex: 2,
+                            opacity: savingBlerp ? 0.5 : 1,
+                            "&:hover": { opacity: 0.7 },
+                            visibility: bite?.saved ? "visible" : "hidden",
+                        }}
+                        onClick={async (e) => {
+                            e.stopPropagation();
+                            if (!userSignedIn) {
+                                return;
+                            }
+
+                            if (bite?.saved) {
+                                await handleUnsave(bite);
+                            } else {
+                                await handleSave(bite);
+                            }
+                        }}
+                    />
+                ))}
 
             {bite?.image?.original?.url ? (
                 <Stack
                     sx={{
                         width: "90px",
                         height: "90px",
-                        borderRadius: "12px",
+                        borderRadius: "12px 12px 0 0",
                         position: "relative",
                     }}
                     onClick={() => {
@@ -218,7 +277,7 @@ const BiteComponent = ({
                             width: "100%",
                             height: "100%",
                             backgroundColor: "rgba(0, 0, 0, 0.5)",
-                            borderRadius: "12px",
+                            borderRadius: "12px 12px 0 0",
                             position: "absolute",
                             top: 0,
                             left: 0,
@@ -228,7 +287,7 @@ const BiteComponent = ({
                         style={{
                             width: "100%",
                             height: "100%",
-                            borderRadius: "12px",
+                            borderRadius: "12px 12px 0 0",
                             position: "absolute",
                             top: 0,
                             left: 0,
@@ -241,7 +300,7 @@ const BiteComponent = ({
                     sx={{
                         width: "90px",
                         height: "90px",
-                        borderRadius: "0 0 12px 12px",
+                        borderRadius: "12px 12px 0 0",
                         position: "relative",
                     }}
                 ></Stack>
@@ -266,9 +325,12 @@ const BiteComponent = ({
                         direction='row'
                         sx={{
                             backgroundColor: "#B43757",
+                            height: "24px",
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                         onClick={() => {
-                            setLocalCurrencyType("BEETS");
+                            // setLocalCurrencyType("BEETS");
                         }}
                     >
                         <img
@@ -276,10 +338,11 @@ const BiteComponent = ({
                             style={{
                                 width: "16px",
                                 height: "16px",
+                                paddingRight: "4px",
                             }}
                         />
 
-                        {localCurrencyType === "BEETS" && (
+                        {currencyGlobalState === "BEETS" && (
                             <Text
                                 sx={{
                                     color: "white",
@@ -299,9 +362,12 @@ const BiteComponent = ({
                             backgroundColor: "grey6.main",
                             alignItems: "center",
                             justifyContent: "center",
+                            height: "24px",
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                         onClick={() => {
-                            setLocalCurrencyType("POINTS");
+                            // setLocalCurrencyType("POINTS");
                         }}
                     >
                         <img
@@ -309,16 +375,17 @@ const BiteComponent = ({
                             style={{
                                 width: "16px",
                                 height: "16px",
+                                paddingLeft: "4px",
                             }}
                         />
 
-                        {localCurrencyType === "POINTS" && (
+                        {currencyGlobalState === "POINTS" && (
                             <Text
                                 sx={{
                                     color: "white",
                                     textAlign: "center",
                                     fontSize: "12px",
-                                    paddingLeft: "4px",
+                                    padding: "0 4px",
                                 }}
                             >
                                 {bite?.soundEmotesContext?.channelPointsAmount}
