@@ -75,7 +75,7 @@ const UserProfile = ({
                                 sx: {
                                     width: "500px",
                                     backgroundColor: "notBlack.override",
-                                    zIndex: 11,
+                                    zIndex: 100000,
                                 },
                             },
                         }}
@@ -93,7 +93,7 @@ const UserProfile = ({
                             </>
                         }
                     >
-                        <Button color='grey3' sx={{}}>
+                        <Button color='grey3' sx={{ zIndex: 100000 }}>
                             <HelpRounded sx={{ fontSize: "1.2rem" }} />
                         </Button>
                     </Tooltip>

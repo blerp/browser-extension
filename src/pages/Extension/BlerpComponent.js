@@ -53,6 +53,9 @@ const BiteComponent = ({
     showSavedIcon = true,
 }) => {
     const [isHovered, setIsHovered] = useState(false);
+    const [isHoveredPoints, setIsHoveredPoints] = useState(false);
+    const [isHoveredBeets, setIsHoveredBeets] = useState(false);
+
     const [savingBlerp, setIsBlerpSaving] = useState(false);
     const [localCurrencyType, setLocalCurrencyType] = useState(
         currencyGlobalState || "BEETS",
@@ -142,18 +145,18 @@ const BiteComponent = ({
             className='outer-component'
             key={bite?._id}
             sx={{
-                width: "86px",
-                height: "120px",
+                width: "93px",
+                height: "127px",
                 position: "relative",
-                borderRadius: "12px",
-                margin: "8px 8px 4px",
+                borderRadius: "8px",
+                margin: "4px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                borderColor: "seafoam.main",
-                borderStyle: "solid",
-                borderWidth: activeBlerp?._id === bite?._id ? "8px" : "0px",
+                // borderColor: "seafoam.main",
+                // borderStyle: "solid",
+                // borderWidth: activeBlerp?._id === bite?._id ? "8px" : "0px",
 
                 "&:hover": {
                     opacity: 1,
@@ -169,13 +172,18 @@ const BiteComponent = ({
                     <FavoriteRoundedIcon
                         sx={{
                             position: "absolute",
-                            top: -10,
-                            right: -10,
+                            top: -8,
+                            right: -8,
                             color: "grey4.real",
-                            borderRadius: "12px",
+                            borderRadius: "8px",
                             zIndex: 2,
                             "&:hover": { opacity: 0.7 },
                             visibility: bite?.saved ? "visible" : "hidden",
+
+                            width: "24px",
+                            height: "24px",
+
+                            filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.6))",
                         }}
                         onClick={async (e) => {
                             e.stopPropagation();
@@ -202,14 +210,18 @@ const BiteComponent = ({
                     <FavoriteRoundedIcon
                         sx={{
                             position: "absolute",
-                            top: -10,
-                            right: -10,
-                            backgroundColor: "rgba(0, 0, 0, 0.5)",
-                            borderRadius: "12px",
+                            top: -8,
+                            right: -8,
+                            borderRadius: "8px",
                             zIndex: 2,
                             opacity: savingBlerp ? 0.5 : 1,
                             "&:hover": { opacity: 0.7 },
                             visibility: bite?.saved ? "visible" : "hidden",
+
+                            width: "24px",
+                            height: "24px",
+
+                            filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.6))",
                         }}
                         onClick={async (e) => {
                             e.stopPropagation();
@@ -236,14 +248,17 @@ const BiteComponent = ({
                     <FavoriteBorderRoundedIcon
                         sx={{
                             position: "absolute",
-                            top: -10,
-                            right: -10,
-                            backgroundColor: "rgba(0, 0, 0, 1)",
-                            borderRadius: "12px",
+                            top: -8,
+                            right: -8,
+                            borderRadius: "8px",
                             zIndex: 2,
                             opacity: savingBlerp ? 0.5 : 1,
                             "&:hover": { opacity: 0.7 },
                             visibility: bite?.saved ? "visible" : "hidden",
+                            width: "24px",
+                            height: "24px",
+
+                            filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.6))",
                         }}
                         onClick={async (e) => {
                             e.stopPropagation();
@@ -263,8 +278,8 @@ const BiteComponent = ({
             {bite?.image?.original?.url ? (
                 <Stack
                     sx={{
-                        width: "90px",
-                        height: "90px",
+                        width: "93px",
+                        height: "93px",
                         borderRadius: "12px 12px 0 0",
                         position: "relative",
                     }}
@@ -298,8 +313,8 @@ const BiteComponent = ({
             ) : (
                 <Stack
                     sx={{
-                        width: "90px",
-                        height: "90px",
+                        width: "93px",
+                        height: "93px",
                         borderRadius: "12px 12px 0 0",
                         position: "relative",
                     }}
@@ -328,10 +343,13 @@ const BiteComponent = ({
                             height: "24px",
                             alignItems: "center",
                             justifyContent: "center",
+                            transition: "all 0.2s ease-in-out",
                         }}
                         onClick={() => {
                             // setLocalCurrencyType("BEETS");
                         }}
+                        onMouseEnter={() => setIsHoveredBeets(true)}
+                        onMouseLeave={() => setIsHoveredBeets(false)}
                     >
                         <img
                             src='https://cdn.blerp.com/design/browser-extension/beet.svg'
@@ -339,58 +357,67 @@ const BiteComponent = ({
                                 width: "16px",
                                 height: "16px",
                                 paddingRight: "4px",
+                                paddingLeft: "2px",
                             }}
                         />
 
-                        {currencyGlobalState === "BEETS" && (
-                            <Text
-                                sx={{
-                                    color: "white",
-                                    textAlign: "center",
-                                    fontSize: "12px",
-                                    paddingRight: "4px",
-                                }}
-                            >
-                                {bite?.soundEmotesContext?.beetAmount}
-                            </Text>
-                        )}
+                        {(currencyGlobalState === "BEETS" || isHoveredBeets) &&
+                            !isHoveredPoints && (
+                                <Text
+                                    sx={{
+                                        color: "white",
+                                        textAlign: "center",
+                                        fontSize: "12px",
+                                        paddingRight: "4px",
+                                        transition: "all 0.2s ease-in-out",
+                                    }}
+                                >
+                                    {bite?.soundEmotesContext?.beetAmount}
+                                </Text>
+                            )}
                     </Stack>
 
                     <Stack
                         direction='row'
                         sx={{
-                            backgroundColor: "grey6.main",
+                            backgroundColor: "grey6.real",
                             alignItems: "center",
                             justifyContent: "center",
                             height: "24px",
                             alignItems: "center",
                             justifyContent: "center",
+                            transition: "all 0.2s ease-in-out",
                         }}
-                        onClick={() => {
-                            // setLocalCurrencyType("POINTS");
-                        }}
+                        onClick={() => {}}
+                        onMouseEnter={() => setIsHoveredPoints(true)}
+                        onMouseLeave={() => setIsHoveredPoints(false)}
                     >
                         <img
-                            src='https://cdn.blerp.com/design/browser-extension/cp_2.svg'
+                            src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
                             style={{
                                 width: "16px",
                                 height: "16px",
                                 paddingLeft: "4px",
+                                paddingRight: "2px",
                             }}
                         />
 
-                        {currencyGlobalState === "POINTS" && (
-                            <Text
-                                sx={{
-                                    color: "white",
-                                    textAlign: "center",
-                                    fontSize: "12px",
-                                    padding: "0 4px",
-                                }}
-                            >
-                                {bite?.soundEmotesContext?.channelPointsAmount}
-                            </Text>
-                        )}
+                        {(currencyGlobalState === "POINTS" ||
+                            isHoveredPoints) &&
+                            !isHoveredBeets && (
+                                <Text
+                                    sx={{
+                                        color: "white",
+                                        textAlign: "center",
+                                        fontSize: "12px",
+                                        padding: "0 4px",
+                                        transition: "all 0.2s ease-in-out",
+                                    }}
+                                >
+                                    {bite?.soundEmotesContext
+                                        ?.channelPointsAmount || 0}
+                                </Text>
+                            )}
                     </Stack>
                 </Stack>
             ) : (
@@ -401,8 +428,8 @@ const BiteComponent = ({
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 sx={{
-                    paddingTop: "1em",
-                    height: "1.75em",
+                    paddingTop: "4px",
+                    height: "32px",
                     width: "100%",
                     overflow: "hidden",
                     position: "relative",
@@ -419,9 +446,9 @@ const BiteComponent = ({
                     sx={{
                         color: "white",
                         textAlign: "left",
-                        fontSize: "11px",
+                        fontSize: "12px",
                         textOverflow: "ellipsis",
-                        lineHeight: "1.75em",
+                        lineHeight: "38px",
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         transition: "transform 3s linear",
@@ -429,6 +456,7 @@ const BiteComponent = ({
                             ? "translateX(-100%)"
                             : "translateX(0%)",
                         padding: "0 6px",
+                        fontWeight: "300",
                     }}
                 >
                     {bite?.title}

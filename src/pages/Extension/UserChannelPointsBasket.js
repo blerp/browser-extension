@@ -102,7 +102,7 @@ const UserChannelPointsBasket = ({
                                 sx: {
                                     width: "500px",
                                     backgroundColor: "notBlack.override",
-                                    zIndex: 11,
+                                    zIndex: 10000,
                                 },
                             },
                         }}
@@ -120,7 +120,7 @@ const UserChannelPointsBasket = ({
                             </>
                         }
                     >
-                        <Button color='grey3' sx={{}}>
+                        <Button color='grey3' sx={{ zIndex: 100000 }}>
                             <HelpRounded sx={{ fontSize: "1.2rem" }} />
                         </Button>
                     </Tooltip>

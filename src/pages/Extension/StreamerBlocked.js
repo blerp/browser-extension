@@ -35,7 +35,7 @@ const SAD_TROMBONE = gql`
     }
 `;
 
-const StreamerBlocked = ({ currentStreamerBlerpUser }) => {
+const StreamerBlocked = ({ currentStreamerBlerpUser, refetchAll }) => {
     const snackbarContext = useContext(SnackbarContext);
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
@@ -81,6 +81,9 @@ const StreamerBlocked = ({ currentStreamerBlerpUser }) => {
                     margin: "0 auto",
                     width: "100px",
                 }}
+                onClick={() => {
+                    if (refetchAll) refetchAll();
+                }}
             >
                 {loading ? (
                     <EllipsisLoader />
@@ -111,7 +114,7 @@ const StreamerBlocked = ({ currentStreamerBlerpUser }) => {
                 You’ve been banned from this channel.
             </Text>
 
-            <Text
+            {/* <Text
                 sx={{
                     width: "260px",
 
@@ -126,7 +129,7 @@ const StreamerBlocked = ({ currentStreamerBlerpUser }) => {
                 }}
             >
                 You can still preview sounds and add them to your favorites.
-            </Text>
+            </Text> */}
 
             <Text
                 sx={{

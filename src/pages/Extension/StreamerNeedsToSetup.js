@@ -30,7 +30,6 @@ const StreamerNeedsToSetup = ({}) => {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                overflowY: "scroll",
                 maxHeight: "200px",
                 alignItems: "center",
                 justifyContent: "center",
@@ -69,7 +68,6 @@ const StreamerNeedsToSetup = ({}) => {
 
                     textAlign: "center",
                     letterSpacing: "0.1em",
-
                     color: "black.real",
                 }}
             >

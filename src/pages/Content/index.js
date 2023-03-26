@@ -1,5 +1,5 @@
 import { createRoot } from "react-dom";
-import ChatPopUpButton from "../Extension/ChatPopUpButton";
+import HomeButton from "../Extension/HomeButton";
 import WithBlerp from "../../WithBlerp";
 import { setGlobalCacheJwt, setStreamerInfo } from "../../globalCache";
 
@@ -99,7 +99,7 @@ let YT_CHAT_BUTTON_CONTAINER;
 
                 TWITCH_CHAT_BUTTON_CONTAINER.render(
                     WithBlerp({
-                        Component: ChatPopUpButton,
+                        Component: HomeButton,
                         pageProps: {
                             userId: null,
                             youtubeChannelId: null,
@@ -150,7 +150,7 @@ let YT_CHAT_BUTTON_CONTAINER;
 
                 TWITCH_NAV_BUTTON_CONTAINER.render(
                     WithBlerp({
-                        Component: ChatPopUpButton,
+                        Component: HomeButton,
                         pageProps: {
                             userId: null,
                             youtubeChannelId: null,
@@ -196,9 +196,9 @@ let YT_CHAT_BUTTON_CONTAINER;
                 }
 
                 YT_NAV_BUTTON_CONTAINER.render(
-                    // <ChatPopUpButton/>
+                    // <HomeButton/>
                     WithBlerp({
-                        Component: ChatPopUpButton,
+                        Component: HomeButton,
                         pageProps: {
                             userId: null,
                             youtubeChannelId: youtubeChannelId,
@@ -258,7 +258,7 @@ let YT_CHAT_BUTTON_CONTAINER;
 
                 YT_CHAT_BUTTON_CONTAINER.render(
                     WithBlerp({
-                        Component: ChatPopUpButton,
+                        Component: HomeButton,
                         pageProps: {
                             userId: null,
                             youtubeChannelId: youtubeChannelId,

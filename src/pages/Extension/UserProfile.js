@@ -82,19 +82,19 @@ const UserProfile = ({
         }
     };
 
-    if (false) {
+    if (!userSignedIn) {
         return <UserLoginScreen />;
     }
 
     return (
         <Stack
             sx={{
-                height: "70%",
+                height: "100%",
                 width: "100%",
                 alignItems: "center",
                 justifyContent: "space-around",
-                overflowY: "scroll",
-                mt: "12px",
+                // overflowY: "scroll",
+                // mt: "12px",
             }}
         >
             <Stack width='80%' sx={{ margin: "8px", alignSelf: "flex-start" }}>

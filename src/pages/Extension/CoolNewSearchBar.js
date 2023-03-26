@@ -5,7 +5,6 @@ import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 import ClickAwayListener from "@mui/material/ClickAwayListener";
-import { useRouter } from "next/router";
 import CloseIcon from "@mui/icons-material/Close";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
@@ -181,7 +180,7 @@ const CoolNewSearchbar = ({
                     ),
                     endAdornment: (
                         <InputAdornment position='end'>
-                            {searchTerm && (
+                            {!showFavorite && searchTerm && (
                                 <CloseRoundedIcon
                                     sx={{
                                         width: "20px",

@@ -76,6 +76,7 @@ const NoSearchResultsFooter = ({}) => {
                     letterSpacing: "0.1em",
 
                     color: "grey3.real",
+                    margin: "4px 0",
                 }}
             >
                 Go to blerp.com to find the sound you’re looking for

@@ -5,12 +5,14 @@ import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded
 
 import styled from "styled-components";
 
+import VolumeSlider from "./VolumeSlider";
+import ChannelPointsCollector from "./ChannelPointsCollector";
+
 const CurrencyTab = styled(Box)`
     display: flex;
     align-items: center;
     border-radius: 8px;
     padding: 0.2rem 0.4rem;
-    cursor: pointer;
 `;
 
 const CurrencyIcon = styled("img")`
@@ -30,10 +32,12 @@ const ExtensionFooter = ({
     setCurrencyGlobal,
     currencyGlobalState,
     userSignedIn,
+    currentStreamerBlerpUser,
+    activeBlerp,
+    volume,
+    setVolume,
+    isStreaming,
 }) => {
-    const points = 100;
-    const beets = 50;
-
     const handleIconClick = (state) => {
         if (tabState === state) {
             setTabState("HOME");
@@ -53,7 +57,7 @@ const ExtensionFooter = ({
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "space-around",
-                position: "absolute",
+                position: "sticky",
                 backgroundColor: "grey7.real",
                 width: "100%",
                 minHeight: "40px",
@@ -110,7 +114,16 @@ const ExtensionFooter = ({
                         onClick={() => handleIconClick("PROFILE")}
                     />
                 )}
-                {tabState === "FAVES" ? (
+                {activeBlerp?._id ? (
+                    <Stack sx={{ margin: "0 8px" }}>
+                        <VolumeSlider
+                            volume={volume}
+                            setVolume={setVolume}
+                            filledColor='white'
+                            backgroundColor='rgba(255, 255, 255, 0.3)'
+                        />
+                    </Stack>
+                ) : tabState === "FAVES" ? (
                     <FavoriteRoundedIcon
                         sx={{
                             width: "28px",
@@ -139,93 +152,169 @@ const ExtensionFooter = ({
                 )}
             </Box>
 
-            <Stack
-                direction='row'
-                spacing={1}
-                sx={{
-                    padding: "4px 4px",
-                    backgroundColor: "rgba(103, 111, 112, 0.6);",
-                    borderRadius: "8px",
-                }}
-            >
-                <CurrencyTab
-                    onClick={(e) => handleCurrencyChange(e, "POINTS")}
-                    selected={currencyGlobalState === "POINTS"}
+            {activeBlerp?._id || tabState === "PROFILE" ? (
+                <Stack
+                    direction='row'
+                    spacing={1}
                     sx={{
-                        boxShadow:
-                            currencyGlobalState === "POINTS"
-                                ? "0px 4px 4px rgba(0, 0, 0, 0.25)"
-                                : "none",
-                        backgroundColor:
-                            currencyGlobalState === "POINTS"
-                                ? "#B43757"
-                                : "transparent",
-
-                        color:
-                            currencyGlobalState === "POINTS"
-                                ? "#fff"
-                                : "grey3.real",
-                        opacity: currencyGlobalState === "POINTS" ? 1 : 0.8,
-
-                        "&:hover": {
-                            backgroundColor:
-                                currencyGlobalState === "POINTS"
-                                    ? "#B43757"
-                                    : "trans",
-                        },
+                        padding: "4px 4px",
+                        backgroundColor: "transparent",
+                        borderRadius: "8px",
                     }}
                 >
-                    <CurrencyIcon
-                        style={{
+                    <CurrencyTab
+                        sx={{
+                            color: "#fff",
+                            opacity: 1,
+                        }}
+                    >
+                        <CurrencyIcon
+                            style={{
+                                color: "#fff",
+                                opacity: 1,
+                            }}
+                            src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
+                        />
+                        {(currentStreamerBlerpUser &&
+                            currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                            currentStreamerBlerpUser.loggedInChannelPointBasket
+                                .points) ||
+                            0}
+                    </CurrencyTab>
+
+                    <CurrencyTab
+                        sx={{
+                            opacity: 1,
+                            color: "#fff",
+                        }}
+                    >
+                        <CurrencyIcon
+                            style={{
+                                color: "#fff",
+                                opacity: 1,
+                            }}
+                            src='https://cdn.blerp.com/design/browser-extension/beet.svg'
+                        />
+                        {(userSignedIn &&
+                            userSignedIn.userWallet &&
+                            userSignedIn.userWallet.beetBalance) ||
+                            0}{" "}
+                    </CurrencyTab>
+                </Stack>
+            ) : (
+                <Stack
+                    direction='row'
+                    spacing={1}
+                    sx={{
+                        padding: "4px 4px",
+                        backgroundColor: "rgba(103, 111, 112, 0.6);",
+                        borderRadius: "8px",
+                    }}
+                >
+                    <CurrencyTab
+                        onClick={(e) => handleCurrencyChange(e, "POINTS")}
+                        selected={currencyGlobalState === "POINTS"}
+                        sx={{
+                            boxShadow:
+                                currencyGlobalState === "POINTS"
+                                    ? "0px 4px 4px rgba(0, 0, 0, 0.25)"
+                                    : "none",
+                            backgroundColor:
+                                currencyGlobalState === "POINTS"
+                                    ? "#474D4F"
+                                    : "transparent",
+
                             color:
                                 currencyGlobalState === "POINTS"
                                     ? "#fff"
                                     : "grey3.real",
                             opacity: currencyGlobalState === "POINTS" ? 1 : 0.8,
-                        }}
-                        src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
-                    />
-                    {points}
-                </CurrencyTab>
 
-                <CurrencyTab
-                    onClick={(e) => handleCurrencyChange(e, "BEETS")}
-                    selected={currencyGlobalState === "BEETS"}
-                    sx={{
-                        boxShadow:
-                            currencyGlobalState === "BEETS"
-                                ? "0px 4px 4px rgba(0, 0, 0, 0.25)"
-                                : "none",
-                        backgroundColor:
-                            currencyGlobalState === "BEETS"
-                                ? "#B43757"
-                                : "trans",
-                        color:
-                            currencyGlobalState === "BEETS"
-                                ? "#fff"
-                                : "grey3.real",
-                        "&:hover": {
+                            "&:hover": {
+                                backgroundColor:
+                                    currencyGlobalState === "POINTS"
+                                        ? "#474D4F"
+                                        : "trans",
+                            },
+                            cursor: "pointer",
+                        }}
+                    >
+                        <CurrencyIcon
+                            style={{
+                                color:
+                                    currencyGlobalState === "POINTS"
+                                        ? "#fff"
+                                        : "grey3.real",
+                                opacity:
+                                    currencyGlobalState === "POINTS" ? 1 : 0.8,
+                            }}
+                            src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
+                        />
+                        {(currentStreamerBlerpUser &&
+                            currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                            currentStreamerBlerpUser.loggedInChannelPointBasket
+                                .points) ||
+                            0}
+                    </CurrencyTab>
+
+                    {!currentStreamerBlerpUser?.soundEmotesObject
+                        ?.channelPointsDisabled && (
+                        <ChannelPointsCollector
+                            blerpStreamer={currentStreamerBlerpUser}
+                            onTriggerSuccess={() => {}}
+                            onTriggerFail={() => {}}
+                            isStreaming={isStreaming}
+                            intervalMs={
+                                currentStreamerBlerpUser
+                                    ?.loggedInChannelPointBasket?.standardMS
+                            }
+                        />
+                    )}
+
+                    <CurrencyTab
+                        onClick={(e) => handleCurrencyChange(e, "BEETS")}
+                        selected={currencyGlobalState === "BEETS"}
+                        sx={{
+                            boxShadow:
+                                currencyGlobalState === "BEETS"
+                                    ? "0px 4px 4px rgba(0, 0, 0, 0.25)"
+                                    : "none",
                             backgroundColor:
                                 currencyGlobalState === "BEETS"
                                     ? "#B43757"
                                     : "trans",
-                        },
-                        opacity: currencyGlobalState === "BEETS" ? 1 : 0.8,
-                    }}
-                >
-                    <CurrencyIcon
-                        style={{
                             color:
                                 currencyGlobalState === "BEETS"
                                     ? "#fff"
                                     : "grey3.real",
+                            "&:hover": {
+                                backgroundColor:
+                                    currencyGlobalState === "BEETS"
+                                        ? "#B43757"
+                                        : "trans",
+                            },
                             opacity: currencyGlobalState === "BEETS" ? 1 : 0.8,
+                            cursor: "pointer",
                         }}
-                        src='https://cdn.blerp.com/design/browser-extension/beet.svg'
-                    />
-                    {beets}
-                </CurrencyTab>
-            </Stack>
+                    >
+                        <CurrencyIcon
+                            style={{
+                                color:
+                                    currencyGlobalState === "BEETS"
+                                        ? "#fff"
+                                        : "grey3.real",
+                                opacity:
+                                    currencyGlobalState === "BEETS" ? 1 : 0.8,
+                            }}
+                            src='https://cdn.blerp.com/design/browser-extension/beet.svg'
+                        />
+                        {(userSignedIn &&
+                            userSignedIn.userWallet &&
+                            userSignedIn.userWallet.beetBalance) ||
+                            0}{" "}
+                    </CurrencyTab>
+                </Stack>
+            )}
         </Box>
     );
 };

@@ -16,7 +16,7 @@ import {
     removeAndLogoutOfCacheJwt,
 } from "../../globalCache";
 import BlerpModal from "../Extension/BlerpModal";
-import ChatPopUpButton from "../Extension/ChatPopUpButton";
+import HomeButton from "../Extension/HomeButton";
 import { BLERP_USER_SELF, BLERP_USER_STREAMER } from "../../mainGraphQl";
 import EllipsisLoader from "../Extension/EllipsisLoader";
 import UserProfile from "../Extension/UserProfile";
@@ -162,7 +162,7 @@ const Popup = () => {
                             </Stack>
 
                             {(twitchUsername || youtubeChannelId) && (
-                                <ChatPopUpButton
+                                <HomeButton
                                     userId={null}
                                     youtubeChannelId={youtubeChannelId}
                                     twitchUsername={twitchUsername}

@@ -11,6 +11,10 @@ import {
     ChannelPointsIcon,
     CogIcon,
     SnackbarContext,
+    Tooltip,
+    Drawer,
+    Menu,
+    MenuItem,
 } from "@blerp/design";
 
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
@@ -26,6 +30,8 @@ import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
 import BookmarkAddRoundedIcon from "@mui/icons-material/BookmarkAddRounded";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import MoreVertRoundedIcon from "@mui/icons-material/MoreVertRounded";
+import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 
 import ExtensionRoot from "./ExtensionRoot";
 import ExtensionFooter from "./ExtensionFooter";
@@ -39,15 +45,16 @@ import {
     BLERP_USER_STREAMER,
     EARN_SNOOT_POINTS,
 } from "../../mainGraphQl";
-import StreamerNeedsToSetup from "./StreamerNeedsToSetup";
 import StreamerBlocked from "./StreamerBlocked";
-
 import UserProfile from "./UserProfile";
 
 import CoolNewSearchBar from "./CoolNewSearchBar";
 
 import StreamerPaused from "./StreamerPaused";
 import EllipsisLoader from "./EllipsisLoader";
+import { EXTENSION_WIDTH_PX, EXTENSION_HEIGHT_PX } from "../../constants";
+import CustomDrawer from "./CustomDrawer";
+import TruncatedText from "./TruncatedText";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -79,13 +86,14 @@ const capitalizeFirstLetter = (string) => {
     return string.charAt(0).toUpperCase() + string.slice(1);
 };
 
-const ChatPopUpButton = ({
+const HomeButton = ({
     userId,
     youtubeChannelId,
     twitchUsername,
     platform,
     optionalButtonText,
     isStreaming,
+    themeMode, // light/dark
 }) => {
     const { loading, data, error, refetch } = useQuery(
         VIEWER_BROWSER_EXTENSION,
@@ -102,9 +110,79 @@ const ChatPopUpButton = ({
 
     const [searchTerm, setSearchTerm] = useState("");
 
+    const [volume, setVolume] = useState(0.8);
+
     const [isOpen, setIsOpen] = useState(false);
     const [showSearch, setShowSearch] = useState("");
     const [tabState, setTabState] = useState("HOME");
+    const [previousTabState, setPreviousTabState] = useState("HOME");
+
+    const [anchorBlerpEl, setAnchorBlerpEl] = useState(null);
+    const [copyText, setCopyText] = useState("Copy Link");
+
+    const handleClickBlerp = (event) => {
+        setAnchorBlerpEl(event.currentTarget);
+    };
+
+    const handleCloseBlerp = () => {
+        setAnchorBlerpEl(null);
+    };
+
+    const handleOpenLink = () => {
+        window.open(
+            `${selectedProject.host}/soundbites/${activeBlerp?._id}`,
+            "_blank",
+        );
+        handleCloseBlerp();
+    };
+
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(
+            `${selectedProject.host}/soundbites/${activeBlerp?._id}`,
+        );
+        setCopyText("Copied!");
+        setTimeout(() => {
+            setCopyText("Copy Link");
+        }, 5000);
+        handleCloseBlerp();
+    };
+
+    const handleOpenUserLink = () => {
+        window.open(
+            `${selectedProject.host}/u/${signedInUser?.username}`,
+            "_blank",
+        );
+        handleCloseUser();
+    };
+
+    const [anchorUserEl, setAnchorUserEl] = useState(null);
+
+    const handleClickUser = (event) => {
+        setAnchorUserEl(event.currentTarget);
+    };
+
+    const handleCloseUser = () => {
+        setAnchorUserEl(null);
+    };
+
+    const handleCopyUserLink = () => {
+        navigator.clipboard.writeText(
+            `${selectedProject.host}/u/${signedInUser?.username}`,
+        );
+        setCopyText("Copied!");
+        setTimeout(() => {
+            setCopyText("Copy Link");
+        }, 5000);
+        handleCloseUser();
+    };
+
+    // create a function that sets the new tab state and the previous tab state to what it used to be
+    const handleTabChange = (newValue) => {
+        setSearchTerm("");
+        setPreviousTabState(tabState);
+        setTabState(newValue);
+    };
+
     const [currencyGlobalState, setCurrencyGlobal] = useState("BEETS");
 
     const [activeBlerp, setActiveBlerp] = useState(null);
@@ -395,6 +473,10 @@ const ChatPopUpButton = ({
                         width: "100%",
                         minHeight: "44px",
                         padding: "2px 0",
+
+                        position: "sticky",
+                        top: "0px",
+                        zIndex: 30,
                     }}
                 >
                     <Stack
@@ -407,8 +489,8 @@ const ChatPopUpButton = ({
                     >
                         <ChevronLeftRoundedIcon
                             sx={{
-                                width: "28px",
-                                height: "32px",
+                                width: "32px",
+                                height: "36px",
                                 cursor: "pointer",
                                 color: "notBlack.main",
                                 marginRight: "4px",
@@ -418,22 +500,51 @@ const ChatPopUpButton = ({
                             }}
                         />
 
-                        <Text
-                            sx={{
-                                fontSize: "18px",
-                                lineHeight: "130%",
-                                letterSpacing: "0.1em",
-                                fontWeight: "600",
-                                color: "white.override",
-                                margin: "2px",
-                                height: "24px",
-                                width: "198px",
-                                overflow: "hidden",
-                                textOverflow: "ellipsis",
+                        <Tooltip
+                            title={
+                                <Text
+                                    sx={{
+                                        color: "white.override",
+                                        fontWeight: "600",
+                                    }}
+                                >
+                                    {activeBlerp?.title}
+                                </Text>
+                            }
+                            placement='bottom'
+                            componentsProps={{
+                                popper: {
+                                    sx: {
+                                        zIndex: 10000000,
+                                    },
+                                },
+                                tooltip: {
+                                    sx: {
+                                        backgroundColor: "#000",
+                                        color: "white",
+                                        borderRadius: "4px",
+                                        fontSize: "16px",
+                                    },
+                                },
                             }}
                         >
-                            {activeBlerp?.title}
-                        </Text>
+                            <div style={{ cursor: "text" }}>
+                                <TruncatedText
+                                    text={activeBlerp?.title}
+                                    style={{
+                                        fontSize: "16px",
+                                        lineHeight: "130%",
+                                        letterSpacing: "0.1em",
+                                        fontWeight: "600",
+                                        color: "white.override",
+                                        margin: "2px",
+                                        width: "198px",
+                                        overflow: "hidden",
+                                        textOverflow: "ellipsis",
+                                    }}
+                                />
+                            </div>
+                        </Tooltip>
                     </Stack>
 
                     <MoreVertRoundedIcon
@@ -445,13 +556,38 @@ const ChatPopUpButton = ({
                             marginRight: "8px",
                             "&:hover": { opacity: 0.7 },
                         }}
-                        onClick={() => {
-                            window.open(
-                                `${selectedProject.host}/soundbites/${activeBlerp?._id}`,
-                                "_blank",
-                            );
-                        }}
+                        onClick={handleClickBlerp}
                     />
+                    <Menu
+                        anchorEl={anchorBlerpEl}
+                        open={Boolean(anchorBlerpEl)}
+                        onClose={handleCloseBlerp}
+                        MenuListProps={{
+                            "aria-labelledby": "basic-button",
+                        }}
+                        sx={{
+                            zIndex: 1000000,
+                            "& .MuiPaper-root": {
+                                backgroundColor: "#2C3233",
+                                borderRadius: "8px",
+                            },
+                        }}
+                    >
+                        <MenuItem onClick={handleOpenLink}>
+                            <OpenInNewIcon
+                                sx={{ marginRight: 1, color: "white" }}
+                            />
+                            <span style={{ color: "white" }}>
+                                View on Blerp.com
+                            </span>
+                        </MenuItem>
+                        <MenuItem onClick={handleCopyLink}>
+                            <ContentCopyIcon
+                                sx={{ marginRight: 1, color: "white" }}
+                            />
+                            <span style={{ color: "white" }}>{copyText}</span>
+                        </MenuItem>
+                    </Menu>
 
                     <CloseIcon
                         sx={{
@@ -476,11 +612,14 @@ const ChatPopUpButton = ({
                             flexDirection: "row",
                             alignItems: "center",
                             justifyContent: "space-around",
-                            position: "relative",
                             backgroundColor: "grey7.real",
                             width: "100%",
                             minHeight: "44px",
                             padding: "2px 0",
+
+                            position: "sticky",
+                            top: "0px",
+                            zIndex: 30,
                         }}
                     >
                         <Stack
@@ -493,14 +632,14 @@ const ChatPopUpButton = ({
                         >
                             <ChevronLeftRoundedIcon
                                 sx={{
-                                    width: "28px",
-                                    height: "32px",
+                                    width: "32px",
+                                    height: "36px",
                                     cursor: "pointer",
                                     color: "notBlack.main",
                                     marginRight: "4px",
                                 }}
                                 onClick={() => {
-                                    setTabState("HOME");
+                                    handleTabChange("HOME");
                                 }}
                             />
 
@@ -542,13 +681,42 @@ const ChatPopUpButton = ({
                                 marginRight: "8px",
                                 "&:hover": { opacity: 0.7 },
                             }}
-                            onClick={() => {
-                                window.open(
-                                    `${selectedProject.host}/u/${signedInUser?.username}`,
-                                    "_blank",
-                                );
-                            }}
+                            onClick={handleClickUser}
                         />
+
+                        <Menu
+                            anchorEl={anchorUserEl}
+                            open={Boolean(anchorUserEl)}
+                            onClose={handleCloseUser}
+                            MenuListProps={{
+                                "aria-labelledby": "basic-button",
+                            }}
+                            sx={{
+                                zIndex: 1000000,
+                                "& .MuiPaper-root": {
+                                    backgroundColor: "#2C3233",
+                                    borderRadius: "8px",
+                                },
+                            }}
+                        >
+                            <MenuItem onClick={handleOpenUserLink}>
+                                <OpenInNewIcon
+                                    sx={{ marginRight: 1, color: "white" }}
+                                />
+                                <span style={{ color: "white" }}>
+                                    Profile on Blerp.com
+                                </span>
+                            </MenuItem>
+
+                            <MenuItem onClick={handleCopyUserLink}>
+                                <ContentCopyIcon
+                                    sx={{ marginRight: 1, color: "white" }}
+                                />
+                                <span style={{ color: "white" }}>
+                                    {copyText}
+                                </span>
+                            </MenuItem>
+                        </Menu>
                     </Stack>
                 );
             case "FAVES":
@@ -559,11 +727,14 @@ const ChatPopUpButton = ({
                             flexDirection: "row",
                             alignItems: "center",
                             justifyContent: "space-between",
-                            position: "relative",
                             backgroundColor: "grey7.real",
                             width: "100%",
                             minHeight: "44px",
                             padding: "2px 0",
+
+                            position: "sticky",
+                            top: "0px",
+                            zIndex: 30,
                         }}
                     >
                         <Stack
@@ -575,14 +746,14 @@ const ChatPopUpButton = ({
                         >
                             <ChevronLeftRoundedIcon
                                 sx={{
-                                    width: "28px",
-                                    height: "32px",
+                                    width: "32px",
+                                    height: "36px",
                                     cursor: "pointer",
                                     color: "notBlack.main",
                                     marginLeft: "8px",
                                 }}
                                 onClick={() => {
-                                    setTabState("HOME");
+                                    handleTabChange("HOME");
                                 }}
                             />
 
@@ -680,11 +851,14 @@ const ChatPopUpButton = ({
                             flexDirection: "row",
                             alignItems: "center",
                             justifyContent: "space-around",
-                            position: "relative",
                             backgroundColor: "grey7.real",
                             width: "100%",
                             minHeight: "44px",
                             padding: "2px 0",
+
+                            position: "sticky",
+                            top: "0px",
+                            zIndex: 30,
                         }}
                     >
                         <Stack
@@ -733,6 +907,7 @@ const ChatPopUpButton = ({
 
         return (
             <Stack
+                className='blerp-extension-container'
                 direction='row'
                 sx={{
                     backgroundColor: currentStreamerBlerpUser?.browserOnline
@@ -828,72 +1003,72 @@ const ChatPopUpButton = ({
     };
 
     const renderTabPage = () => {
-        // if (!signedInUser) {
-        //     return <LoginScreen refetchAll={refetch} />;
-        // }
-
         switch (tabState) {
             case "HOME":
             case "FAVES":
+            case "PROFILE":
                 return (
                     <>
                         {!!anchorEl && (
-                            <ExtensionRoot
-                                activeBlerp={activeBlerp}
-                                setActiveBlerp={setActiveBlerp}
-                                searchTerm={searchTerm}
-                                setSearchTerm={setSearchTerm}
-                                blerpSoundEmotesStreamer={
-                                    currentStreamerBlerpUser?.soundEmotesObject
-                                }
-                                currentStreamerBlerpUser={
-                                    currentStreamerBlerpUser
-                                }
-                                refetching={loading}
-                                showFavorites={tabState === "FAVES"}
-                                userSignedIn={signedInUser}
-                                setCurrencyGlobal={setCurrencyGlobal}
-                                currencyGlobalState={currencyGlobalState}
-                            />
+                            <>
+                                <CustomDrawer
+                                    containerSelector={
+                                        ".blerp-extension-container"
+                                    }
+                                    open={tabState === "PROFILE"}
+                                    anchor='bottom'
+                                    onClose={() => {
+                                        handleTabChange(
+                                            previousTabState || "HOME",
+                                        );
+                                    }}
+                                >
+                                    <UserProfile
+                                        userSignedIn={signedInUser}
+                                        refetchAll={refetch}
+                                        currentStreamerBlerpUser={
+                                            currentStreamerBlerpUser
+                                        }
+                                    />
+                                </CustomDrawer>
+                                <ExtensionRoot
+                                    activeBlerp={activeBlerp}
+                                    setActiveBlerp={setActiveBlerp}
+                                    searchTerm={searchTerm}
+                                    setSearchTerm={setSearchTerm}
+                                    blerpSoundEmotesStreamer={
+                                        currentStreamerBlerpUser?.soundEmotesObject
+                                    }
+                                    currentStreamerBlerpUser={
+                                        currentStreamerBlerpUser
+                                    }
+                                    refetching={loading}
+                                    showFavorites={tabState === "FAVES"}
+                                    userSignedIn={signedInUser}
+                                    setCurrencyGlobal={setCurrencyGlobal}
+                                    currencyGlobalState={currencyGlobalState}
+                                />
+                            </>
                         )}
                     </>
                 );
 
-            case "PROFILE":
-                return (
-                    <Stack
-                        sx={{
-                            overflowY: "scroll",
-                        }}
-                    >
-                        <UserProfile
-                            userSignedIn={signedInUser}
-                            refetchAll={refetch}
-                            currentStreamerBlerpUser={currentStreamerBlerpUser}
-                        />
-                    </Stack>
-                );
             case "DEFAULT":
                 return <></>;
         }
     };
 
     const renderMainPage = () => {
-        // return (
-        //     <StreamerBlocked
-        //         currentStreamerBlerpUser={currentStreamerBlerpUser}
-        //     />
-        // );
-
         if (loading) {
             return <EllipsisLoader />;
         }
 
-        switch (signedInUser?.isBanned) {
+        switch (currentStreamerBlerpUser?.loggedInUserIsBlocked) {
             case true:
                 return (
                     <StreamerBlocked
                         currentStreamerBlerpUser={currentStreamerBlerpUser}
+                        refetchAll={refetch}
                     />
                 );
             case false:
@@ -907,25 +1082,14 @@ const ChatPopUpButton = ({
                             alignItems: "center",
                             justifyContent: "flex-start",
                             backgroundColor: "grey8.real",
-                            minWidth: "320px",
-                            minHeight: "320px",
+                            minWidth: EXTENSION_WIDTH_PX,
+                            minHeight: EXTENSION_HEIGHT_PX,
                             height: "100%",
                         }}
                     >
-                        <ChannelPointsCollector
-                            blerpStreamer={currentStreamerBlerpUser}
-                            onTriggerSuccess={() => {}}
-                            onTriggerFail={() => {}}
-                            isStreaming={isStreaming}
-                            intervalMs={
-                                currentStreamerBlerpUser
-                                    ?.loggedInChannelPointBasket?.standardMS
-                            }
-                        />
-
                         {renderBlerpNav()}
 
-                        {!hideStreamerPaused && (
+                        {/* {!hideStreamerPaused && (
                             <StreamerPaused
                                 currentStreamerBlerpUser={
                                     currentStreamerBlerpUser
@@ -934,7 +1098,7 @@ const ChatPopUpButton = ({
                                     setHideStreamerPaused(true);
                                 }}
                             />
-                        )}
+                        )} */}
 
                         {activeBlerp ? (
                             <BlerpModalScreen
@@ -949,15 +1113,21 @@ const ChatPopUpButton = ({
                                 }}
                                 activeSearchQuery={searchTerm}
                                 beetBasket={
-                                    signedInUser &&
-                                    signedInUser.userWallet &&
-                                    signedInUser.userWallet
+                                    (signedInUser &&
+                                        signedInUser.userWallet &&
+                                        signedInUser.userWallet) || {
+                                        beetBalance: 0,
+                                    }
                                 }
                                 pointsBasket={
-                                    currentStreamerBlerpUser &&
-                                    currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                                    currentStreamerBlerpUser.loggedInChannelPointBasket
+                                    (currentStreamerBlerpUser &&
+                                        currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                                        currentStreamerBlerpUser.loggedInChannelPointBasket) || {
+                                        points: 0,
+                                    }
                                 }
+                                volume={volume}
+                                setVolume={setVolume}
                             />
                         ) : (
                             renderTabPage()
@@ -965,13 +1135,18 @@ const ChatPopUpButton = ({
 
                         <ExtensionFooter
                             setTabState={(tabState) => {
-                                setTabState(tabState);
+                                handleTabChange(tabState);
                                 setShowSearch(false);
                             }}
                             tabState={tabState}
                             setCurrencyGlobal={setCurrencyGlobal}
                             currencyGlobalState={currencyGlobalState}
                             userSignedIn={signedInUser}
+                            activeBlerp={activeBlerp}
+                            currentStreamerBlerpUser={currentStreamerBlerpUser}
+                            volume={volume}
+                            setVolume={setVolume}
+                            isStreaming={isStreaming}
                         />
                     </Stack>
                 );
@@ -985,22 +1160,68 @@ const ChatPopUpButton = ({
                 position: "relative",
             }}
         >
-            <Button
-                onClick={handleClick}
-                target='_blank'
-                rel='noreferrer'
-                variant='contained'
-                sx={{
-                    margin: "0px",
-                    padding: "2px 8px",
-                    cursor: "pointer",
-                    width: "72px",
-                    fontSize: "1em",
+            <Tooltip
+                componentsProps={{
+                    tooltip: {
+                        sx: {
+                            backgroundColor:
+                                themeMode === "light"
+                                    ? "notBlack.override"
+                                    : "white.override",
+                            zIndex: 100000,
+                        },
+                    },
                 }}
+                placement='top'
+                title={
+                    <>
+                        <Text
+                            sx={{
+                                color:
+                                    themeMode === "light"
+                                        ? "white.override"
+                                        : "notBlack.override",
+                                fontWeight: "600",
+                            }}
+                        >
+                            Blerp Sounds
+                        </Text>
+                    </>
+                }
             >
-                <BlerpyIcon sx={{ marginRight: "2px", fontSize: "2em" }} />
-                {optionalButtonText ? optionalButtonText : "Blerp"}
-            </Button>
+                <Button
+                    onClick={handleClick}
+                    target='_blank'
+                    rel='noreferrer'
+                    variant='custom'
+                    sx={{
+                        margin: "0px",
+                        padding: "4px",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+
+                        width: "30px",
+                        height: "30px",
+                        fontSize: "18px",
+                        borderRadius: "4px",
+                        minWidth: "0px",
+
+                        backgroundColor:
+                            themeMode === "light" ? "#E2E2E6" : "#35353B",
+                    }}
+                >
+                    <BlerpyIcon
+                        sx={{
+                            width: "21px",
+                            marginRight: "2px",
+                            fontSize: "2em",
+                            color: themeMode === "light" ? "#000" : "#fff",
+                        }}
+                    />
+                </Button>
+            </Tooltip>
 
             <Popover
                 id={id}
@@ -1025,7 +1246,7 @@ const ChatPopUpButton = ({
     );
 };
 
-export default ChatPopUpButton;
+export default HomeButton;
 
 {
     /* 

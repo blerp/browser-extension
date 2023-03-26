@@ -26,11 +26,8 @@ const ChannelPointsCollector = ({
     intervalMs = 1500000000,
 }) => {
     const snackbarContext = useContext(SnackbarContext);
-
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
-
-    // const apolloClient = useApollo();
 
     useEffect(() => {
         let timeoutId;
@@ -88,7 +85,7 @@ const ChannelPointsCollector = ({
     return (
         <Stack sx={{}}>
             {pointsAdded && (
-                <Text sx={{ color: "seafoam.main", fontSize: "18px" }}>
+                <Text sx={{ color: "seafoam.main", fontSize: "10px" }}>
                     +{pointsAdded} points
                 </Text>
             )}

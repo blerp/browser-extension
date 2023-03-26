@@ -164,11 +164,11 @@ const NoSearchResultsFavorites = ({ currentStreamerBlerpUser, searchTerm }) => {
                             whiteSpace: "nowrap",
                             color: "#000000",
                         }}
-                        href={`${selectedProject.host}/myLibrary`}
+                        href={`${selectedProject.host}/my-library`}
                         target='_blank'
                         rel='noreferrer'
                     >
-                        My Favs
+                        My Faves
                     </Button>
                 </Stack>
             </Stack>

@@ -8,6 +8,7 @@ const AudioPlayer = ({
     size = "100%",
     borderRadius = "12px",
     barColor = "#00b894",
+    volume = 1,
 }) => {
     const audioRef = useRef(null);
     const [isPlaying, setIsPlaying] = useState(false);
@@ -32,6 +33,7 @@ const AudioPlayer = ({
 
     const togglePlay = () => {
         setIsPlaying(!isPlaying);
+        audioRef.current.volume = volume;
         isPlaying ? audioRef.current.pause() : audioRef.current.play();
     };
 

@@ -80,6 +80,10 @@ export const SOUND_EMOTES_STREAMER = gql`
         userCooldown
         extensionPaused
         isChatEnabled
+        userCooldownLeft
+        channelCooldownLeft
+        channelPointsDisabled
+        beetsDisabled
         ownerId
         headerImage {
             filename
@@ -154,6 +158,8 @@ export const BLERP_USER_STREAMER = gql`
         accountStatus
         twitchUsernameLogin
 
+        loggedInUserIsBlocked
+
         soundEmotesObject {
             _id
             channelCooldown
@@ -184,6 +190,10 @@ export const BLERP_USER_STREAMER = gql`
             ownerId
             channelPointsTitle
             channelPointsImageCached
+            channelCooldownLeft
+            userCooldownLeft
+            channelPointsDisabled
+            beetsDisabled
         }
 
         profileImage {
