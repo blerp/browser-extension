@@ -47,9 +47,9 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                 <Text
                     sx={{
                         color: "white",
-                        fontSize: "3vh",
+                        fontSize: "22px",
                         alignItems: "center",
-                        maxWidth: "80%",
+                        maxWidth: "96%",
                         textAlign: "center",
 
                         margin: "8px 12px 8px 16px",
@@ -69,6 +69,7 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                             color: "buntingBlue.main",
                             textDecoration: "underline",
                             cursor: "pointer",
+                            fontSize: "22px",
                         }}
                     >
                         Blerp Beets
@@ -92,7 +93,13 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                         margin: "8px 12px 8px 16px",
                     }}
                 >
-                    <Text sx={{ color: "#000000", fontSize: "3vh" }}>
+                    <Text
+                        sx={{
+                            color: "#000000",
+                            fontSize: "18px",
+                            fontWeight: "600",
+                        }}
+                    >
                         Login
                     </Text>
                 </Button>

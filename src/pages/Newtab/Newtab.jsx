@@ -6,9 +6,27 @@ import logo from "../../assets/img/logo.svg";
 import "./Newtab.css";
 import "./Newtab.scss";
 import { Button } from "@blerp/design";
+import HomeButton from "../Extension/HomeButton";
+import { getStreamerInfo } from "../../globalCache";
 
 const Newtab = () => {
     const [showPopup, setShowPopup] = useState();
+
+    const [currentPlatform, setCurrentPlatform] = useState(null);
+    const [youtubeChannelId, setYoutubeChannelId] = useState(null);
+    const [twitchUsername, setTwitchUsername] = useState(null);
+
+    React.useEffect(() => {
+        getStreamerInfo()
+            .then((result) => {
+                setCurrentPlatform(result.currentPlatform);
+                setYoutubeChannelId(result.youtubeChannelId);
+                setTwitchUsername(result.twitchUsername);
+            })
+            .catch((err) => {
+                console.log("ERROR_GETTING_INFO", err);
+            });
+    }, []);
 
     return (
         <div className='App'>
@@ -18,14 +36,16 @@ const Newtab = () => {
                     Edit <code>src/pages/Newtab/Newtab.js</code> and save to
                     reload.
                 </p>
-                {/* <a
-                    className='App-link'
-                    href='https://reactjs.org'
-                    target='_blank'
-                    rel='noopener noreferrer'
-                >
-                    Learn React!
-                </a> */}
+
+                <HomeButton
+                    userId={null}
+                    youtubeChannelId={youtubeChannelId}
+                    twitchUsername={twitchUsername}
+                    platform={currentPlatform}
+                    optionalButtonText='Share'
+                    isStreaming={true}
+                />
+
                 <Button
                     target='_blank'
                     rel='noreferrer'
@@ -38,7 +58,7 @@ const Newtab = () => {
                     Open Modal
                 </Button>
                 <BlerpModal setIsOpen={setShowPopup} isOpen={showPopup} />
-                <h6>The color of this paragraph is defined using SASS!!!!</h6>
+                {/* <h6>The color of this paragraph is defined using SASS!!!!</h6> */}
             </header>
         </div>
     );

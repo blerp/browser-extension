@@ -1,11 +1,10 @@
 {
     "manifest_version": 3,
-    "name": "Blerp Soundboards and Alerts",
-    "description": "A Blerp soundboard extension for all the best sound clips. Your ultimate sound sharing experience for all audio clips.",
+    "name": "Blerp Soundboard Extension",
+    "description": "A Blerp soundboard extension for all the best sound clips. Your ultimate sound sharing experience for all sounds on all livestreams.",
     "options_page": "options.html",
     "background": { "service_worker": "background.bundle.js" },
     "permissions": ["storage", "tabs", "activeTab"],
-    "old-key": "",
     "action": {
         "default_popup": "popup.html",
         "default_icon": "icon-34.png"
@@ -20,8 +19,10 @@
             "css": ["content.styles.css"]
         }
     ],
-    "startup_pages": ["newtab.html"],
     "devtools_page": "devtools.html",
+    "externally_connectable": {
+        "matches": ["https://blerp.com/*", "https://webbeta.blerp.com/*"]
+    },
     "web_accessible_resources": [
         {
             "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],

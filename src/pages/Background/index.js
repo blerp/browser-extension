@@ -10,8 +10,6 @@ try {
             sender,
             sendResponse,
         ) {
-            console.log("MESSAGE COGT", message);
-
             // Check if the message is from localhost:1500
             if (
                 // sender.tab &&
@@ -20,8 +18,6 @@ try {
                 message.type === "initialSignIn"
             ) {
                 // Store the access token and refresh token in chrome.storage
-                console.log("MESSAGE SET", message);
-
                 setGlobalCacheJwt(message.accessToken, message.refreshToken);
                 sendResponse({ success: true });
             }

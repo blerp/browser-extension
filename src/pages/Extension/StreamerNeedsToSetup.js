@@ -90,7 +90,8 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "grey3.real",
                 }}
             >
-                Tell streamer to go to setup link below to Blerp sound sharing!
+                Tell streamer to go to setup link below to enable Blerp sound
+                sharing!
             </Text>
 
             <Stack

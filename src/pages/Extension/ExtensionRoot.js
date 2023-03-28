@@ -1,5 +1,4 @@
-import React, { useState, useRef } from "react";
-
+import React, { useState, useRef, useMemo } from "react";
 import {
     Stack,
     Button,
@@ -21,7 +20,7 @@ import NoSearchResults from "./NoSearchResults";
 import CustomDropdown from "./CustomDropdown";
 import NoSearchResultsFavorites from "./NoSearchResultsFavorites";
 import BlerpComponent from "./BlerpComponent";
-import { EXTENSION_HEIGHT_PX } from "../../constants";
+import { EXTENSION_HEIGHT, EXTENSION_HEIGHT_PX } from "../../constants";
 
 const SleekStack = styled(Stack)`
     @keyframes fade-in-out {
@@ -167,14 +166,21 @@ export const getArrayOfMpaaRatings = (rating) => {
     }
 };
 
-const PER_PAGE = 120;
+const PER_PAGE = 300;
 
 const renderEmptyBite = ({ index }) => {
     const delay = index * 0.2;
     return <SleekStack delay={delay}></SleekStack>;
 };
 
-const NewSection = ({ bites, userSignedIn }) => {
+const NewSection = ({
+    bites,
+    userSignedIn,
+    setActiveBlerp,
+    activeBlerp,
+    currencyGlobalState,
+    searchTerm,
+}) => {
     return (
         <Stack
             sx={{
@@ -182,12 +188,10 @@ const NewSection = ({ bites, userSignedIn }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 padding: "5px",
-                gap: "5px",
-                height: "280px",
                 background:
                     "linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), linear-gradient(315deg, rgba(253, 41, 92, 0.4) 0%, rgba(53, 7, 180, 0.4) 100%)",
                 borderRadius: "12px",
-                margin: "8px",
+                margin: "6px",
             }}
         >
             <Text
@@ -197,24 +201,31 @@ const NewSection = ({ bites, userSignedIn }) => {
                     fontFamily: "Odudo",
                     fontStyle: "normal",
                     fontWeight: 400,
-                    fontSize: "16px",
+                    fontSize: "14px",
                     lineHeight: "16px",
                     textAlign: "center",
                     letterSpacing: "0.5px",
                     color: "#FFFFFF",
+                    marginBottom: "4px",
                 }}
             >
                 New
             </Text>
-            <Stack direction='row' flexWrap='wrap'>
+
+            <Stack
+                direction='row'
+                flexWrap='wrap'
+                sx={{ justifyContent: "center" }}
+            >
                 {bites.map((bite, index) => {
                     return (
                         <BlerpComponent
-                            bite={bite}
+                            bite={bite?.bite || bite}
                             setActiveBlerp={setActiveBlerp}
                             activeBlerp={activeBlerp}
                             currencyGlobalState={currencyGlobalState}
                             userSignedIn={userSignedIn}
+                            marginBite='4px'
                         />
                     );
                 })}
@@ -235,7 +246,6 @@ const renderLoadingBites = () => {
                 justifyContent: "center",
                 display: "flex",
                 paddingTop: "4px",
-                maxWidth: "440px",
                 width: "100%",
             }}
         >
@@ -285,7 +295,6 @@ const SearchPage = ({
                 justifyContent: "center",
                 display: "flex",
                 paddingTop: "4px",
-                maxWidth: "440px",
                 width: "100%",
             }}
         >
@@ -440,7 +449,6 @@ const FeaturedPage = ({
                 justifyContent: "center",
                 display: "flex",
                 paddingTop: "4px",
-                maxWidth: "440px",
                 width: "100%",
             }}
         >
@@ -558,6 +566,35 @@ const FeaturedPageNew = ({
         fetchPolicy: "network-only",
     });
 
+    const lastViewedAt =
+        currentStreamerBlerpUser?.loggedInChannelPointBasket?.lastViewedAt;
+
+    const allBites =
+        data?.browserExtension?.soundEmotesFeaturedContentPagination?.items ||
+        [];
+
+    const [newBites, oldBites] = useMemo(() => {
+        if (lastViewedAt) {
+            const newItems = allBites.filter(
+                (bite) =>
+                    bite?.bite?.soundEmotesContext?.addedAt &&
+                    new Date(bite?.bite?.soundEmotesContext?.addedAt) >
+                        new Date(lastViewedAt),
+            );
+
+            const oldItems = allBites.filter(
+                (bite) =>
+                    !bite?.bite?.soundEmotesContext?.addedAt ||
+                    new Date(bite?.bite?.soundEmotesContext?.addedAt) <=
+                        new Date(lastViewedAt),
+            );
+
+            return [newItems, oldItems];
+        } else {
+            return [[], allBites];
+        }
+    }, [allBites, lastViewedAt]);
+
     if (loading) {
         return renderLoadingBites();
     }
@@ -573,11 +610,9 @@ const FeaturedPageNew = ({
                 justifyContent: "center",
                 display: "flex",
                 paddingTop: "4px",
-                maxWidth: "440px",
                 width: "100%",
             }}
         >
-            {/* {renderNewSection()} */}
             {/* <Stack
                 direction='row'
                 sx={{ width: "100%", margin: "4px 12px 12px" }}
@@ -613,7 +648,6 @@ const FeaturedPageNew = ({
                     ]}
                 />
             </Stack> */}
-
             {!data?.browserExtension?.soundEmotesFeaturedContentPagination
                 ?.items?.length &&
                 (showFavorites ? (
@@ -631,24 +665,32 @@ const FeaturedPageNew = ({
                 ))}
 
             {loading && <EllipsisLoader />}
-            {data?.browserExtension?.soundEmotesFeaturedContentPagination
-                ?.items &&
-                data?.browserExtension?.soundEmotesFeaturedContentPagination?.items.map(
-                    (bite) => {
-                        return (
-                            <>
-                                <BlerpComponent
-                                    bite={bite?.bite || bite}
-                                    setActiveBlerp={setActiveBlerp}
-                                    activeBlerp={activeBlerp}
-                                    currencyGlobalState={currencyGlobalState}
-                                    userSignedIn={userSignedIn}
-                                    searchTerm={searchTerm}
-                                />
-                            </>
-                        );
-                    },
-                )}
+
+            {lastViewedAt && newBites.length > 0 && (
+                <NewSection
+                    bites={newBites}
+                    userSignedIn={userSignedIn}
+                    setActiveBlerp={setActiveBlerp}
+                    activeBlerp={activeBlerp}
+                    currencyGlobalState={currencyGlobalState}
+                    searchTerm={searchTerm}
+                />
+            )}
+
+            {oldBites.map((bite) => {
+                return (
+                    <>
+                        <BlerpComponent
+                            bite={bite?.bite || bite}
+                            setActiveBlerp={setActiveBlerp}
+                            activeBlerp={activeBlerp}
+                            currencyGlobalState={currencyGlobalState}
+                            searchTerm={searchTerm}
+                            userSignedIn={userSignedIn}
+                        />
+                    </>
+                );
+            })}
         </Stack>
     );
 };
@@ -683,12 +725,12 @@ const ExtensionRoot = ({
     return (
         <Stack
             sx={{
-                height: "100%",
                 display: "flex",
                 alignItems: "center",
                 padding: "0 4px 4px",
                 width: "100%",
-                minHeight: EXTENSION_HEIGHT_PX,
+                height: "100%",
+                maxHeight: `${EXTENSION_HEIGHT - 40}px`,
             }}
         >
             {!blerpSoundEmotesStreamer && !searchTerm ? (

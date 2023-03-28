@@ -51,6 +51,7 @@ const BiteComponent = ({
     userSignedIn,
     searchQuery,
     showSavedIcon = true,
+    marginBite,
 }) => {
     const [isHovered, setIsHovered] = useState(false);
     const [isHoveredPoints, setIsHoveredPoints] = useState(false);
@@ -149,7 +150,7 @@ const BiteComponent = ({
                 height: "127px",
                 position: "relative",
                 borderRadius: "8px",
-                margin: "4px",
+                margin: marginBite || "4px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
@@ -179,6 +180,7 @@ const BiteComponent = ({
                             zIndex: 2,
                             "&:hover": { opacity: 0.7 },
                             visibility: bite?.saved ? "visible" : "hidden",
+                            cursor: "pointer",
 
                             width: "24px",
                             height: "24px",
@@ -217,6 +219,7 @@ const BiteComponent = ({
                             opacity: savingBlerp ? 0.5 : 1,
                             "&:hover": { opacity: 0.7 },
                             visibility: bite?.saved ? "visible" : "hidden",
+                            cursor: "pointer",
 
                             width: "24px",
                             height: "24px",
@@ -257,6 +260,7 @@ const BiteComponent = ({
                             visibility: bite?.saved ? "visible" : "hidden",
                             width: "24px",
                             height: "24px",
+                            cursor: "pointer",
 
                             filter: "drop-shadow(3px 5px 2px rgb(0 0 0 / 0.6))",
                         }}

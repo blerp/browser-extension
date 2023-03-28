@@ -1,5 +1,23 @@
 import gql from "graphql-tag";
 
+export const UPDATE_VIEWER_LOG = gql`
+    mutation updateViewerLog($channelOwnerId: MongoID!) {
+        browserExtension {
+            updateViewerLog(channelOwnerId: $channelOwnerId) {
+                channelPointsBasket {
+                    _id
+                    points
+                    lastIncrementedAt
+                    showManualButton
+                    manualMS
+                    standardMS
+                    lastViewedAt
+                }
+                pointsIncremented
+            }
+        }
+    }
+`;
 export const EARN_SNOOT_POINTS = gql`
     mutation earnSomeSnoots($channelOwnerId: MongoID!, $manualEarn: Boolean) {
         browserExtension {
@@ -14,6 +32,7 @@ export const EARN_SNOOT_POINTS = gql`
                     showManualButton
                     manualMS
                     standardMS
+                    lastViewedAt
                 }
                 pointsIncremented
             }
@@ -122,6 +141,7 @@ export const SOUND_EMOTES_STREAMER = gql`
                 createdAt
                 showManualButton
                 manualMS
+                lastViewedAt
                 standardMS
             }
         }
@@ -242,6 +262,7 @@ export const BLERP_USER_STREAMER = gql`
             showManualButton
             manualMS
             standardMS
+            lastViewedAt
         }
     }
 `;
@@ -367,6 +388,7 @@ export const BITE_WITH_SOUND_EMOTES = gql`
         streamerOwnsBite
         visibility
         redactionType
+        newAudienceRating
         soundEmotesContext(ownerId: $streamerId) {
             _id
             visibility
@@ -376,6 +398,10 @@ export const BITE_WITH_SOUND_EMOTES = gql`
             gain
             channelPointsAmount
             playType
+            channelPointsDisabled
+            beetsDisabled
+            hasAdded
+            addedAt
         }
         walkOnContext {
             _id

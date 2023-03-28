@@ -91,144 +91,166 @@ const UserProfile = ({
             sx={{
                 height: "100%",
                 width: "100%",
+                display: "flex",
                 alignItems: "center",
-                justifyContent: "space-around",
-                // overflowY: "scroll",
-                // mt: "12px",
+                justifyContent: "center",
             }}
         >
-            <Stack width='80%' sx={{ margin: "8px", alignSelf: "flex-start" }}>
-                <Stack
-                    direction='row'
-                    sx={{
-                        alignItems: "center",
-                        justifyContent: "flex-start",
-                        width: "100%",
-                        cursor: "pointer",
-                        "&:hover": {
-                            opacity: 0.8,
-                        },
-                    }}
-                    onClick={() => {
-                        window.open(
-                            `${selectedProject?.host}/u/${userSignedIn?.username}`,
-                            "_blank",
-                        );
-                    }}
-                >
-                    {userSignedIn.profileImage && (
-                        <img
-                            style={{
-                                width: "40px",
-                                height: "40px",
-                                marginRight: "10px",
-                                borderRadius: "100px",
-                            }}
-                            src={
-                                userSignedIn.profileImage &&
-                                userSignedIn.profileImage.original &&
-                                userSignedIn.profileImage.original.url
-                            }
-                        />
-                    )}
-
-                    <Text
-                        fontColor='notBlack'
-                        style={{
-                            margin: "0",
-                            maxWidth: "460px",
-                            textOverflow: "ellipsis",
-                            overflow: "hidden",
-                            fontSize: "24px",
-                        }}
-                    >
-                        {userSignedIn.username &&
-                            userSignedIn.username.toUpperCase()}
-                    </Text>
-                </Stack>
-            </Stack>
-
-            <UserBeetsWallet userSignedIn={userSignedIn} />
-
-            <UserChannelPointsBasket
-                userSignedIn={userSignedIn}
-                currentStreamerBlerpUser={currentStreamerBlerpUser}
-            />
-
             <Stack
-                direction='row'
                 sx={{
                     width: "100%",
                     alignItems: "center",
-                    justifyContent: "center",
-                    mt: "12px",
+                    padding: "24px 0",
                 }}
             >
-                <Button
-                    variant='text'
-                    color='whiteOverride'
+                <Stack
                     sx={{
-                        whiteSpace: "nowrap",
                         margin: "8px",
+                        alignItems: "center",
                     }}
-                    startIcon={
-                        <DiscordIcon
-                            style={{ fontSize: "16px" }}
-                            sx={{
-                                color: "whiteOverride.main",
-                                fontSize: "16px",
+                >
+                    <Stack
+                        direction='row'
+                        sx={{
+                            alignItems: "center",
+                            justifyContent: "flex-start",
+                            width: "100%",
+                            cursor: "pointer",
+                            "&:hover": {
+                                opacity: 0.8,
+                            },
+                        }}
+                        onClick={() => {
+                            window.open(
+                                `${selectedProject?.host}/u/${userSignedIn?.username}`,
+                                "_blank",
+                            );
+                        }}
+                    >
+                        {userSignedIn.profileImage && (
+                            <img
+                                style={{
+                                    width: "40px",
+                                    height: "40px",
+                                    marginRight: "10px",
+                                    borderRadius: "100px",
+                                }}
+                                src={
+                                    userSignedIn.profileImage &&
+                                    userSignedIn.profileImage.original &&
+                                    userSignedIn.profileImage.original.url
+                                }
+                            />
+                        )}
+
+                        <Text
+                            fontColor='notBlack'
+                            style={{
+                                margin: "0",
+                                maxWidth: "460px",
+                                textOverflow: "ellipsis",
+                                overflow: "hidden",
+                                fontSize: "24px",
                             }}
+                        >
+                            {userSignedIn.username &&
+                                userSignedIn.username.toUpperCase()}
+                        </Text>
+                    </Stack>
+                </Stack>
+
+                {!currentStreamerBlerpUser?.soundEmotesObject
+                    ?.beetsDisabled && (
+                    <UserBeetsWallet userSignedIn={userSignedIn} />
+                )}
+
+                {currentStreamerBlerpUser &&
+                    !currentStreamerBlerpUser?.soundEmotesObject
+                        ?.channelPointsDisabled && (
+                        <UserChannelPointsBasket
+                            userSignedIn={userSignedIn}
+                            currentStreamerBlerpUser={currentStreamerBlerpUser}
                         />
-                    }
-                    onClick={() => {
-                        window.open(`https://discord.gg/zsa7nSdx6X`, "_blank");
-                    }}
-                    target='_blank'
-                >
-                    <Text
-                        fontColor='notBlack'
-                        style={{
-                            fontSize: "16px",
-                            fontWeight: "600",
-                        }}
-                    >
-                        {"Help Center"}
-                    </Text>
-                </Button>
+                    )}
 
-                <Button
-                    variant='outlined'
-                    color='whiteOverride'
+                <Stack
+                    direction='row'
                     sx={{
-                        whiteSpace: "nowrap",
-                        margin: "8px",
-                        borderColor: "whiteOverride.main",
+                        width: "100%",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        mt: "12px",
                     }}
-                    onClick={async () => {
-                        try {
-                            setLoggingOut(true);
-
-                            await logOut();
-                            if (refetchAll) await refetchAll();
-
-                            setLoggingOut(false);
-                        } catch (err) {
-                            setLoggingOut(false);
-                            console.log("Logging out error", err);
-                        }
-                    }}
-                    target='_blank'
                 >
-                    <Text
-                        fontColor='notBlack'
-                        style={{
-                            fontSize: "16px",
-                            fontWeight: "600",
+                    <Button
+                        variant='text'
+                        color='whiteOverride'
+                        sx={{
+                            whiteSpace: "nowrap",
+                            margin: "8px",
                         }}
+                        startIcon={
+                            <DiscordIcon
+                                style={{ fontSize: "16px" }}
+                                sx={{
+                                    color: "whiteOverride.main",
+                                    fontSize: "16px",
+                                }}
+                            />
+                        }
+                        onClick={() => {
+                            window.open(
+                                `https://discord.gg/zsa7nSdx6X`,
+                                "_blank",
+                            );
+                        }}
+                        target='_blank'
                     >
-                        {loggingOut ? "Logging Out" : "Log Out"}
-                    </Text>
-                </Button>
+                        <Text
+                            fontColor='notBlack'
+                            style={{
+                                fontSize: "16px",
+                                fontWeight: "600",
+                            }}
+                        >
+                            {"Help Center"}
+                        </Text>
+                    </Button>
+
+                    <Button
+                        variant='outlined'
+                        color='whiteOverride'
+                        sx={{
+                            whiteSpace: "nowrap",
+                            margin: "8px",
+                            borderColor: "whiteOverride.main",
+                        }}
+                        onClick={async () => {
+                            try {
+                                setLoggingOut(true);
+
+                                await logOut();
+                                if (refetchAll) await refetchAll();
+
+                                setLoggingOut(false);
+                            } catch (err) {
+                                setLoggingOut(false);
+                                console.log("Logging out error", err);
+                            }
+                        }}
+                        target='_blank'
+                    >
+                        <Text
+                            fontColor='notBlack'
+                            style={{
+                                fontSize: "16px",
+                                fontWeight: "600",
+                            }}
+                        >
+                            {loggingOut ? "Logging Out" : "Log Out"}
+                        </Text>
+                    </Button>
+                </Stack>
             </Stack>
         </Stack>
     );

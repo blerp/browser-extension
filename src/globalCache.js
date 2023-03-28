@@ -63,13 +63,6 @@ export const setStreamerInfo = ({
     youtubeChannelId,
     currentPlatform,
 }) => {
-    console.log(
-        "SETTING_STREAMER",
-        twitchUsername,
-        youtubeChannelId,
-        currentPlatform,
-    );
-
     if (typeof chrome === "undefined" && typeof browser === "undefined") {
         return;
     }

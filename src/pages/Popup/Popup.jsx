@@ -69,8 +69,7 @@ const Popup = () => {
 
     const apolloClient = useApollo();
 
-    const [tabState, setTabState] = useState("HOME");
-
+    const [tabState, setTabState] = useState("SETTINGS");
     const [showPopup, setShowPopup] = useState();
 
     const signedInUser = data?.browserExtension?.userSignedIn;
@@ -161,16 +160,16 @@ const Popup = () => {
                                 </Stack>
                             </Stack>
 
-                            {(twitchUsername || youtubeChannelId) && (
+                            {/* {(twitchUsername || youtubeChannelId) && (
                                 <HomeButton
                                     userId={null}
                                     youtubeChannelId={youtubeChannelId}
                                     twitchUsername={twitchUsername}
                                     platform={currentPlatform}
                                     optionalButtonText='Share'
-                                    isStreaming={false}
+                                    isStreaming={true}
                                 />
-                            )}
+                            )} */}
                         </Stack>
 
                         <Button
@@ -280,6 +279,16 @@ const Popup = () => {
             case "SETTINGS":
                 return (
                     <>
+                        {(twitchUsername || youtubeChannelId) && (
+                            <HomeButton
+                                userId={null}
+                                youtubeChannelId={youtubeChannelId}
+                                twitchUsername={twitchUsername}
+                                platform={currentPlatform}
+                                optionalButtonText='Share'
+                                isStreaming={true}
+                            />
+                        )}
                         <UserProfile
                             userSignedIn={signedInUser}
                             currentStreamerBlerpUser={currentStreamerBlerpUser}
@@ -342,199 +351,168 @@ const Popup = () => {
                 {renderTabPage()}
             </Stack>
 
-            <Tabs
-                value={tabState}
-                onChange={(e, newValue) => {
-                    setTabState(newValue);
-                }}
-                variant='fullWidth'
-                textColor='white'
-                indicatorColor='white'
-                TabIndicatorProps={{
-                    children: <span className='MuiTabs-indicatorSpan' />,
-                }}
-                sx={{
-                    position: "absolute",
-                    bottom: "0px",
-                    margin: "0 auto",
-                    backgroundColor: "#000",
-                    width: "100%",
-                    height: "40px",
-                    minHeight: "0px",
-                    borderRadius: false ? "0px" : "0 0 0 0",
-
-                    "& .MuiTabs-flexContainer": {
-                        height: "40px",
-                    },
-                    "& .MuiTabs-indicator": {
-                        backgroundColor: "grey7.real",
-                        display: "flex",
-                        justifyContent: "center",
-                        backgroundColor: "transparent",
-                        bottom: "5px",
-                    },
-                    "& .MuiTabs-indicatorSpan": {
-                        height: "3px",
-                        borderRadius: "5px",
-                        maxWidth: 20,
-                        width: "100%",
-                        backgroundColor: "notBlack.main",
-                    },
-                }}
-            >
-                <div
-                    style={{
-                        position: "absolute",
-                        width: "100%",
-                        backgroundColor: "#00000033",
-                        height: "100%",
-                    }}
-                ></div>
-
-                <Tab
-                    value='HOME'
-                    label='Home'
-                    icon={
-                        <HomeRoundedIcon
-                            sx={{
-                                margin: "0 6px 0 0 !important",
-                                fontSize: "18px",
-                                color:
-                                    tabState === "HOME"
-                                        ? "notBlack.main"
-                                        : "rgba(255,255,255,0.5)",
-                            }}
-                        />
-                    }
-                    // icon={
-                    //     <img
-                    //         src={
-                    //             data?.twitch?.twitchChannelViewerPanel
-                    //                 ?.twitchChannel?.customLogoCachedUrl
-                    //         }
-                    //         style={{
-                    //             width: "15px",
-                    //             height: "15px",
-                    //             borderRadius: "20px",
-                    //             margin: "0 6px 0 0 !important",
-                    //             backgroundColor: "notBlack.main",
-                    //         }}
-                    //     />
-                    // }
-                    iconPosition='start'
-                    sx={{
-                        fontWeight: "600",
-                        minHeight: "0px !important",
-                        padding: "5px",
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        fontSize: "16px",
-                        color:
-                            tabState === "HOME"
-                                ? "notBlack.main"
-                                : "rgba(255,255,255,0.5)",
-                    }}
-                />
-                {/* <Tab
-                    value='LIBRARY'
-                    label='Library'
-                    icon={
-                        <BookmarkAddRoundedIcon
-                            sx={{
-                                margin: "0 6px 0 0 !important",
-                                fontSize: "18px",
-                                color:
-                                    tabState === "LIBRARY"
-                                        ? "notBlack.main"
-                                        : "rgba(255,255,255,0.5)",
-                            }}
-                        />
-                    }
-                    iconPosition='start'
-                    sx={{
-                        "& > .MuiTab-iconWrapper": {
-                            margin: "0 6px 0 0 !important",
-                        },
-                        fontWeight: "600",
-                        minHeight: "0px !important",
-                        padding: "5px",
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        color:
-                            tabState === "LIBRARY"
-                                ? "notBlack.main"
-                                : "rgba(255,255,255,0.5)",
-                    }}
-                /> */}
-                <Tab
-                    value='SETTINGS'
-                    label='Profile'
-                    iconPosition='start'
-                    icon={
-                        <CogIcon
-                            sx={{
-                                margin: "0 6px 0 0 !important",
-                                fontSize: "18px",
-                                color:
-                                    tabState === "SETTINGS"
-                                        ? "notBlack.main"
-                                        : "rgba(255,255,255,0.5)",
-                            }}
-                        />
-                    }
-                    sx={{
-                        minHeight: "0px !important",
-                        padding: "5px",
-                        display: "flex",
-                        fontWeight: "600",
-                        flexDirection: "row",
-                        whiteSpace: "nowrap",
-                        alignItems: "center",
-                        fontSize: "16px",
-                        color:
-                            tabState === "SETTINGS"
-                                ? "notBlack.main"
-                                : "rgba(255,255,255,0.5)",
-                    }}
-                />
-
-                {/* {!showSearchBar && (
-                    <ImageOverview
-                        onClick={() => {
-                            setShowSearchBar(false);
-                            setShowViewerSideBar(!showViewerSideBar);
-                        }}
-                    >
-                        <PendingSuggestionsDot
-                            style={{
-                                top: "3px",
-                                left: "",
-                                right: "3px",
-                                width: "7px",
-                                height: "7px",
-                                backgroundColor: "ibisRed.main",
-                            }}
-                        />
-                        <DragHandleIcon
-                            sx={{
-                                fontSize: "32px",
-                                padding: "4px",
-                                cursor: "pointer",
-                                color: showSearchBar
-                                    ? "white.override"
-                                    : "grey7.real",
-                                "&:hover": { color: "grey4.main" },
-                            }}
-                        />
-                    </ImageOverview>
-                )} */}
-            </Tabs>
-
             <BlerpModal setIsOpen={setShowPopup} isOpen={showPopup} />
         </Stack>
     );
 };
 
 export default Popup;
+
+{
+    /* <Tabs
+    value={tabState}
+    onChange={(e, newValue) => {
+        setTabState(newValue);
+    }}
+    variant='fullWidth'
+    textColor='white'
+    indicatorColor='white'
+    TabIndicatorProps={{
+        children: <span className='MuiTabs-indicatorSpan' />,
+    }}
+    sx={{
+        position: "absolute",
+        bottom: "0px",
+        margin: "0 auto",
+        backgroundColor: "#000",
+        width: "100%",
+        height: "40px",
+        minHeight: "0px",
+        borderRadius: false ? "0px" : "0 0 0 0",
+
+        "& .MuiTabs-flexContainer": {
+            height: "40px",
+        },
+        "& .MuiTabs-indicator": {
+            backgroundColor: "grey7.real",
+            display: "flex",
+            justifyContent: "center",
+            backgroundColor: "transparent",
+            bottom: "5px",
+        },
+        "& .MuiTabs-indicatorSpan": {
+            height: "3px",
+            borderRadius: "5px",
+            maxWidth: 20,
+            width: "100%",
+            backgroundColor: "notBlack.main",
+        },
+    }}
+>
+    <div
+        style={{
+            position: "absolute",
+            width: "100%",
+            backgroundColor: "#00000033",
+            height: "100%",
+        }}
+    ></div>
+
+    <Tab
+        value='HOME'
+        label='Home'
+        icon={
+            <HomeRoundedIcon
+                sx={{
+                    margin: "0 6px 0 0 !important",
+                    fontSize: "18px",
+                    color:
+                        tabState === "HOME"
+                            ? "notBlack.main"
+                            : "rgba(255,255,255,0.5)",
+                }}
+            />
+        }
+        icon={
+            <img
+                src={
+                    data?.twitch?.twitchChannelViewerPanel?.twitchChannel
+                        ?.customLogoCachedUrl
+                }
+                style={{
+                    width: "15px",
+                    height: "15px",
+                    borderRadius: "20px",
+                    margin: "0 6px 0 0 !important",
+                    backgroundColor: "notBlack.main",
+                }}
+            />
+        }
+        iconPosition='start'
+        sx={{
+            fontWeight: "600",
+            minHeight: "0px !important",
+            padding: "5px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            fontSize: "16px",
+            color:
+                tabState === "HOME" ? "notBlack.main" : "rgba(255,255,255,0.5)",
+        }}
+    />
+    <Tab
+        value='LIBRARY'
+        label='Library'
+        icon={
+            <BookmarkAddRoundedIcon
+                sx={{
+                    margin: "0 6px 0 0 !important",
+                    fontSize: "18px",
+                    color:
+                        tabState === "LIBRARY"
+                            ? "notBlack.main"
+                            : "rgba(255,255,255,0.5)",
+                }}
+            />
+        }
+        iconPosition='start'
+        sx={{
+            "& > .MuiTab-iconWrapper": {
+                margin: "0 6px 0 0 !important",
+            },
+            fontWeight: "600",
+            minHeight: "0px !important",
+            padding: "5px",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            color:
+                tabState === "LIBRARY"
+                    ? "notBlack.main"
+                    : "rgba(255,255,255,0.5)",
+        }}
+    />
+    <Tab
+        value='SETTINGS'
+        label='Profile'
+        iconPosition='start'
+        icon={
+            <CogIcon
+                sx={{
+                    margin: "0 6px 0 0 !important",
+                    fontSize: "18px",
+                    color:
+                        tabState === "SETTINGS"
+                            ? "notBlack.main"
+                            : "rgba(255,255,255,0.5)",
+                }}
+            />
+        }
+        sx={{
+            minHeight: "0px !important",
+            padding: "5px",
+            display: "flex",
+            fontWeight: "600",
+            flexDirection: "row",
+            whiteSpace: "nowrap",
+            alignItems: "center",
+            fontSize: "16px",
+            color:
+                tabState === "SETTINGS"
+                    ? "notBlack.main"
+                    : "rgba(255,255,255,0.5)",
+        }}
+    />
+</Tabs>; */
+}

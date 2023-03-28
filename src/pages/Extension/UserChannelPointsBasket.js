@@ -98,11 +98,17 @@ const UserChannelPointsBasket = ({
 
                     <Tooltip
                         componentsProps={{
+                            popper: {
+                                sx: {
+                                    zIndex: 10000000,
+                                },
+                            },
                             tooltip: {
                                 sx: {
-                                    width: "500px",
-                                    backgroundColor: "notBlack.override",
-                                    zIndex: 10000,
+                                    backgroundColor: "#000",
+                                    color: "white",
+                                    borderRadius: "4px",
+                                    fontSize: "16px",
                                 },
                             },
                         }}

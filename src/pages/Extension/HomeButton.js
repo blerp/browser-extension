@@ -44,6 +44,7 @@ import {
     BLERP_USER_SELF,
     BLERP_USER_STREAMER,
     EARN_SNOOT_POINTS,
+    UPDATE_VIEWER_LOG,
 } from "../../mainGraphQl";
 import StreamerBlocked from "./StreamerBlocked";
 import UserProfile from "./UserProfile";
@@ -192,6 +193,7 @@ const HomeButton = ({
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [earnSnootPoints] = useMutation(EARN_SNOOT_POINTS);
+    const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
 
     const snackbarContext = useContext(SnackbarContext);
 
@@ -232,7 +234,7 @@ const HomeButton = ({
                         target='_blank'
                         rel='noreferrer'
                         variant='contained'
-                        sx={{ margin: "8px 12px 8px 16px" }}
+                        sx={{ margin: "8px 12px 8px 16px", fontSize: "16px" }}
                     >
                         Login to Share Sounds
                     </Button>
@@ -476,7 +478,7 @@ const HomeButton = ({
 
                         position: "sticky",
                         top: "0px",
-                        zIndex: 30,
+                        zIndex: 3001,
                     }}
                 >
                     <Stack
@@ -495,8 +497,20 @@ const HomeButton = ({
                                 color: "notBlack.main",
                                 marginRight: "4px",
                             }}
-                            onClick={() => {
+                            onClick={async () => {
                                 setActiveBlerp(null);
+                                await refetch();
+
+                                try {
+                                    const { data } = await updateViewerLog({
+                                        variables: {
+                                            channelOwnerId:
+                                                currentStreamerBlerpUser?._id,
+                                        },
+                                    });
+                                } catch (err) {
+                                    console.log(err);
+                                }
                             }}
                         />
 
@@ -506,6 +520,7 @@ const HomeButton = ({
                                     sx={{
                                         color: "white.override",
                                         fontWeight: "600",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     {activeBlerp?.title}
@@ -575,17 +590,27 @@ const HomeButton = ({
                     >
                         <MenuItem onClick={handleOpenLink}>
                             <OpenInNewIcon
-                                sx={{ marginRight: 1, color: "white" }}
+                                sx={{
+                                    marginRight: 1,
+                                    color: "white",
+                                    fontSize: "16px",
+                                }}
                             />
-                            <span style={{ color: "white" }}>
+                            <span style={{ color: "white", fontSize: "16px" }}>
                                 View on Blerp.com
                             </span>
                         </MenuItem>
                         <MenuItem onClick={handleCopyLink}>
                             <ContentCopyIcon
-                                sx={{ marginRight: 1, color: "white" }}
+                                sx={{
+                                    marginRight: 1,
+                                    color: "white",
+                                    fontSize: "16px",
+                                }}
                             />
-                            <span style={{ color: "white" }}>{copyText}</span>
+                            <span style={{ color: "white", fontSize: "16px" }}>
+                                {copyText}
+                            </span>
                         </MenuItem>
                     </Menu>
 
@@ -619,7 +644,7 @@ const HomeButton = ({
 
                             position: "sticky",
                             top: "0px",
-                            zIndex: 30,
+                            zIndex: 3001,
                         }}
                     >
                         <Stack
@@ -638,8 +663,9 @@ const HomeButton = ({
                                     color: "notBlack.main",
                                     marginRight: "4px",
                                 }}
-                                onClick={() => {
+                                onClick={async () => {
                                     handleTabChange("HOME");
+                                    await refetch();
                                 }}
                             />
 
@@ -701,18 +727,30 @@ const HomeButton = ({
                         >
                             <MenuItem onClick={handleOpenUserLink}>
                                 <OpenInNewIcon
-                                    sx={{ marginRight: 1, color: "white" }}
+                                    sx={{
+                                        marginRight: 1,
+                                        color: "white",
+                                        fontSize: "16px",
+                                    }}
                                 />
-                                <span style={{ color: "white" }}>
+                                <span
+                                    style={{ color: "white", fontSize: "16px" }}
+                                >
                                     Profile on Blerp.com
                                 </span>
                             </MenuItem>
 
                             <MenuItem onClick={handleCopyUserLink}>
                                 <ContentCopyIcon
-                                    sx={{ marginRight: 1, color: "white" }}
+                                    sx={{
+                                        marginRight: 1,
+                                        color: "white",
+                                        fontSize: "16px",
+                                    }}
                                 />
-                                <span style={{ color: "white" }}>
+                                <span
+                                    style={{ color: "white", fontSize: "16px" }}
+                                >
                                     {copyText}
                                 </span>
                             </MenuItem>
@@ -734,7 +772,7 @@ const HomeButton = ({
 
                             position: "sticky",
                             top: "0px",
-                            zIndex: 30,
+                            zIndex: 3001,
                         }}
                     >
                         <Stack
@@ -858,7 +896,7 @@ const HomeButton = ({
 
                             position: "sticky",
                             top: "0px",
-                            zIndex: 30,
+                            zIndex: 3001,
                         }}
                     >
                         <Stack
@@ -1011,26 +1049,6 @@ const HomeButton = ({
                     <>
                         {!!anchorEl && (
                             <>
-                                <CustomDrawer
-                                    containerSelector={
-                                        ".blerp-extension-container"
-                                    }
-                                    open={tabState === "PROFILE"}
-                                    anchor='bottom'
-                                    onClose={() => {
-                                        handleTabChange(
-                                            previousTabState || "HOME",
-                                        );
-                                    }}
-                                >
-                                    <UserProfile
-                                        userSignedIn={signedInUser}
-                                        refetchAll={refetch}
-                                        currentStreamerBlerpUser={
-                                            currentStreamerBlerpUser
-                                        }
-                                    />
-                                </CustomDrawer>
                                 <ExtensionRoot
                                     activeBlerp={activeBlerp}
                                     setActiveBlerp={setActiveBlerp}
@@ -1081,10 +1099,9 @@ const HomeButton = ({
                             flexDirection: "column",
                             alignItems: "center",
                             justifyContent: "flex-start",
+                            width: EXTENSION_WIDTH_PX,
+                            height: EXTENSION_HEIGHT_PX,
                             backgroundColor: "grey8.real",
-                            minWidth: EXTENSION_WIDTH_PX,
-                            minHeight: EXTENSION_HEIGHT_PX,
-                            height: "100%",
                         }}
                     >
                         {renderBlerpNav()}
@@ -1099,6 +1116,23 @@ const HomeButton = ({
                                 }}
                             />
                         )} */}
+
+                        <CustomDrawer
+                            containerSelector={".blerp-extension-container"}
+                            open={tabState === "PROFILE"}
+                            anchor='bottom'
+                            onClose={() => {
+                                handleTabChange(previousTabState || "HOME");
+                            }}
+                        >
+                            <UserProfile
+                                userSignedIn={signedInUser}
+                                refetchAll={refetch}
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
+                            />
+                        </CustomDrawer>
 
                         {activeBlerp ? (
                             <BlerpModalScreen
@@ -1147,6 +1181,7 @@ const HomeButton = ({
                             volume={volume}
                             setVolume={setVolume}
                             isStreaming={isStreaming}
+                            refetchAll={refetch}
                         />
                     </Stack>
                 );
@@ -1182,6 +1217,7 @@ const HomeButton = ({
                                         ? "white.override"
                                         : "notBlack.override",
                                 fontWeight: "600",
+                                fontSize: "16px",
                             }}
                         >
                             Blerp Sounds
@@ -1195,8 +1231,8 @@ const HomeButton = ({
                     rel='noreferrer'
                     variant='custom'
                     sx={{
-                        margin: "0px",
-                        padding: "4px",
+                        margin: "0 2px",
+                        padding: "2px 4px",
                         cursor: "pointer",
                         display: "flex",
                         alignItems: "center",
@@ -1210,13 +1246,16 @@ const HomeButton = ({
 
                         backgroundColor:
                             themeMode === "light" ? "#E2E2E6" : "#35353B",
+
+                        "&:hover": {
+                            backgroundColor: "grey4.real",
+                        },
                     }}
                 >
                     <BlerpyIcon
                         sx={{
                             width: "21px",
-                            marginRight: "2px",
-                            fontSize: "2em",
+                            fontSize: "24px",
                             color: themeMode === "light" ? "#000" : "#fff",
                         }}
                     />
@@ -1235,6 +1274,11 @@ const HomeButton = ({
                 transformOrigin={{
                     vertical: "top",
                     horizontal: "center",
+                }}
+                PaperProps={{
+                    sx: {
+                        backgroundColor: "grey8.real",
+                    },
                 }}
                 style={{ zIndex: 100000 }}
             >

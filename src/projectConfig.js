@@ -193,7 +193,7 @@ const projectConfig = {
 
 const isBrowser = typeof window !== "undefined";
 
-let selectedProject = projectConfig["development"];
+let selectedProject = projectConfig["sandbox"];
 
 // console.log("PROCESCHEC", process.env && process.env.BROWSER_NODE_ENV);
 

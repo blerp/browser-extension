@@ -1,15 +1,19 @@
 import React from "react";
-import { Stack, Text } from "@blerp/design";
+import { Stack, Text, Tooltip } from "@blerp/design";
 
 const SegmentedSwitch = ({
-    leftColor = "#B43757",
-    rightColor = "grey2.real",
+    leftColor = "grey2.real",
+    rightColor = "#B43757",
     selectedOption,
     setSelectedOption,
     selectedOptionLeft = "BEETS",
     selectedOptionRight = "POINTS",
     leftSideDisabled,
     rightSideDisabled,
+
+    leftSideFullyDisabled,
+    rightSideFullyDisabled,
+
     leftSideAmount,
     rightSideAmount,
     leftIcon,
@@ -24,6 +28,18 @@ const SegmentedSwitch = ({
         return text;
     };
 
+    const rightSideMessage = rightSideFullyDisabled
+        ? "The creator has beets disabled, beets cannot be used on any sounds."
+        : rightSideDisabled
+        ? "The creator has beets disabled for this sound, beets can be used on other sounds"
+        : "";
+
+    const leftSideMessage = leftSideFullyDisabled
+        ? "The creator has points disabled, points cannot be used on any sounds."
+        : leftSideDisabled
+        ? "The creator has points disabled for this sound, points can be used on other sounds"
+        : "";
+
     return (
         <Stack
             direction='row'
@@ -36,114 +52,200 @@ const SegmentedSwitch = ({
                 border: "1px solid #676F70",
             }}
         >
-            <Stack
-                direction='row'
-                sx={{
-                    backgroundColor:
-                        selectedOption === selectedOptionLeft
-                            ? leftColor
-                            : "transparent",
-                    height: "32px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    borderRight: "1px solid #676F70",
-                    padding: "0 4px",
-                    cursor: leftSideDisabled ? "" : "pointer",
-                    opacity: leftSideDisabled ? "0.5" : "1",
-                }}
-                onClick={() => {
-                    if (leftSideDisabled) {
-                        return;
-                    }
-                    setSelectedOption(selectedOptionLeft);
+            <Tooltip
+                title={
+                    leftSideMessage ? (
+                        <Text
+                            sx={{
+                                color: "white.override",
+                                fontWeight: "300",
+                                fontSize: "16px",
+                            }}
+                        >
+                            {leftSideMessage}
+                        </Text>
+                    ) : (
+                        ""
+                    )
+                }
+                placement='bottom'
+                componentsProps={{
+                    popper: {
+                        sx: {
+                            zIndex: 10000000,
+                        },
+                    },
+                    tooltip: {
+                        sx: {
+                            backgroundColor: "#000",
+                            color: "white",
+                            borderRadius: "4px",
+                            fontSize: "16px",
+                        },
+                    },
                 }}
             >
-                <img
-                    src={
-                        selectedOption === selectedOptionLeft
-                            ? leftSelectedIcon
-                            : leftIcon
-                    }
-                    style={{
-                        width: "18px",
-                        height: "18px",
-                        margin: "4px",
-                    }}
-                />
-
-                <Text
+                <Stack
+                    direction='row'
                     sx={{
-                        color: "white",
-                        textAlign: "center",
-                        fontSize: "20px",
-                        maxWidth: "120px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontSize: "14px",
-                        fontWeight: "300",
+                        backgroundColor:
+                            selectedOption === selectedOptionLeft
+                                ? leftColor
+                                : "transparent",
+                        height: "32px",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        borderRight: "1px solid #676F70",
+                        padding: "0 4px",
+                        cursor: leftSideDisabled ? "" : "pointer",
+                        opacity: leftSideDisabled ? "0.5" : "1",
+                    }}
+                    onClick={() => {
+                        if (leftSideDisabled || leftSideFullyDisabled) {
+                            return;
+                        }
 
-                        padding: "4px",
+                        setSelectedOption(selectedOptionLeft);
                     }}
                 >
-                    {leftSideDisabled ? "Disabled" : formatText(leftSideAmount)}
-                </Text>
-            </Stack>
+                    <img
+                        src={
+                            selectedOption === selectedOptionLeft
+                                ? leftSelectedIcon
+                                : leftIcon
+                        }
+                        style={{
+                            width: "18px",
+                            height: "18px",
+                            margin: "4px",
+                        }}
+                    />
 
-            <Stack
-                direction='row'
-                sx={{
-                    backgroundColor:
-                        selectedOption === selectedOptionRight
-                            ? rightColor
-                            : "transparent",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "32px",
-                    padding: "0 4px",
-                    cursor: rightSideDisabled ? "" : "pointer",
-                    opacity: rightSideDisabled ? "0.5" : "1",
-                }}
-                onClick={() => {
-                    setSelectedOption(selectedOptionRight);
+                    {!leftSideFullyDisabled && (
+                        <Text
+                            sx={{
+                                color:
+                                    selectedOption === selectedOptionLeft
+                                        ? "#000"
+                                        : "white",
+                                textAlign: "center",
+                                fontSize: "20px",
+                                maxWidth: "120px",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                fontSize: "14px",
+                                fontWeight: "300",
+
+                                padding: "4px",
+                            }}
+                        >
+                            {leftSideFullyDisabled
+                                ? ""
+                                : leftSideDisabled
+                                ? "Disabled"
+                                : formatText(leftSideAmount)}
+                        </Text>
+                    )}
+                </Stack>
+            </Tooltip>
+
+            <Tooltip
+                title={
+                    rightSideMessage ? (
+                        <Text
+                            sx={{
+                                color: "white.override",
+                                fontWeight: "300",
+                                fontSize: "16px",
+                            }}
+                        >
+                            {rightSideMessage}
+                        </Text>
+                    ) : (
+                        ""
+                    )
+                }
+                placement='bottom'
+                componentsProps={{
+                    popper: {
+                        sx: {
+                            zIndex: 10000000,
+                        },
+                    },
+                    tooltip: {
+                        sx: {
+                            backgroundColor: "#000",
+                            color: "white",
+                            borderRadius: "4px",
+                            fontSize: "16px",
+                        },
+                    },
                 }}
             >
-                <img
-                    src={
-                        selectedOption === selectedOptionRight
-                            ? rightSelectedIcon
-                            : rightIcon
-                    }
-                    style={{
-                        width: "18px",
-                        height: "18px",
-                        margin: "4px",
-                    }}
-                />
-
-                <Text
+                <Stack
+                    direction='row'
                     sx={{
-                        color:
+                        backgroundColor:
                             selectedOption === selectedOptionRight
-                                ? "#000"
-                                : "white",
-                        textAlign: "center",
-                        fontSize: "20px",
-                        maxWidth: "120px",
-                        whiteSpace: "nowrap",
-                        overflow: "hidden",
-                        textOverflow: "ellipsis",
-                        fontSize: "14px",
-                        fontWeight: "300",
+                                ? rightColor
+                                : "transparent",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "32px",
+                        padding: "0 4px",
+                        cursor: rightSideDisabled ? "" : "pointer",
+                        opacity: rightSideDisabled ? "0.5" : "1",
+                    }}
+                    onClick={() => {
+                        if (rightSideDisabled || rightSideFullyDisabled) {
+                            return;
+                        }
 
-                        padding: "4px",
+                        setSelectedOption(selectedOptionRight);
                     }}
                 >
-                    {rightSideDisabled
-                        ? "Disabled"
-                        : formatText(rightSideAmount)}
-                </Text>
-            </Stack>
+                    <img
+                        src={
+                            selectedOption === selectedOptionRight
+                                ? rightSelectedIcon
+                                : rightIcon
+                        }
+                        style={{
+                            width: "18px",
+                            height: "18px",
+                            margin: "4px",
+                        }}
+                    />
+
+                    {!rightSideFullyDisabled && (
+                        <Text
+                            sx={{
+                                color:
+                                    selectedOption === selectedOptionRight
+                                        ? "white"
+                                        : "white",
+                                textAlign: "center",
+                                fontSize: "20px",
+                                maxWidth: "120px",
+                                whiteSpace: "nowrap",
+                                overflow: "hidden",
+                                textOverflow: "ellipsis",
+                                fontSize: "14px",
+                                fontWeight: "300",
+
+                                padding: "4px",
+                            }}
+                        >
+                            {rightSideFullyDisabled
+                                ? ""
+                                : rightSideDisabled
+                                ? "Disabled"
+                                : formatText(rightSideAmount)}
+                        </Text>
+                    )}
+                </Stack>
+            </Tooltip>
         </Stack>
     );
 };

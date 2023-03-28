@@ -21,6 +21,7 @@ import {
 import selectedProject from "../../projectConfig";
 import AudioPlayer from "./BlerpAudioPlayer";
 import EllipsisLoader from "./EllipsisLoader";
+import { EXTENSION_HEIGHT_PX, EXTENSION_WIDTH_PX } from "../../constants";
 
 const SAD_TROMBONE = gql`
     ${BITE_WITH_SOUND_EMOTES}
@@ -56,29 +57,19 @@ const StreamerBlocked = ({ currentStreamerBlerpUser, refetchAll }) => {
         <Stack
             sx={{
                 display: "flex",
-                flexDirection: "column",
-                overflowY: "scroll",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                paddingBottom: "32px",
-                margin: "0 auto",
-
-                display: "flex",
+                width: "100%",
                 flexDirection: "column",
                 alignItems: "center",
-                padding: "10px",
-                gap: "20px",
-
-                width: "280px",
-                height: "100%",
-
+                justifyContent: "flex-start",
+                width: EXTENSION_WIDTH_PX,
+                height: EXTENSION_HEIGHT_PX,
                 backgroundColor: "grey8.real",
+                height: "100%",
             }}
         >
             <Stack
                 sx={{
-                    margin: "0 auto",
+                    margin: "12px auto",
                     width: "100px",
                 }}
                 onClick={() => {
@@ -109,9 +100,27 @@ const StreamerBlocked = ({ currentStreamerBlerpUser, refetchAll }) => {
                     letterSpacing: "0.1em",
 
                     color: "black.real",
+                    margin: "12px 0",
                 }}
             >
-                You’ve been banned from this channel.
+                You’ve been banned from sharing sounds on this channel.
+            </Text>
+
+            <Text
+                sx={{
+                    width: "260px",
+
+                    fontWeight: 400,
+                    fontSize: "16px",
+                    lineHeight: "130%",
+
+                    textAlign: "center",
+                    letterSpacing: "0.1em",
+
+                    color: "grey3.real",
+                }}
+            >
+                You can still preview and share sounds from blerp.com!
             </Text>
 
             {/* <Text
@@ -128,25 +137,8 @@ const StreamerBlocked = ({ currentStreamerBlerpUser, refetchAll }) => {
                     color: "grey3.real",
                 }}
             >
-                You can still preview sounds and add them to your favorites.
-            </Text> */}
-
-            <Text
-                sx={{
-                    width: "260px",
-
-                    fontWeight: 400,
-                    fontSize: "16px",
-                    lineHeight: "130%",
-
-                    textAlign: "center",
-                    letterSpacing: "0.1em",
-
-                    color: "grey3.real",
-                }}
-            >
                 If you continue down this road Blerp will ban you too....
-            </Text>
+            </Text> */}
 
             {/* <Stack
                 sx={{

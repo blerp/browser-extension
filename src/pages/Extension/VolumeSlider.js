@@ -10,9 +10,9 @@ const VolumeBar = ({ volume, setVolume, filledColor, backgroundColor }) => {
     const [hover, setHover] = useState(false);
 
     const volumeIcon = () => {
-        if (volume === 0) return <VolumeOffIcon />;
-        if (volume < 0.5) return <VolumeDownIcon />;
-        return <VolumeUpIcon />;
+        if (volume === 0) return <VolumeOffIcon sx={{ fontSize: "24px" }} />;
+        if (volume < 0.5) return <VolumeDownIcon sx={{ fontSize: "24px" }} />;
+        return <VolumeUpIcon sx={{ fontSize: "24px" }} />;
     };
 
     const toggleMute = () => {
