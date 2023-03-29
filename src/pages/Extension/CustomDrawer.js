@@ -41,7 +41,7 @@ const Content = styled.div`
         79,
         0.9
     ); // Change this to your desired background color
-    padding: 24px 0;
+    padding: 0 0 24px;
     animation: ${slideInAnimation} 0.3s ease-in-out forwards;
     z-index: 1000;
     height: ${EXTENSION_HEIGHT - 60}px;

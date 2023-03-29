@@ -403,6 +403,10 @@ export const BITE_WITH_SOUND_EMOTES = gql`
             hasAdded
             addedAt
         }
+        blockedContext(ownerId: $streamerId) {
+            _id
+            blockerId
+        }
         walkOnContext {
             _id
             approval

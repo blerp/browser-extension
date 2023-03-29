@@ -4,7 +4,7 @@
     "description": "A Blerp soundboard extension for all the best sound clips. Your ultimate sound sharing experience for all sounds on all livestreams.",
     "options_page": "options.html",
     "background": { "service_worker": "background.bundle.js" },
-    "permissions": ["storage", "tabs", "activeTab"],
+    "permissions": ["storage"],
     "chrome_url_overrides": {
         "newtab": "newtab.html"
     },

@@ -64,6 +64,7 @@ const UserProfile = ({
                             color: "white.override",
                             fontWeight: "light",
                             padding: "0 12px",
+                            fontSize: "16px",
                         }}
                     >
                         Beets
@@ -91,6 +92,7 @@ const UserProfile = ({
                                     sx={{
                                         color: "white.override",
                                         fontWeight: "light",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     Every beet lines your streamers pocket with

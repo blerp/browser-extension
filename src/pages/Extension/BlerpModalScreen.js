@@ -644,6 +644,58 @@ const BlerpModalScreen = ({
             );
         }
 
+        if (activeBlerp?.blockedContext?._id) {
+            return (
+                <Stack
+                    sx={{
+                        padding: "32px",
+                        position: "relative",
+                        alignItems: "center",
+                        height: "100%",
+                    }}
+                >
+                    <Stack
+                        sx={{
+                            margin: "0",
+                            width: "160px",
+                            height: "160px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            backgroundColor: "grey6.real",
+                            borderRadius: "12px",
+                        }}
+                    >
+                        <RemoveCircleOutlineRoundedIcon
+                            sx={{ width: "70px", height: "70px" }}
+                        />
+                    </Stack>
+
+                    <Text
+                        sx={{
+                            color: "grey4.real",
+
+                            fontFamily: "Odudo",
+                            fontStyle: "normal",
+                            fontWeight: 300,
+                            fontSize: "12px",
+                            lineHeight: "20px",
+                            /* identical to box height, or 167% */
+
+                            display: "flex",
+                            alignItems: "center",
+                            textAlign: "center",
+                            letterSpacing: "0.1px",
+
+                            margin: "16px",
+                        }}
+                    >
+                        This sound has been blocked by the streamer.
+                    </Text>
+                </Stack>
+            );
+        }
+
         if (blerpStreamer?.loggedInUserIsBlocked) {
             return (
                 <Stack

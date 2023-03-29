@@ -358,8 +358,8 @@ const BiteComponent = ({
                         <img
                             src='https://cdn.blerp.com/design/browser-extension/beet.svg'
                             style={{
-                                width: "16px",
-                                height: "16px",
+                                width: "20px",
+                                height: "20px",
                                 paddingRight: "4px",
                                 paddingLeft: "2px",
                             }}
@@ -399,8 +399,8 @@ const BiteComponent = ({
                         <img
                             src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
                             style={{
-                                width: "16px",
-                                height: "16px",
+                                width: "20px",
+                                height: "20px",
                                 paddingLeft: "4px",
                                 paddingRight: "2px",
                             }}

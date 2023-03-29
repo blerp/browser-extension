@@ -71,6 +71,7 @@ const UserChannelPointsBasket = ({
                             fontWeight: "light",
                             padding: "0 12px",
                             textTransform: "capitalize",
+                            fontSize: "16px",
                         }}
                     >
                         {currentStreamerBlerpUser?.soundEmotesObject
@@ -118,6 +119,7 @@ const UserChannelPointsBasket = ({
                                     sx={{
                                         color: "white.override",
                                         fontWeight: "light",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     Earn rewards by watching, subscribing and
