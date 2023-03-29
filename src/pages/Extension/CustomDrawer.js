@@ -44,7 +44,7 @@ const Content = styled.div`
     padding: 24px 0;
     animation: ${slideInAnimation} 0.3s ease-in-out forwards;
     z-index: 1000;
-    height: ${EXTENSION_HEIGHT - 134}px;
+    height: ${EXTENSION_HEIGHT - 60}px;
     overflow-y: scroll;
     width: 100%;
 

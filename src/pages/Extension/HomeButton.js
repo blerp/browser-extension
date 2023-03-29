@@ -1191,7 +1191,7 @@ const HomeButton = ({
     return (
         <Stack
             sx={{
-                padding: "4px",
+                padding: "3px",
                 position: "relative",
             }}
         >

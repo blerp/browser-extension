@@ -303,7 +303,7 @@ let YT_CHAT_BUTTON_CONTAINER;
                 }
             }
 
-            renderTwitchNav({ twitchUsername });
+            // renderTwitchNav({ twitchUsername });
 
             // If the username was not found, display an error message
             if (!twitchUsername) {

@@ -100,7 +100,7 @@ const UserProfile = ({
                         }
                     >
                         <Button color='grey3' sx={{ zIndex: 100000 }}>
-                            <HelpRounded sx={{ fontSize: "1.2rem" }} />
+                            <HelpRounded sx={{ fontSize: "24px" }} />
                         </Button>
                     </Tooltip>
                 </Stack>

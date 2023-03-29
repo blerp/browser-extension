@@ -705,6 +705,7 @@ const BlerpModalScreen = ({
                                 sx={{
                                     color: "white.override",
                                     fontWeight: "600",
+                                    fontSize: "16px",
                                 }}
                             >
                                 {blerpStreamer?.username} has paused Blerp on
@@ -760,6 +761,7 @@ const BlerpModalScreen = ({
                                 sx={{
                                     color: "white.override",
                                     fontWeight: "300",
+                                    fontSize: "16px",
                                 }}
                             >
                                 {blerpStreamer?.username} does not have their
@@ -816,6 +818,7 @@ const BlerpModalScreen = ({
                                 sx={{
                                     color: "white.override",
                                     fontWeight: "300",
+                                    fontSize: "16px",
                                 }}
                             >
                                 This channel only allows sounds to be played
@@ -1231,6 +1234,7 @@ const BlerpModalScreen = ({
                                             sx={{
                                                 color: "white.override",
                                                 fontWeight: "600",
+                                                fontSize: "16px",
                                             }}
                                         >
                                             This sound may be Explict
@@ -1278,6 +1282,7 @@ const BlerpModalScreen = ({
                                             sx={{
                                                 color: "white.override",
                                                 fontWeight: "600",
+                                                fontSize: "16px",
                                             }}
                                         >
                                             This is a safe sound
@@ -1325,6 +1330,7 @@ const BlerpModalScreen = ({
                                             sx={{
                                                 color: "white.override",
                                                 fontWeight: "600",
+                                                fontSize: "16px",
                                             }}
                                         >
                                             This sound may be abrasive
@@ -1372,6 +1378,7 @@ const BlerpModalScreen = ({
                                             sx={{
                                                 color: "white.override",
                                                 fontWeight: "600",
+                                                fontSize: "16px",
                                             }}
                                         >
                                             This sound may contain DMCA risk
@@ -1419,6 +1426,7 @@ const BlerpModalScreen = ({
                                             sx={{
                                                 color: "white.override",
                                                 fontWeight: "600",
+                                                fontSize: "16px",
                                             }}
                                         >
                                             Not safe for work

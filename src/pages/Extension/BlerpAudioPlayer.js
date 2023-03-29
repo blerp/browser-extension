@@ -67,11 +67,11 @@ const AudioPlayer = ({
                     >
                         {!isPlaying ? (
                             <PlayArrowRoundedIcon
-                                style={{ fontSize: "4rem", color: "white" }}
+                                sx={{ fontSize: "64px", color: "white" }}
                             />
                         ) : (
                             <PauseRoundedIcon
-                                style={{ fontSize: "4rem", color: "white" }}
+                                sx={{ fontSize: "64px", color: "white" }}
                             />
                         )}
                     </div>
@@ -89,7 +89,7 @@ const AudioPlayer = ({
                     {!isPlaying ? (
                         <PlayArrowRoundedIcon
                             style={{
-                                fontSize: "4rem",
+                                fontSize: "64px",
                                 position: "absolute",
                                 top: "50%",
                                 left: "50%",
@@ -99,7 +99,7 @@ const AudioPlayer = ({
                     ) : (
                         <PauseRoundedIcon
                             style={{
-                                fontSize: "4rem",
+                                fontSize: "64px",
                                 position: "absolute",
                                 top: "50%",
                                 left: "50%",

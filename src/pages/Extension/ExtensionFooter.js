@@ -126,7 +126,7 @@ const ExtensionFooter = ({
                 boxShadow: "0px -2px 4px rgba(0, 0, 0, 0.25)",
                 backdropFilter: "blur(10px)",
                 bottom: "0px",
-                zIndex: 5,
+                zIndex: 5001,
             }}
         >
             {!userSignedIn ? (
@@ -381,6 +381,7 @@ const ExtensionFooter = ({
                                     sx={{
                                         color: "white.override",
                                         fontWeight: "300",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     {leftSideMessage}

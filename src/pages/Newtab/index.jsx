@@ -1,13 +1,12 @@
-import { render } from "react-dom";
+import { createRoot } from "react-dom";
 
 import Newtab from "./Newtab";
 import "./index.css";
 
 import WithBlerp from "../../WithBlerp";
 
-render(
-    WithBlerp({ Component: Newtab, pageProps: {} }),
-    window.document.querySelector("#app-container"),
-);
+const container = document.getElementById("app-container");
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+root.render(WithBlerp({ Component: Newtab, pageProps: {} }));
 
 if (module.hot) module.hot.accept();

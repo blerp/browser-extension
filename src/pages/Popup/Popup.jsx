@@ -279,7 +279,7 @@ const Popup = () => {
             case "SETTINGS":
                 return (
                     <>
-                        {(twitchUsername || youtubeChannelId) && (
+                        {/* {(twitchUsername || youtubeChannelId) && (
                             <HomeButton
                                 userId={null}
                                 youtubeChannelId={youtubeChannelId}
@@ -288,7 +288,7 @@ const Popup = () => {
                                 optionalButtonText='Share'
                                 isStreaming={true}
                             />
-                        )}
+                        )} */}
                         <UserProfile
                             userSignedIn={signedInUser}
                             currentStreamerBlerpUser={currentStreamerBlerpUser}
