@@ -71,7 +71,7 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "black.real",
                 }}
             >
-                Streamer has not setup Blerp
+                Streamer has not fully setup Blerp
             </Text>
 
             <Text
@@ -90,8 +90,8 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "grey3.real",
                 }}
             >
-                Tell streamer to go to setup link below to enable Blerp sound
-                sharing!
+                Tell streamer or mod to go to the setup link below and add more
+                sounds to this panel!
             </Text>
 
             <Stack

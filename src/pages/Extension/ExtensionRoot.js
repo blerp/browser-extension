@@ -649,8 +649,8 @@ const FeaturedPageNew = ({
                 />
             </Stack> */}
             {!data?.browserExtension?.soundEmotesFeaturedContentPagination
-                ?.items?.length &&
-                (showFavorites ? (
+                ?.items?.length ? (
+                showFavorites ? (
                     <Stack
                         direction='column'
                         sx={{ width: "100%", margin: "4px 12px 12px" }}
@@ -661,8 +661,18 @@ const FeaturedPageNew = ({
                         />
                     </Stack>
                 ) : (
-                    <></>
-                ))}
+                    <Stack
+                        direction='column'
+                        sx={{ width: "100%", margin: "4px 12px 12px" }}
+                    >
+                        <StreamerNeedsToSetup
+                            currentStreamerBlerpUser={currentStreamerBlerpUser}
+                        />
+                    </Stack>
+                )
+            ) : (
+                <></>
+            )}
 
             {loading && <EllipsisLoader />}
 
