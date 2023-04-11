@@ -27,7 +27,7 @@ export const APOLLO_STATE_PROP_NAME = "initialApolloState";
 const isBrowser = typeof window !== "undefined";
 const uri = `${
     selectedProject?.env === "DEV"
-        ? "http://localhost:3000"
+        ? "http://localhost:3002"
         : selectedProject?.env === "SANDBOX"
         ? "https://apisandbox.blerpy.com"
         : selectedProject?.env === "PRODUCTION"
@@ -37,8 +37,6 @@ const uri = `${
 
 let apolloClient;
 let apolloCache;
-
-console.log("URL_CHECK", uri);
 
 const refreshTokenMutation = gql`
     mutation refreshToken($refreshToken: String!) {

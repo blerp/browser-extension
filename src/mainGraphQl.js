@@ -82,15 +82,17 @@ export const SOUND_EMOTES_STREAMER = gql`
         onboardingExtension
         onboardingBrowserSource
         roomId
+        pauseUntilDate
+        showBlerpContent
         onBoardingCompleted
         connectionStatus
         simpleMode
         blacklistedWords
+        globalChannelPoints
         blacklistedBlerpUserIds
         blockAllMusic
         mpaaRating
         globalBeetCost
-        globalChannelPoints
         blastPrice
         volume
         urlKey
@@ -98,11 +100,12 @@ export const SOUND_EMOTES_STREAMER = gql`
         urlChangedAt
         userCooldown
         extensionPaused
+        extensionDisabled
         isChatEnabled
-        userCooldownLeft
+        channelPointsTitle
+        channelPointsImageCached
         channelCooldownLeft
-        channelPointsDisabled
-        beetsDisabled
+        userCooldownLeft
         ownerId
         headerImage {
             filename
@@ -110,6 +113,12 @@ export const SOUND_EMOTES_STREAMER = gql`
                 url
             }
         }
+        onBoardingModalPartOne
+        onBoardingModalPartTwo
+        onBoardingModalCompleted
+        onBoardingModalDoLater
+        beetsDisabled
+        channelPointsDisabled
         userObject {
             _id
             username
@@ -119,6 +128,8 @@ export const SOUND_EMOTES_STREAMER = gql`
                     url
                 }
             }
+            browserSourceUrl
+            browserSourceUrlBeta
             soundEmotesStreamerId
             twitchChannelId
             editorPermissionOnThisUser
@@ -133,6 +144,7 @@ export const SOUND_EMOTES_STREAMER = gql`
                     type
                 }
             }
+
             loggedInChannelPointBasket {
                 _id
                 ownerId
@@ -140,9 +152,6 @@ export const SOUND_EMOTES_STREAMER = gql`
                 lastIncrementedAt
                 createdAt
                 showManualButton
-                manualMS
-                lastViewedAt
-                standardMS
             }
         }
 
@@ -190,15 +199,17 @@ export const BLERP_USER_STREAMER = gql`
             onboardingExtension
             onboardingBrowserSource
             roomId
+            pauseUntilDate
+            showBlerpContent
             onBoardingCompleted
             connectionStatus
             simpleMode
             blacklistedWords
+            globalChannelPoints
             blacklistedBlerpUserIds
             blockAllMusic
             mpaaRating
             globalBeetCost
-            globalChannelPoints
             blastPrice
             volume
             urlKey
@@ -206,14 +217,41 @@ export const BLERP_USER_STREAMER = gql`
             urlChangedAt
             userCooldown
             extensionPaused
+            extensionDisabled
             isChatEnabled
             ownerId
+            channelCooldownLeft
             channelPointsTitle
             channelPointsImageCached
             channelCooldownLeft
             userCooldownLeft
-            channelPointsDisabled
+            headerImage {
+                filename
+                original {
+                    url
+                }
+            }
+            onBoardingModalPartOne
+            onBoardingModalPartTwo
+            onBoardingModalCompleted
+            onBoardingModalDoLater
             beetsDisabled
+            channelPointsDisabled
+            customChatMessage
+            customImageSetting
+            customSettingsEnabled
+            hideCustomSpeaker
+            customAlertColor
+            customColor
+            customLogoImageId
+            customLogoCachedUrl
+            customBackgroundColorExtension
+            customFontColor
+            customBackgroundColor
+            customBackgroundUrl
+            customBackgroundImageSetting
+            accentColor
+            customThemeSetting
         }
 
         profileImage {
@@ -402,6 +440,8 @@ export const BITE_WITH_SOUND_EMOTES = gql`
             beetsDisabled
             hasAdded
             addedAt
+            imageUrlCached
+            title
         }
         blockedContext(ownerId: $streamerId) {
             _id

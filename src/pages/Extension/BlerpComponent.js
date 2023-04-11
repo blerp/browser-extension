@@ -279,7 +279,8 @@ const BiteComponent = ({
                     />
                 ))}
 
-            {bite?.image?.original?.url ? (
+            {bite?.soundEmotesContext?.imageUrlCached ||
+            bite?.image?.original?.url ? (
                 <Stack
                     sx={{
                         width: "93px",
@@ -311,7 +312,10 @@ const BiteComponent = ({
                             top: 0,
                             left: 0,
                         }}
-                        src={bite?.image?.original?.url}
+                        src={
+                            bite?.soundEmotesContext?.imageUrlCached ||
+                            bite?.image?.original?.url
+                        }
                     />
                 </Stack>
             ) : (
@@ -463,7 +467,7 @@ const BiteComponent = ({
                         fontWeight: "300",
                     }}
                 >
-                    {bite?.title}
+                    {bite?.soundEmotesContext?.title || bite?.title}
                 </Text>
             </Stack>
         </Stack>

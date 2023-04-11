@@ -1,10 +1,10 @@
 {
     "manifest_version": 3,
-    "name": "Blerp Soundboard Extension",
+    "name": "Blerp Sound Alerts - Meme Soundboards",
     "description": "A Blerp soundboard extension for all the best sound clips. Your ultimate sound sharing experience for all sounds on all livestreams.",
     "options_page": "options.html",
     "background": { "service_worker": "background.bundle.js" },
-    "permissions": ["storage", "tabs", "activeTab"],
+    "permissions": ["storage"],
     "action": {
         "default_popup": "popup.html",
         "default_icon": "icon-34.png"

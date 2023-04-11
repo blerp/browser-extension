@@ -14,7 +14,7 @@ import { useApollo } from "../../networking/apolloClient";
 import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
 import selectedProject from "../../projectConfig";
 
-const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
+const ExtensionDisabled = ({ currentStreamerBlerpUser }) => {
     const snackbarContext = useContext(SnackbarContext);
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
@@ -55,32 +55,11 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                         margin: "8px 12px 8px 16px",
                     }}
                 >
-                    Use channel currency or{" "}
-                    <Text
-                        target='_blank'
-                        onClick={() => {
-                            window.open(
-                                `${selectedProject?.host}/tradeBeets`,
-                                "_blank",
-                            );
-                        }}
-                        sx={{
-                            display: "inline",
-                            color: "buntingBlue.main",
-                            textDecoration: "underline",
-                            cursor: "pointer",
-                            fontSize: "22px",
-                        }}
-                    >
-                        Blerp Beets
-                    </Text>{" "}
-                    to play sounds on{" "}
-                    {currentStreamerBlerpUser
-                        ? `${currentStreamerBlerpUser?.username}'s`
-                        : "streamer"}{" "}
-                    stream!
+                    This creator doesn’t have Blerp enabled, tell them to add it
+                    to their stream.
                 </Text>
 
+                {/* 
                 <Button
                     variant='contained'
                     href={`${
@@ -102,10 +81,10 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                     >
                         Login
                     </Text>
-                </Button>
+                </Button> */}
             </Stack>
         </Stack>
     );
 };
 
-export default UserLoginScreen;
+export default ExtensionDisabled;

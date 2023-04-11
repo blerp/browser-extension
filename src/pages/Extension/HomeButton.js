@@ -1,4 +1,4 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 
 import {
     Stack,
@@ -36,8 +36,6 @@ import ContentCopyIcon from "@mui/icons-material/ContentCopy";
 import ExtensionRoot from "./ExtensionRoot";
 import ExtensionFooter from "./ExtensionFooter";
 
-import ChannelPointsCollector from "./ChannelPointsCollector";
-
 import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 import {
@@ -56,6 +54,7 @@ import EllipsisLoader from "./EllipsisLoader";
 import { EXTENSION_WIDTH_PX, EXTENSION_HEIGHT_PX } from "../../constants";
 import CustomDrawer from "./CustomDrawer";
 import TruncatedText from "./TruncatedText";
+import ExtensionDisabled from "./ExtensionDisabled";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -215,254 +214,8 @@ const HomeButton = ({
     const currentStreamerBlerpUser =
         data?.browserExtension?.currentStreamerPage?.streamerBlerpUser;
 
-    const renderBlerpBasket = () => {
-        if (!signedInUser) {
-            return (
-                <Stack
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        margin: "4px",
-                    }}
-                >
-                    <Button
-                        href={`${
-                            selectedProject.host
-                        }/login?returnTo=${`/soundboard-browser-extension`}`}
-                        target='_blank'
-                        rel='noreferrer'
-                        variant='contained'
-                        sx={{ margin: "8px 12px 8px 16px", fontSize: "16px" }}
-                    >
-                        Login to Share Sounds
-                    </Button>
-                </Stack>
-            );
-        }
-
-        return (
-            <>
-                <Stack
-                    sx={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        width: "100%",
-                    }}
-                >
-                    <Stack
-                        sx={{
-                            display: "flex",
-                            flexDirection: "row",
-                            alignItems: "center",
-                            justifyContent: "space-around",
-                            width: "100%",
-                        }}
-                    >
-                        <Stack
-                            sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <ChannelPointsIcon
-                                sx={{
-                                    width: "32px",
-                                    height: "32px",
-                                    margin: "4px",
-                                }}
-                            />
-
-                            <Stack
-                                sx={{
-                                    display: "flex",
-                                    direction: "column",
-                                }}
-                            >
-                                <Text
-                                    fontColor='ibisRed'
-                                    fontSize='18px'
-                                    style={{ margin: 0 }}
-                                >
-                                    {(currentStreamerBlerpUser &&
-                                        currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                                        currentStreamerBlerpUser
-                                            .loggedInChannelPointBasket
-                                            .points) ||
-                                        0}
-                                </Text>
-
-                                {typeof pointsAdded === "number" ? (
-                                    <Text
-                                        sx={{
-                                            color: "seafoam.main",
-                                            fontSize: "18px",
-                                        }}
-                                    >
-                                        +{pointsAdded} points
-                                    </Text>
-                                ) : currentStreamerBlerpUser &&
-                                  (!currentStreamerBlerpUser.loggedInChannelPointBasket ||
-                                      currentStreamerBlerpUser
-                                          .loggedInChannelPointBasket
-                                          ?.showManualButton) ? (
-                                    <Text
-                                        fontColor='white'
-                                        fontWeight='light'
-                                        fontSize='12px'
-                                        sx={{
-                                            margin: 0,
-                                            cursor: "pointer",
-
-                                            "&:hover": {
-                                                color: "seafoam.main",
-                                            },
-                                            textTransform: "capitalize",
-                                        }}
-                                        onClick={async () => {
-                                            try {
-                                                const { data } =
-                                                    await earnSnootPoints({
-                                                        variables: {
-                                                            channelOwnerId:
-                                                                currentStreamerBlerpUser?._id,
-                                                            manualEarn: true,
-                                                        },
-                                                    });
-
-                                                const pointsIncremented =
-                                                    data?.browserExtension
-                                                        ?.earningSnoots
-                                                        ?.pointsIncremented;
-
-                                                setPointsAdded(
-                                                    pointsIncremented,
-                                                );
-                                                const timeoutId = setTimeout(
-                                                    () => {
-                                                        setPointsAdded(false);
-                                                    },
-                                                    3000,
-                                                );
-
-                                                snackbarContext.triggerSnackbar(
-                                                    {
-                                                        message:
-                                                            "Points Collected!",
-                                                        severity: "success",
-                                                        transitionType: "fade",
-                                                        position: {
-                                                            vertical: "bottom",
-                                                            horizontal: "right",
-                                                        },
-                                                    },
-                                                );
-                                            } catch (err) {
-                                                snackbarContext.triggerSnackbar(
-                                                    {
-                                                        message:
-                                                            "Failed to Collect Points",
-                                                        severity: "error",
-                                                        transitionType: "fade",
-                                                        position: {
-                                                            vertical: "bottom",
-                                                            horizontal: "right",
-                                                        },
-                                                    },
-                                                );
-                                            }
-                                        }}
-                                    >
-                                        Collect{" "}
-                                        {/* {currentStreamerBlerpUser?.username}{" "} */}
-                                        Points
-                                    </Text>
-                                ) : (
-                                    <></>
-                                )}
-                            </Stack>
-                        </Stack>
-
-                        <Stack
-                            sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                alignItems: "center",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            <Stack
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <img
-                                    src={
-                                        "https://cdn.blerp.com/blerp_products/Icons/BasketoBeets-Grey7.svg"
-                                    }
-                                    style={{
-                                        width: "40px",
-                                        margin: "0 2px",
-                                    }}
-                                />
-
-                                <Stack
-                                    sx={{
-                                        display: "flex",
-                                        direction: "column",
-                                    }}
-                                >
-                                    <Text
-                                        fontColor='ibisRed'
-                                        fontSize='18px'
-                                        style={{ margin: 0 }}
-                                    >
-                                        {(signedInUser &&
-                                            signedInUser.userWallet &&
-                                            signedInUser.userWallet
-                                                .beetBalance) ||
-                                            0}
-                                    </Text>
-
-                                    <Text
-                                        fontColor='white'
-                                        fontWeight='light'
-                                        fontSize='12px'
-                                        sx={{
-                                            margin: 0,
-                                            cursor: "pointer",
-                                            "&:hover": {
-                                                color: "seafoam.main",
-                                            },
-                                        }}
-                                        onClick={() => {
-                                            window.open(
-                                                `${selectedProject.host}/tradeBeets`,
-                                                "_blank",
-                                            );
-                                        }}
-                                    >
-                                        More Beets
-                                    </Text>
-                                </Stack>
-                            </Stack>
-                        </Stack>
-                    </Stack>
-                </Stack>
-            </>
-        );
-    };
-
     const renderBlerpNav = () => {
-        if (activeBlerp) {
+        if (activeBlerp && tabState !== "PROFILE") {
             return (
                 <Stack
                     sx={{
@@ -523,7 +276,9 @@ const HomeButton = ({
                                         fontSize: "16px",
                                     }}
                                 >
-                                    {activeBlerp?.title}
+                                    {activeBlerp?.soundEmotesContext?.title
+                                        ? activeBlerp?.soundEmotesContext?.title
+                                        : activeBlerp?.title}
                                 </Text>
                             }
                             placement='bottom'
@@ -545,7 +300,12 @@ const HomeButton = ({
                         >
                             <div style={{ cursor: "text" }}>
                                 <TruncatedText
-                                    text={activeBlerp?.title}
+                                    text={
+                                        activeBlerp?.soundEmotesContext?.title
+                                            ? activeBlerp?.soundEmotesContext
+                                                  ?.title
+                                            : activeBlerp?.title
+                                    }
                                     style={{
                                         fontSize: "16px",
                                         lineHeight: "130%",
@@ -1041,6 +801,25 @@ const HomeButton = ({
     };
 
     const renderTabPage = () => {
+        if (currentStreamerBlerpUser?.soundEmotesObject?.extensionDisabled) {
+            return (
+                <Stack
+                    sx={{
+                        display: "flex",
+                        width: "100%",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "flex-start",
+                        width: EXTENSION_WIDTH_PX,
+                        height: EXTENSION_HEIGHT_PX,
+                        backgroundColor: "grey8.real",
+                    }}
+                >
+                    <ExtensionDisabled />
+                </Stack>
+            );
+        }
+
         switch (tabState) {
             case "HOME":
             case "FAVES":
@@ -1106,16 +885,19 @@ const HomeButton = ({
                     >
                         {renderBlerpNav()}
 
-                        {/* {!hideStreamerPaused && (
-                            <StreamerPaused
-                                currentStreamerBlerpUser={
-                                    currentStreamerBlerpUser
-                                }
-                                handleClose={() => {
-                                    setHideStreamerPaused(true);
-                                }}
-                            />
-                        )} */}
+                        {!currentStreamerBlerpUser?.soundEmotesObject
+                            ?.extensionDisabled &&
+                            !hideStreamerPaused &&
+                            !activeBlerp && (
+                                <StreamerPaused
+                                    currentStreamerBlerpUser={
+                                        currentStreamerBlerpUser
+                                    }
+                                    handleClose={() => {
+                                        setHideStreamerPaused(true);
+                                    }}
+                                />
+                            )}
 
                         <CustomDrawer
                             containerSelector={".blerp-extension-container"}

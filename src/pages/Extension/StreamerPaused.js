@@ -18,14 +18,56 @@ import {
 } from "../../mainGraphQl";
 
 import selectedProject from "../../projectConfig";
-
 import CloseIcon from "@mui/icons-material/Close";
 
+const useTimeRemaining = (pauseUntilDate) => {
+    const [timeRemaining, setTimeRemaining] = useState("");
+
+    useEffect(() => {
+        if (!pauseUntilDate) {
+            setTimeRemaining("");
+            return;
+        }
+
+        const updateRemainingTime = () => {
+            const now = new Date();
+            const remainingTime = pauseUntilDate - now;
+
+            if (remainingTime <= 0) {
+                setTimeRemaining("");
+            } else {
+                const minutes = Math.ceil(remainingTime / (1000 * 60));
+                setTimeRemaining(`Will resume in ${minutes}m`);
+            }
+        };
+
+        updateRemainingTime();
+        const interval = setInterval(updateRemainingTime, 1000);
+
+        return () => clearInterval(interval);
+    }, [pauseUntilDate]);
+
+    return timeRemaining;
+};
+
 const StreamerPaused = ({ currentStreamerBlerpUser, handleClose }) => {
-    const snackbarContext = useContext(SnackbarContext);
-    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
-    const [pointsAdded, setPointsAdded] = useState(false);
+    const currentDate = new Date();
+    const pauseUntilDate = new Date(
+        currentStreamerBlerpUser?.soundEmotesObject?.pauseUntilDate,
+    );
+    const timeRemaining = useTimeRemaining(pauseUntilDate);
+
+    const isPaused =
+        (currentStreamerBlerpUser?.soundEmotesObject?.extensionPaused &&
+            !currentStreamerBlerpUser?.soundEmotesObject?.pauseUntilDate) ||
+        (currentStreamerBlerpUser?.soundEmotesObject?.pauseUntilDate &&
+            currentDate < pauseUntilDate);
+
     // const apolloClient = useApollo();
+
+    if (!isPaused) {
+        return <></>;
+    }
 
     return (
         <Stack
@@ -36,51 +78,50 @@ const StreamerPaused = ({ currentStreamerBlerpUser, handleClose }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 display: "flex",
-                paddingBottom: "32px",
                 margin: "12px auto",
 
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                padding: "10px",
-                gap: "20px",
+                padding: "12px",
+                gap: "6px",
 
                 width: "280px",
-                height: "170px",
+                height: "360px",
 
                 backgroundColor: "grey7.real",
                 borderRadius: "8px",
                 position: "relative",
             }}
         >
-            <CloseIcon
+            {/* <CloseIcon
                 sx={{
                     width: "28px",
                     height: "28px",
                     cursor: "pointer",
                     color: "notBlack.main",
                     marginRight: "8px",
-                    top: "12px",
-                    right: "12px",
+                    top: "8px",
+                    right: "8px",
                     position: "absolute",
                 }}
                 onClick={handleClose}
-            />
+            /> */}
 
             <Text
                 sx={{
-                    width: "260px",
                     fontFamily: "Odudo",
                     fontStyle: "normal",
                     fontWeight: 400,
                     fontSize: "18px",
                     lineHeight: "130%",
 
-                    textAlign: "center",
+                    textAlign: "left",
                     letterSpacing: "0.1em",
 
                     color: "black.real",
                     textTransform: "capitalize",
+                    width: "100%",
                 }}
             >
                 {currentStreamerBlerpUser?.username} Has Temporarily Paused
@@ -89,18 +130,35 @@ const StreamerPaused = ({ currentStreamerBlerpUser, handleClose }) => {
 
             <Text
                 sx={{
-                    width: "260px",
+                    fontFamily: "Odudo",
+                    fontStyle: "normal",
+                    fontWeight: 400,
+                    fontSize: "14px",
+                    lineHeight: "130%",
 
+                    textAlign: "left",
+                    letterSpacing: "0.1em",
+
+                    color: "grey3.real",
+                    width: "100%",
+                }}
+            >
+                {timeRemaining}.
+            </Text>
+
+            <Text
+                sx={{
                     fontFamily: "Odudo",
                     fontStyle: "normal",
                     fontWeight: 400,
                     fontSize: "12px",
                     lineHeight: "16px",
 
-                    textAlign: "center",
+                    textAlign: "left",
                     letterSpacing: "0.1em",
 
-                    color: "grey3.real",
+                    color: "grey4.real",
+                    width: "100%",
                 }}
             >
                 You can still preview sounds and add them to your favorites.

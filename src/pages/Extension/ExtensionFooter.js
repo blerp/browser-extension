@@ -1,5 +1,14 @@
-import React, { useEffect, useState } from "react";
-import { Box, Tab, Tabs, Stack, Button, Text, Tooltip } from "@blerp/design";
+import React, { useEffect, useState, useContext } from "react";
+import {
+    Box,
+    Tab,
+    Tabs,
+    Stack,
+    Button,
+    Text,
+    Tooltip,
+    SnackbarContext,
+} from "@blerp/design";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import CloseIcon from "@mui/icons-material/Close";
@@ -9,6 +18,8 @@ import styled from "styled-components";
 import VolumeSlider from "./VolumeSlider";
 import ChannelPointsCollector from "./ChannelPointsCollector";
 import selectedProject from "../../projectConfig";
+import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
+import { useMutation } from "@apollo/client";
 
 const CurrencyTab = styled(Box)`
     display: flex;
@@ -41,6 +52,10 @@ const ExtensionFooter = ({
     isStreaming,
     refetchAll,
 }) => {
+    const snackbarContext = useContext(SnackbarContext);
+    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
+    const [pointsAdded, setPointsAdded] = useState(false);
+
     const [openBeets, setOpenBeets] = useState(true);
     const handleIconClick = (state) => {
         if (tabState === state) {
@@ -242,6 +257,89 @@ const ExtensionFooter = ({
                 </Box>
             )}
 
+            {!userSignedIn?._id ||
+            activeBlerp?._id ||
+            (currentStreamerBlerpUser?.soundEmotesObject &&
+                currentStreamerBlerpUser.soundEmotesObject.extensionDisabled) ||
+            (currentStreamerBlerpUser?.soundEmotesObject &&
+                currentStreamerBlerpUser.soundEmotesObject
+                    .channelPointsDisabled) ? (
+                <></>
+            ) : typeof pointsAdded === "number" ? (
+                <Text
+                    sx={{
+                        color: "seafoam.main",
+                        fontSize: "11px",
+                    }}
+                >
+                    +{pointsAdded} points
+                </Text>
+            ) : currentStreamerBlerpUser &&
+              (!currentStreamerBlerpUser.loggedInChannelPointBasket ||
+                  currentStreamerBlerpUser.loggedInChannelPointBasket
+                      ?.showManualButton) ? (
+                <Button
+                    variant='text'
+                    color='notBlack'
+                    disableElevation={true}
+                    sx={{
+                        fontSize: "10px",
+                        cursor: "pointer",
+                        padding: "0px",
+
+                        "&:hover": {
+                            color: "seafoam.main",
+                        },
+                        textTransform: "capitalize",
+                    }}
+                    onClick={async () => {
+                        try {
+                            const { data } = await earnSnootPoints({
+                                variables: {
+                                    channelOwnerId:
+                                        currentStreamerBlerpUser?._id,
+                                    manualEarn: true,
+                                },
+                            });
+
+                            const pointsIncremented =
+                                data?.browserExtension?.earningSnoots
+                                    ?.pointsIncremented;
+
+                            setPointsAdded(pointsIncremented);
+                            const timeoutId = setTimeout(() => {
+                                setPointsAdded(false);
+                            }, 3000);
+
+                            snackbarContext.triggerSnackbar({
+                                message: "Points Collected!",
+                                severity: "success",
+                                transitionType: "fade",
+                                position: {
+                                    vertical: "bottom",
+                                    horizontal: "right",
+                                },
+                            });
+                        } catch (err) {
+                            snackbarContext.triggerSnackbar({
+                                message:
+                                    "Can only collect points when stream is live!",
+                                severity: "error",
+                                transitionType: "fade",
+                                position: {
+                                    vertical: "bottom",
+                                    horizontal: "right",
+                                },
+                            });
+                        }
+                    }}
+                >
+                    Bonus Points
+                </Button>
+            ) : (
+                <></>
+            )}
+
             {activeBlerp?._id || tabState === "PROFILE" ? (
                 <Stack
                     direction='row'
@@ -289,6 +387,7 @@ const ExtensionFooter = ({
                                 color: "#fff",
                                 opacity: 1,
                             }}
+                            onClick={() => {}}
                         >
                             <CurrencyIcon
                                 style={{
@@ -311,15 +410,85 @@ const ExtensionFooter = ({
                     <Tooltip
                         title={
                             rightSideMessage ? (
-                                <Text
-                                    sx={{
-                                        color: "white.override",
-                                        fontWeight: "300",
-                                        fontSize: "16px",
-                                    }}
-                                >
-                                    {rightSideMessage}
-                                </Text>
+                                currentStreamerBlerpUser?.soundEmotesObject
+                                    ?.beetsDisabled ? (
+                                    rightSideMessage
+                                ) : (
+                                    <Stack
+                                        direction='column'
+                                        sx={{
+                                            justifyContent: "center",
+                                            alignItems: "center",
+
+                                            padding: "10px",
+                                            gap: "20px",
+
+                                            width: "138px",
+                                            height: "207.04px",
+
+                                            backgroundColor: "grey6.real",
+                                            backdropFilter: "blur(10px)",
+
+                                            position: "relative",
+                                        }}
+                                    >
+                                        {/* <CloseIcon
+                                        sx={{
+                                            position: "absolute",
+                                            width: "24px",
+                                            height: "24px",
+                                            cursor: "pointer",
+                                            color: "whiteOverride.main",
+                                            top: "8px",
+                                            right: "8px",
+                                        }}
+                                        onClick={handleClose}
+                                    /> */}
+
+                                        <img
+                                            style={{ width: "110px" }}
+                                            src='https://cdn.blerp.com/design/twitch/blerpy_m.svg'
+                                        />
+
+                                        <Stack>
+                                            <Text
+                                                sx={{
+                                                    color: "white.override",
+                                                    fontWeight: "600",
+                                                    textAlign: "center",
+                                                    fontSize: "16px",
+                                                    lineHeight: "130%",
+                                                    letterSpacing: "0.1em",
+                                                    marginBottom: "4px",
+                                                }}
+                                            >
+                                                Time for More Beets
+                                            </Text>
+
+                                            <Button
+                                                variant='contained'
+                                                href={`${selectedProject.host}/tradeBeets`}
+                                                target='_blank'
+                                                rel='noreferrer'
+                                                color='notBlack'
+                                                sx={{
+                                                    padding: "4px 2px",
+                                                }}
+                                            >
+                                                <Text
+                                                    sx={{
+                                                        color: "#000000",
+                                                        fontSize: "14px",
+                                                        fontWeight: "600",
+                                                        letterSpacing: "0.1em",
+                                                    }}
+                                                >
+                                                    Add Beets
+                                                </Text>
+                                            </Button>
+                                        </Stack>
+                                    </Stack>
+                                )
                             ) : (
                                 ""
                             )
@@ -333,9 +502,9 @@ const ExtensionFooter = ({
                             },
                             tooltip: {
                                 sx: {
-                                    backgroundColor: "#000",
+                                    backgroundColor: "grey6.real",
                                     color: "white",
-                                    borderRadius: "4px",
+                                    borderRadius: "8px",
                                     fontSize: "16px",
                                 },
                             },
@@ -475,43 +644,52 @@ const ExtensionFooter = ({
                         </CurrencyTab>
                     </Tooltip>
 
-                    {!currentStreamerBlerpUser?.soundEmotesObject
-                        ?.channelPointsDisabled && (
-                        <ChannelPointsCollector
-                            blerpStreamer={currentStreamerBlerpUser}
-                            onTriggerSuccess={() => {}}
-                            onTriggerFail={() => {}}
-                            isStreaming={isStreaming}
-                            intervalMs={
-                                currentStreamerBlerpUser
-                                    ?.loggedInChannelPointBasket?.standardMS
-                            }
-                        />
-                    )}
-
+                    {currentStreamerBlerpUser?.loggedInChannelPointBasket
+                        ?.standardMS &&
+                        !currentStreamerBlerpUser.soundEmotesObject
+                            .extensionDisabled &&
+                        !currentStreamerBlerpUser.soundEmotesObject
+                            .extensionPaused &&
+                        !currentStreamerBlerpUser?.soundEmotesObject
+                            ?.channelPointsDisabled && (
+                            <ChannelPointsCollector
+                                blerpStreamer={currentStreamerBlerpUser}
+                                onTriggerSuccess={() => {}}
+                                onTriggerFail={() => {}}
+                                isStreaming={isStreaming}
+                                intervalMs={
+                                    currentStreamerBlerpUser
+                                        ?.loggedInChannelPointBasket?.standardMS
+                                }
+                            />
+                        )}
                     <Tooltip
                         arrow={true}
                         title={
                             rightSideMessage ? (
-                                <Stack
-                                    direction='column'
-                                    sx={{
-                                        justifyContent: "center",
-                                        alignItems: "center",
+                                currentStreamerBlerpUser?.soundEmotesObject
+                                    ?.beetsDisabled ? (
+                                    rightSideMessage
+                                ) : (
+                                    <Stack
+                                        direction='column'
+                                        sx={{
+                                            justifyContent: "center",
+                                            alignItems: "center",
 
-                                        padding: "10px",
-                                        gap: "20px",
+                                            padding: "10px",
+                                            gap: "20px",
 
-                                        width: "138px",
-                                        height: "207.04px",
+                                            width: "138px",
+                                            height: "207.04px",
 
-                                        backgroundColor: "grey6.real",
-                                        backdropFilter: "blur(10px)",
+                                            backgroundColor: "grey6.real",
+                                            backdropFilter: "blur(10px)",
 
-                                        position: "relative",
-                                    }}
-                                >
-                                    {/* <CloseIcon
+                                            position: "relative",
+                                        }}
+                                    >
+                                        {/* <CloseIcon
                                         sx={{
                                             position: "absolute",
                                             width: "24px",
@@ -524,49 +702,50 @@ const ExtensionFooter = ({
                                         onClick={handleClose}
                                     /> */}
 
-                                    <img
-                                        style={{ width: "110px" }}
-                                        src='https://cdn.blerp.com/design/twitch/blerpy_m.svg'
-                                    />
+                                        <img
+                                            style={{ width: "110px" }}
+                                            src='https://cdn.blerp.com/design/twitch/blerpy_m.svg'
+                                        />
 
-                                    <Stack>
-                                        <Text
-                                            sx={{
-                                                color: "white.override",
-                                                fontWeight: "600",
-                                                textAlign: "center",
-                                                fontSize: "16px",
-                                                lineHeight: "130%",
-                                                letterSpacing: "0.1em",
-                                                marginBottom: "4px",
-                                            }}
-                                        >
-                                            Time for More Beets
-                                        </Text>
-
-                                        <Button
-                                            variant='contained'
-                                            href={`${selectedProject.host}/tradeBeets`}
-                                            target='_blank'
-                                            rel='noreferrer'
-                                            color='notBlack'
-                                            sx={{
-                                                padding: "4px 2px",
-                                            }}
-                                        >
+                                        <Stack>
                                             <Text
                                                 sx={{
-                                                    color: "#000000",
-                                                    fontSize: "14px",
+                                                    color: "white.override",
                                                     fontWeight: "600",
+                                                    textAlign: "center",
+                                                    fontSize: "16px",
+                                                    lineHeight: "130%",
                                                     letterSpacing: "0.1em",
+                                                    marginBottom: "4px",
                                                 }}
                                             >
-                                                Add Beets
+                                                Time for More Beets
                                             </Text>
-                                        </Button>
+
+                                            <Button
+                                                variant='contained'
+                                                href={`${selectedProject.host}/tradeBeets`}
+                                                target='_blank'
+                                                rel='noreferrer'
+                                                color='notBlack'
+                                                sx={{
+                                                    padding: "4px 2px",
+                                                }}
+                                            >
+                                                <Text
+                                                    sx={{
+                                                        color: "#000000",
+                                                        fontSize: "14px",
+                                                        fontWeight: "600",
+                                                        letterSpacing: "0.1em",
+                                                    }}
+                                                >
+                                                    Add Beets
+                                                </Text>
+                                            </Button>
+                                        </Stack>
                                     </Stack>
-                                </Stack>
+                                )
                             ) : (
                                 ""
                             )

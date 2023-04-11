@@ -195,6 +195,16 @@ const BlerpModalScreen = ({
 
     const snackbarContext = useContext(SnackbarContext);
 
+    const currentDate = new Date();
+    const pauseUntilDate = new Date(
+        blerpStreamer?.soundEmotesObject?.pauseUntilDate,
+    );
+    const isPaused =
+        (blerpStreamer?.soundEmotesObject?.extensionPaused &&
+            !blerpStreamer?.soundEmotesObject?.pauseUntilDate) ||
+        (blerpStreamer?.soundEmotesObject?.pauseUntilDate &&
+            currentDate < pauseUntilDate);
+
     const handleSave = async (bite) => {
         try {
             setIsBlerpSaving(true);
@@ -513,7 +523,13 @@ const BlerpModalScreen = ({
                         {activeBlerp?.audio?.mp3?.url && (
                             <BlerpAudioPlayer
                                 audioUrl={activeBlerp?.audio?.mp3?.url}
-                                imageUrl={activeBlerp?.image?.original?.url}
+                                imageUrl={
+                                    activeBlerp?.soundEmotesContext
+                                        ?.imageUrlCached
+                                        ? activeBlerp?.soundEmotesContext
+                                              ?.imageUrlCached
+                                        : activeBlerp?.image?.original?.url
+                                }
                                 volume={volume}
                             />
                         )}
@@ -749,7 +765,7 @@ const BlerpModalScreen = ({
         }
 
         const renderCorrectTinyText = () => {
-            if (blerpStreamer?.soundEmotesObject?.extensionPaused) {
+            if (isPaused) {
                 return (
                     <Tooltip
                         title={
@@ -1633,7 +1649,12 @@ const BlerpModalScreen = ({
                     {activeBlerp?.audio?.mp3?.url && (
                         <BlerpAudioPlayer
                             audioUrl={activeBlerp?.audio?.mp3?.url}
-                            imageUrl={activeBlerp?.image?.original?.url}
+                            imageUrl={
+                                activeBlerp?.soundEmotesContext?.imageUrlCached
+                                    ? activeBlerp?.soundEmotesContext
+                                          ?.imageUrlCached
+                                    : activeBlerp?.image?.original?.url
+                            }
                             volume={volume}
                         />
                     )}

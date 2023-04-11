@@ -90,7 +90,7 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "grey3.real",
                 }}
             >
-                Tell streamer or mod to go to the setup link below and add more
+                Tell streamer or mod to go to the setup link below to add more
                 sounds to this panel!
             </Text>
 

@@ -163,7 +163,7 @@ const projectConfig = {
         firefoxExtensionId: "ikkagimdocgbcmfddfnehhhlidjhnhhi",
     },
     development: {
-        apiHost: "http://localhost:3000",
+        apiHost: "http://localhost:3002",
         host: "http://localhost:1500",
         hostName: "localhost",
         twitchExtensionClientId: "oafn7vvzfyzyccwrwrt233221oe5wq",

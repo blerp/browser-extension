@@ -243,7 +243,7 @@ const UserChannelPointsBasket = ({
                             <Text
                                 sx={{
                                     color: "#000000",
-                                    fontSize: "16px",
+                                    fontSize: "12px",
                                     fontWeight: "600",
                                 }}
                             >
