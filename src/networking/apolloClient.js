@@ -40,7 +40,7 @@ let apolloCache;
 
 const refreshTokenMutation = gql`
     mutation refreshToken($refreshToken: String!) {
-        twitch {
+        browserExtension {
             userRefreshToken(record: { refreshToken: $refreshToken }) {
                 jwt
                 refreshToken
@@ -88,12 +88,19 @@ const errorLink = onError(
                                     return forward(operation);
                                 }),
                             ).flatMap((data) => {
+                                const oldHeaders =
+                                    operation &&
+                                    operation.getContext() &&
+                                    operation.getContext().headers;
+
                                 if (
                                     !data ||
                                     !data.data ||
-                                    !data.data.twitch ||
-                                    !data.data.twitch.userRefreshToken ||
-                                    !data.data.twitch.userRefreshToken.jwt
+                                    !data.data.browserExtension ||
+                                    !data.data.browserExtension
+                                        .userRefreshToken ||
+                                    !data.data.browserExtension.userRefreshToken
+                                        .jwt
                                 ) {
                                     operation.setContext({
                                         headers: {
@@ -113,12 +120,11 @@ const errorLink = onError(
                                 }
 
                                 const accessToken =
-                                    data.data.twitch.userRefreshToken.jwt;
+                                    data.data.browserExtension.userRefreshToken
+                                        .jwt;
                                 const refreshToken =
-                                    data.data.twitch.userRefreshToken
+                                    data.data.browserExtension.userRefreshToken
                                         .refreshToken;
-                                const oldHeaders =
-                                    operation.getContext().headers;
 
                                 if (!refreshToken || !accessToken) {
                                     removeAndLogoutOfCacheJwt();

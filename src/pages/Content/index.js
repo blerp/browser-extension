@@ -88,10 +88,14 @@ let YT_CHAT_BUTTON_CONTAINER;
                 clearInterval(twitchChatIntervalId);
                 twitchChatIntervalId = null;
 
+                const firstDivInsideTarget = target.querySelector(
+                    ":scope > div:first-child",
+                );
+
                 if (!TWITCH_CHAT_BUTTON_CONTAINER) {
                     const container = getElementByIdOrCreate(
                         "twitch-chat-button-container-blerp",
-                        target,
+                        firstDivInsideTarget ? firstDivInsideTarget : target,
                     );
 
                     TWITCH_CHAT_BUTTON_CONTAINER = createRoot(container);

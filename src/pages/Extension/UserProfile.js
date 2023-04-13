@@ -20,10 +20,8 @@ import {
     EARN_SNOOT_POINTS,
 } from "../../mainGraphQl";
 
-import EllipsisLoader from "./EllipsisLoader";
 import selectedProject from "../../projectConfig";
 import { removeAndLogoutOfCacheJwt } from "../../globalCache";
-import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 import UserBeetsWallet from "./UserBeetsWallet";
 import UserChannelPointsBasket from "./UserChannelPointsBasket";
 import UserLoginScreen from "./UserLoginScreen";

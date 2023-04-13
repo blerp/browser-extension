@@ -24,14 +24,15 @@ import { useMutation } from "@apollo/client";
 const CurrencyTab = styled(Box)`
     display: flex;
     align-items: center;
-    border-radius: 8px;
-    padding: 0.2rem 0.4rem;
+    border-radius: 4px;
+    padding: 2px 4px;
+    font-size: 14px;
 `;
 
 const CurrencyIcon = styled("img")`
     width: 24px;
     height: 24px;
-    margin-right: 0.5rem;
+    margin-right: 4px;
 `;
 const ImageStyle = styled("img")`
     &:hover {
@@ -347,7 +348,7 @@ const ExtensionFooter = ({
                     sx={{
                         padding: "4px 4px",
                         backgroundColor: "transparent",
-                        borderRadius: "8px",
+                        borderRadius: "4px",
                     }}
                 >
                     <Tooltip
@@ -540,7 +541,7 @@ const ExtensionFooter = ({
                     sx={{
                         padding: "4px 4px",
                         backgroundColor: "rgba(103, 111, 112, 0.6);",
-                        borderRadius: "8px",
+                        borderRadius: "4px",
                     }}
                 >
                     <Tooltip

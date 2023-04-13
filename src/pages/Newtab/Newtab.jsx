@@ -44,6 +44,7 @@ const Newtab = () => {
                     platform={currentPlatform}
                     optionalButtonText='Share'
                     isStreaming={true}
+                    showJustPanel={false}
                 />
 
                 <Button

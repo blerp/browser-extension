@@ -14,7 +14,6 @@ import gql from "graphql-tag";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircle from "@mui/icons-material/CheckCircle";
 
-import { useApollo } from "../../networking/apolloClient";
 import styled from "styled-components";
 import EllipsisLoader from "./EllipsisLoader";
 import AudioPlayer from "./BlerpAudioPlayer";
@@ -158,7 +157,6 @@ const BlerpModalShare = ({
         variables: {},
     });
 
-    const apolloClient = useApollo();
     const [currentContent, setCurrentContent] = useState(false);
     const [showShared, setShowShared] = useState(false);
 

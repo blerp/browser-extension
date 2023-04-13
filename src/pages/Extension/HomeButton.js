@@ -94,6 +94,7 @@ const HomeButton = ({
     optionalButtonText,
     isStreaming,
     themeMode, // light/dark
+    showJustPanel,
 }) => {
     const { loading, data, error, refetch } = useQuery(
         VIEWER_BROWSER_EXTENSION,
@@ -374,16 +375,18 @@ const HomeButton = ({
                         </MenuItem>
                     </Menu>
 
-                    <CloseIcon
-                        sx={{
-                            width: "28px",
-                            height: "28px",
-                            cursor: "pointer",
-                            color: "notBlack.main",
-                            marginRight: "8px",
-                        }}
-                        onClick={handleClose}
-                    />
+                    {!showJustPanel && (
+                        <CloseIcon
+                            sx={{
+                                width: "28px",
+                                height: "28px",
+                                cursor: "pointer",
+                                color: "notBlack.main",
+                                marginRight: "8px",
+                            }}
+                            onClick={handleClose}
+                        />
+                    )}
                 </Stack>
             );
         }
@@ -627,16 +630,18 @@ const HomeButton = ({
                                 />
                             )}
 
-                            <CloseIcon
-                                sx={{
-                                    width: "24px",
-                                    height: "24px",
-                                    cursor: "pointer",
-                                    color: "notBlack.main",
-                                    marginRight: "8px",
-                                }}
-                                onClick={handleClose}
-                            />
+                            {!showJustPanel && (
+                                <CloseIcon
+                                    sx={{
+                                        width: "24px",
+                                        height: "24px",
+                                        cursor: "pointer",
+                                        color: "notBlack.main",
+                                        marginRight: "8px",
+                                    }}
+                                    onClick={handleClose}
+                                />
+                            )}
                         </Stack>
                     </Stack>
                 );
@@ -683,125 +688,28 @@ const HomeButton = ({
                             </Stack>
                         </Stack>
 
-                        <CloseIcon
-                            sx={{
-                                width: "24px",
-                                height: "24px",
-                                cursor: "pointer",
-                                color: "notBlack.main",
-                                marginRight: "8px",
-                            }}
-                            onClick={handleClose}
-                        />
+                        {!showJustPanel && (
+                            <CloseIcon
+                                sx={{
+                                    width: "24px",
+                                    height: "24px",
+                                    cursor: "pointer",
+                                    color: "notBlack.main",
+                                    marginRight: "8px",
+                                }}
+                                onClick={handleClose}
+                            />
+                        )}
                     </Stack>
                 );
         }
     };
 
-    const renderOnlineBanner = () => {
-        if (!currentStreamerBlerpUser) {
-            return <></>;
-        }
-
-        return (
-            <Stack
-                className='blerp-extension-container'
-                direction='row'
-                sx={{
-                    backgroundColor: currentStreamerBlerpUser?.browserOnline
-                        ? "seafoam.main"
-                        : "ibisRed.main",
-                    width: "100%",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "24px",
-                    margin: "6px 0",
-                    cursor: "pointer",
-                }}
-                onClick={async () => {
-                    await refetch();
-                }}
-            >
-                <Text
-                    sx={{
-                        fontSize: "10px",
-                        fontWeight: "300",
-                        color: "notBlack.override",
-                    }}
-                >
-                    Sharing to{" "}
-                    <Text
-                        sx={{
-                            color: "notBlack.override",
-                            fontSize: "10px",
-                            cursor: "pointer",
-                            fontWeight: "600",
-                            display: "inline",
-
-                            "&:hover": {
-                                color: "buntingBlue.main",
-                            },
-                        }}
-                        onClick={() => {
-                            window.open(
-                                `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
-                                "_blank",
-                            );
-                        }}
-                    >
-                        {currentStreamerBlerpUser?.username}
-                    </Text>{" "}
-                    stream!
-                </Text>
-
-                {currentStreamerBlerpUser?.browserOnline ? (
-                    <Text
-                        sx={{
-                            fontSize: "10px",
-                            fontWeight: "300",
-                            color: "notBlack.override",
-                            margin: "2px",
-                        }}
-                    >
-                        - Online
-                    </Text>
-                ) : (
-                    <Text
-                        sx={{
-                            fontSize: "10px",
-                            fontWeight: "300",
-                            color: "notBlack.override",
-                            margin: "2px",
-                        }}
-                    >
-                        - Offline
-                    </Text>
-                )}
-
-                {/* 
-            <Text
-                sx={{
-                    textDecoration: "underline",
-                    cursor: "pointer",
-                    "&:hover": { opacity: 0.7 },
-                    fontSize: "10px",
-                    color: "notBlack.override",
-                }}
-                onClick={() => {
-                    window.open(
-                        `${selectedProject.host}/sound-emotes/${currentStreamerBlerpUser?._id}`,
-                        "_blank",
-                    );
-                }}
-            >
-                or share sounds here
-            </Text> */}
-            </Stack>
-        );
-    };
-
     const renderTabPage = () => {
-        if (currentStreamerBlerpUser?.soundEmotesObject?.extensionDisabled) {
+        if (
+            !currentStreamerBlerpUser?.soundEmotesObject ||
+            currentStreamerBlerpUser?.soundEmotesObject?.extensionDisabled
+        ) {
             return (
                 <Stack
                     sx={{
@@ -826,7 +734,7 @@ const HomeButton = ({
             case "PROFILE":
                 return (
                     <>
-                        {!!anchorEl && (
+                        {(!!anchorEl || showJustPanel) && (
                             <>
                                 <ExtensionRoot
                                     activeBlerp={activeBlerp}
@@ -969,6 +877,19 @@ const HomeButton = ({
                 );
         }
     };
+
+    if (showJustPanel) {
+        return (
+            <Stack
+                sx={{
+                    padding: "3px",
+                    position: "relative",
+                }}
+            >
+                {renderMainPage()}
+            </Stack>
+        );
+    }
 
     return (
         <Stack

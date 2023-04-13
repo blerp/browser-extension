@@ -12,7 +12,6 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
-import { useApollo } from "../../networking/apolloClient";
 import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
 
 import EllipsisLoader from "./EllipsisLoader";
@@ -27,12 +26,6 @@ const UserProfile = ({
     refetchAll,
     currentStreamerBlerpUser,
 }) => {
-    const snackbarContext = useContext(SnackbarContext);
-    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
-    const [pointsAdded, setPointsAdded] = useState(false);
-    const [loggingOut, setLoggingOut] = useState(false);
-    const apolloClient = useApollo();
-
     return (
         <Stack
             sx={{

@@ -27,7 +27,7 @@ const AudioPlayer = ({
 
             return () => clearInterval(timer);
         } else {
-            setProgress(100);
+            setProgress(0);
         }
     }, [isPlaying]);
 
@@ -35,6 +35,7 @@ const AudioPlayer = ({
         setIsPlaying(!isPlaying);
         audioRef.current.volume = volume;
         isPlaying ? audioRef.current.pause() : audioRef.current.play();
+        audioRef.current.currentTime = 0;
     };
 
     return (

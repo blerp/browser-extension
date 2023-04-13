@@ -10,17 +10,10 @@ import {
 } from "@blerp/design";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { useApollo } from "../../networking/apolloClient";
 import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
 import selectedProject from "../../projectConfig";
 
 const ExtensionDisabled = ({ currentStreamerBlerpUser }) => {
-    const snackbarContext = useContext(SnackbarContext);
-    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
-    const [pointsAdded, setPointsAdded] = useState(false);
-    const [loggingOut, setLoggingOut] = useState(false);
-    const apolloClient = useApollo();
-
     return (
         <Stack
             sx={{
@@ -59,12 +52,9 @@ const ExtensionDisabled = ({ currentStreamerBlerpUser }) => {
                     to their stream.
                 </Text>
 
-                {/* 
                 <Button
                     variant='contained'
-                    href={`${
-                        selectedProject.host
-                    }/login?returnTo=${`/soundboard-browser-extension`}`}
+                    href={`${selectedProject.host}/soundemotes`}
                     target='_blank'
                     rel='noreferrer'
                     color='notBlack'
@@ -75,13 +65,13 @@ const ExtensionDisabled = ({ currentStreamerBlerpUser }) => {
                     <Text
                         sx={{
                             color: "#000000",
-                            fontSize: "18px",
+                            fontSize: "12px",
                             fontWeight: "600",
                         }}
                     >
-                        Login
+                        Streamer Setup
                     </Text>
-                </Button> */}
+                </Button>
             </Stack>
         </Stack>
     );

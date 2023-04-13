@@ -99,7 +99,7 @@ const NoSearchResultsFooter = ({}) => {
                         whiteSpace: "nowrap",
                         color: "#000000",
                     }}
-                    href={`${selectedProject.host}/soundEmotes`}
+                    href={`${selectedProject.host}/`}
                     target='_blank'
                     rel='noreferrer'
                 >

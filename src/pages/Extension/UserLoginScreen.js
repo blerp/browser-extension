@@ -10,17 +10,10 @@ import {
 } from "@blerp/design";
 import { useQuery, useMutation } from "@apollo/client";
 
-import { useApollo } from "../../networking/apolloClient";
 import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
 import selectedProject from "../../projectConfig";
 
 const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
-    const snackbarContext = useContext(SnackbarContext);
-    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
-    const [pointsAdded, setPointsAdded] = useState(false);
-    const [loggingOut, setLoggingOut] = useState(false);
-    const apolloClient = useApollo();
-
     return (
         <Stack
             sx={{
@@ -69,7 +62,7 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                             color: "buntingBlue.main",
                             textDecoration: "underline",
                             cursor: "pointer",
-                            fontSize: "22px",
+                            fontSize: "18px",
                         }}
                     >
                         Blerp Beets
@@ -96,7 +89,7 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                     <Text
                         sx={{
                             color: "#000000",
-                            fontSize: "18px",
+                            fontSize: "14px",
                             fontWeight: "600",
                         }}
                     >

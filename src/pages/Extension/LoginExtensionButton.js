@@ -10,7 +10,6 @@ import {
 import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 
-import { useApollo } from "../../networking/apolloClient";
 import FaceRoundedIcon from "@mui/icons-material/FaceRounded";
 import { getGlobalCacheJwt } from "../../globalCache";
 
@@ -26,7 +25,6 @@ const COMPLETE_SIGN_UP = gql`
 `;
 
 const LoginExtensionButton = ({}) => {
-    const apolloClient = useApollo();
     const [completeLogin] = useMutation(COMPLETE_SIGN_UP);
     const [completedLoginClicked, setShowCompleteLogin] = useState(false);
     const snackbarContext = useContext(SnackbarContext);

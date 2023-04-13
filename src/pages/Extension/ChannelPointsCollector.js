@@ -10,7 +10,6 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
-import { useApollo } from "../../networking/apolloClient";
 import {
     BITE,
     BLERP_USER_SELF,

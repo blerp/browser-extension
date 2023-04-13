@@ -51,7 +51,7 @@ const VolumeBar = ({ volume, setVolume, filledColor, backgroundColor }) => {
                 direction='row'
                 alignItems='center'
                 spacing={1}
-                sx={{ width: 95, height: 25 }}
+                sx={{ width: 75, height: 25 }}
                 onMouseEnter={() => setHover(true)}
                 onMouseLeave={() => setHover(false)}
             >
@@ -71,7 +71,7 @@ const VolumeBar = ({ volume, setVolume, filledColor, backgroundColor }) => {
                         onChange={(e, newValue) => setVolume(newValue)}
                         color='whiteOverride'
                         sx={{
-                            width: 60,
+                            width: 55,
                             height: 5,
                             borderRadius: 2.5,
                             padding: "0 4px",

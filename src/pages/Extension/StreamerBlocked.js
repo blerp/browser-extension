@@ -18,7 +18,6 @@ import {
     EARN_SNOOT_POINTS,
 } from "../../mainGraphQl";
 
-import selectedProject from "../../projectConfig";
 import AudioPlayer from "./BlerpAudioPlayer";
 import EllipsisLoader from "./EllipsisLoader";
 import { EXTENSION_HEIGHT_PX, EXTENSION_WIDTH_PX } from "../../constants";

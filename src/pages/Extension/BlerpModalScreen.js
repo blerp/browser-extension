@@ -13,18 +13,15 @@ import {
 import { useQuery, useMutation, isReference } from "@apollo/client";
 import gql from "graphql-tag";
 
-import { useApollo } from "../../networking/apolloClient";
 import styled, { keyframes } from "styled-components";
 import EllipsisLoader from "./EllipsisLoader";
 import RemoveCircleOutlineRoundedIcon from "@mui/icons-material/RemoveCircleOutlineRounded";
 import selectedProject from "../../projectConfig";
-import { EXTENSION_HEIGHT_PX } from "../../constants";
 import BlerpAudioPlayer from "./BlerpAudioPlayer";
 import SegmentedSwitch from "./SegmentedSwitch";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
-import { BITE_WITH_SOUND_EMOTES } from "../../mainGraphQl";
 
 const headshake = keyframes`
   0% {
@@ -85,7 +82,7 @@ const PLAY_AND_TRANSFER_BEETS = gql`
     mutation soundEmotesBeetsTradeToCreator(
         $record: PlaySoundEmotesBeetsInput!
     ) {
-        soundEmotes {
+        browserExtension {
             beetsTradeToCreatorPlaySoundEmotes(record: $record) {
                 transactionSuccessful
                 transactionJournalEntry {
@@ -109,7 +106,7 @@ const PLAY_AND_TRANSFER_BEETS = gql`
 
 const SPEND_SNOOTS_CP = gql`
     mutation spendingSomeSnoots($record: spendSnootsInput!) {
-        soundEmotes {
+        browserExtension {
             spendingSnoots(record: $record) {
                 channelPointsBasket {
                     _id
@@ -128,7 +125,7 @@ const PLAY_TEST_SOUND = gql`
         $blerpId: MongoID!
         $soundEmotesStreamerId: MongoID!
     ) {
-        soundEmotes {
+        browserExtension {
             sendTestBlerp(
                 blerpId: $blerpId
                 soundEmotesStreamerId: $soundEmotesStreamerId
@@ -137,22 +134,6 @@ const PLAY_TEST_SOUND = gql`
                 soundEmotesStreamer {
                     _id
                 }
-            }
-        }
-    }
-`;
-
-const GET_RANDOM_BITE = gql`
-    query getRandomBite {
-        web {
-            biteRandomOne {
-                _id
-                title
-                saved
-            }
-            userSignedIn {
-                _id
-                username
             }
         }
     }
@@ -173,14 +154,9 @@ const BlerpModalScreen = ({
     currencyGlobalState,
     volume = 1,
     searchQuery,
+    showDefaultCurrency,
 }) => {
     const [localCurrencyType, setLocalCurrencyType] = useState(null); // currencyGlobalState
-
-    const { loading, data, error } = useQuery(GET_RANDOM_BITE, {
-        variables: {},
-    });
-
-    const apolloClient = useApollo();
     const [currentContent, setCurrentContent] = useState(false);
     const [showShared, setShowShared] = useState(false);
 
@@ -596,7 +572,7 @@ const BlerpModalScreen = ({
                                     color: "white.main",
                                     maxWidth: "280px",
                                     textTransform: "none",
-                                    fontSize: "16px",
+                                    fontSize: "12px",
                                 }}
                             >
                                 Login to Share Sounds
@@ -1029,8 +1005,7 @@ const BlerpModalScreen = ({
 
         const renderShareButton = () => {
             if (maxCooldown > 0) {
-                return;
-
+                return <></>;
                 return (
                     <Button
                         variant='custom'

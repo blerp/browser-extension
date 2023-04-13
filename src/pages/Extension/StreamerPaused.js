@@ -7,18 +7,6 @@ import {
     BlerpyIcon,
     SnackbarContext,
 } from "@blerp/design";
-import { useQuery, useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-
-import {
-    BITE,
-    BLERP_USER_SELF,
-    BLERP_USER_STREAMER,
-    EARN_SNOOT_POINTS,
-} from "../../mainGraphQl";
-
-import selectedProject from "../../projectConfig";
-import CloseIcon from "@mui/icons-material/Close";
 
 const useTimeRemaining = (pauseUntilDate) => {
     const [timeRemaining, setTimeRemaining] = useState("");
@@ -128,23 +116,25 @@ const StreamerPaused = ({ currentStreamerBlerpUser, handleClose }) => {
                 Blerp!{" "}
             </Text>
 
-            <Text
-                sx={{
-                    fontFamily: "Odudo",
-                    fontStyle: "normal",
-                    fontWeight: 400,
-                    fontSize: "14px",
-                    lineHeight: "130%",
+            {timeRemaining && (
+                <Text
+                    sx={{
+                        fontFamily: "Odudo",
+                        fontStyle: "normal",
+                        fontWeight: 400,
+                        fontSize: "14px",
+                        lineHeight: "130%",
 
-                    textAlign: "left",
-                    letterSpacing: "0.1em",
+                        textAlign: "left",
+                        letterSpacing: "0.1em",
 
-                    color: "grey3.real",
-                    width: "100%",
-                }}
-            >
-                {timeRemaining}.
-            </Text>
+                        color: "grey3.real",
+                        width: "100%",
+                    }}
+                >
+                    {timeRemaining}.
+                </Text>
+            )}
 
             <Text
                 sx={{
