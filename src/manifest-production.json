@@ -1,7 +1,7 @@
 {
     "manifest_version": 3,
-    "name": "Blerp. Sound Alerts, Emotes - Meme Soundboards",
-    "description": "The Blerp Sound Emotes and Sound Alerts Soundboard for sharing all sound memes. The best sound effects for all livestreaming!",
+    "name": "Blerp. Sound Emotes, Alerts, Meme Soundboards",
+    "description": "Blerp Sound Memes for your Streams! The best sound effects, emotes, and sound alerts for all chat and livestreaming!",
     "options_page": "options.html",
     "background": { "service_worker": "background.bundle.js" },
     "permissions": ["storage"],
