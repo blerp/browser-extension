@@ -1,30 +1,8 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
-
-import {
-    Stack,
-    Button,
-    Text,
-    BlerpyIcon,
-    SnackbarContext,
-} from "@blerp/design";
-import { useQuery, useMutation } from "@apollo/client";
-import gql from "graphql-tag";
-
-import {
-    BITE,
-    BLERP_USER_SELF,
-    BLERP_USER_STREAMER,
-    EARN_SNOOT_POINTS,
-} from "../../mainGraphQl";
-
+import { Stack, Button, Text } from "@blerp/design";
 import selectedProject from "../../projectConfig";
 
 const StreamerNeedsToSetup = ({}) => {
-    const snackbarContext = useContext(SnackbarContext);
-    const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
-    const [pointsAdded, setPointsAdded] = useState(false);
-    // const apolloClient = useApollo();
-
     return (
         <Stack
             sx={{
@@ -71,7 +49,7 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "black.real",
                 }}
             >
-                Streamer has not fully setup Blerp
+                Streamer has not added Sounds
             </Text>
 
             <Text
@@ -90,8 +68,8 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "grey3.real",
                 }}
             >
-                Tell streamer or mod to go to the setup link below to add more
-                sounds to this panel!
+                Tell streamer or mod to go to their dashboard and add sounds to
+                this panel!
             </Text>
 
             <Stack
@@ -111,6 +89,7 @@ const StreamerNeedsToSetup = ({}) => {
                         whiteSpace: "nowrap",
                         color: "#000000",
                         margin: "0 4px",
+                        fontSize: "14px",
                     }}
                     href={`${selectedProject.host}/soundEmotes`}
                     target='_blank'
@@ -125,6 +104,7 @@ const StreamerNeedsToSetup = ({}) => {
                     sx={{
                         whiteSpace: "nowrap",
                         borderColor: "whiteOverride.main",
+                        fontSize: "14px",
                     }}
                     onClick={() => window.location.reload()}
                 >
