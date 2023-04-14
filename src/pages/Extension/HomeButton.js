@@ -55,6 +55,7 @@ import { EXTENSION_WIDTH_PX, EXTENSION_HEIGHT_PX } from "../../constants";
 import CustomDrawer from "./CustomDrawer";
 import TruncatedText from "./TruncatedText";
 import ExtensionDisabled from "./ExtensionDisabled";
+import { useApollo } from "../../networking/apolloClient";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -117,6 +118,8 @@ const HomeButton = ({
     const [showSearch, setShowSearch] = useState("");
     const [tabState, setTabState] = useState("HOME");
     const [previousTabState, setPreviousTabState] = useState("HOME");
+
+    const apolloClient = useApollo();
 
     const [anchorBlerpEl, setAnchorBlerpEl] = useState(null);
     const [copyText, setCopyText] = useState("Copy Link");
@@ -206,6 +209,7 @@ const HomeButton = ({
         setSearchTerm("");
         setAnchorEl(null);
         setHideStreamerPaused(false);
+        apolloClient.resetStore();
     };
 
     const open = Boolean(anchorEl);
