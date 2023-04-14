@@ -563,7 +563,7 @@ const FeaturedPageNew = ({
                     ? "CHANNELPOINTSAMOUNT_ASC"
                     : "BEETAMOUNT_ASC", // make sure to only pass in if it's not null
         },
-        fetchPolicy: "network-only",
+        // fetchPolicy: "network-only",
     });
 
     const lastViewedAt =
