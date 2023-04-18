@@ -902,8 +902,6 @@ const HomeButton = ({
         );
     }
 
-    console.log("OPEN", open);
-
     return (
         <Stack
             sx={{
@@ -920,6 +918,7 @@ const HomeButton = ({
                                     ? "notBlack.override"
                                     : "white.override",
                             zIndex: 100000,
+                            fontFamily: "Odudo",
                         },
                     },
                 }}
@@ -934,6 +933,7 @@ const HomeButton = ({
                                         : "notBlack.override",
                                 fontWeight: "600",
                                 fontSize: "16px",
+                                fontFamily: "Odudo",
                             }}
                         >
                             Blerp Sounds

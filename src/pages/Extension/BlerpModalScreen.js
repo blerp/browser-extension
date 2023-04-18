@@ -160,6 +160,7 @@ const BlerpModalScreen = ({
     const [localCurrencyType, setLocalCurrencyType] = useState(null); // currencyGlobalState
     const [currentContent, setCurrentContent] = useState(false);
     const [showShared, setShowShared] = useState(false);
+    const [showSharedSuccess, setShowSharedSucess] = useState(false);
 
     const [maxCooldown, setMaxCooldown] = useState(0);
 
@@ -344,6 +345,9 @@ const BlerpModalScreen = ({
                             horizontal: "right",
                         },
                     });
+
+                    setShowSharedSucess(true);
+                    setTimeout(() => setShowSharedSucess(false), 4600);
                 })
                 .catch((err) => {
                     setShake(true);
@@ -419,6 +423,9 @@ const BlerpModalScreen = ({
                               console.log(err);
                           }
 
+                          setShowSharedSucess(true);
+                          setTimeout(() => setShowSharedSucess(false), 4600);
+
                           // setShowSuccess(true);
                       })
                       .catch((err) => {
@@ -475,6 +482,8 @@ const BlerpModalScreen = ({
                               console.log(err);
                           }
 
+                          setShowSharedSucess(true);
+                          setTimeout(() => setShowSharedSucess(false), 4600);
                           // setShowSuccess(true);
                       })
                       .catch((err) => {
@@ -1720,8 +1729,20 @@ const BlerpModalScreen = ({
                 alignItems: "center",
                 width: "100%",
                 height: "100%",
+                position: "relative",
             }}
         >
+            {showSharedSuccess && (
+                <img
+                    src='https://cdn.blerp.com/design/browser-extension/giftconfetti.gif'
+                    style={{
+                        width: "100%",
+                        height: "100%",
+                        position: "absolute",
+                        pointerEvents: "none",
+                    }}
+                />
+            )}
             {renderScreen()}
         </Stack>
     );
