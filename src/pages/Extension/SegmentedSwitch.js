@@ -99,6 +99,13 @@ const SegmentedSwitch = ({
                         padding: "0 4px",
                         cursor: leftSideDisabled ? "" : "pointer",
                         opacity: leftSideDisabled ? "0.5" : "1",
+
+                        "&:hover": {
+                            backgroundColor:
+                                selectedOption === selectedOptionLeft
+                                    ? leftColor
+                                    : "#474D4F",
+                        },
                     }}
                     onClick={() => {
                         if (leftSideDisabled || leftSideFullyDisabled) {
@@ -196,6 +203,13 @@ const SegmentedSwitch = ({
                         padding: "0 4px",
                         cursor: rightSideDisabled ? "" : "pointer",
                         opacity: rightSideDisabled ? "0.5" : "1",
+
+                        "&:hover": {
+                            backgroundColor:
+                                selectedOption === selectedOptionRight
+                                    ? rightColor
+                                    : "#773B4B",
+                        },
                     }}
                     onClick={() => {
                         if (rightSideDisabled || rightSideFullyDisabled) {

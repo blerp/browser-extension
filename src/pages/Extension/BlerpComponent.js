@@ -347,47 +347,6 @@ const BiteComponent = ({
                     <Stack
                         direction='row'
                         sx={{
-                            backgroundColor: "#B43757",
-                            height: "24px",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            transition: "all 0.2s ease-in-out",
-                        }}
-                        onClick={() => {
-                            // setLocalCurrencyType("BEETS");
-                        }}
-                        onMouseEnter={() => setIsHoveredBeets(true)}
-                        onMouseLeave={() => setIsHoveredBeets(false)}
-                    >
-                        <img
-                            src='https://cdn.blerp.com/design/browser-extension/beet.svg'
-                            style={{
-                                width: "20px",
-                                height: "20px",
-                                paddingRight: "4px",
-                                paddingLeft: "2px",
-                            }}
-                        />
-
-                        {(currencyGlobalState === "BEETS" || isHoveredBeets) &&
-                            !isHoveredPoints && (
-                                <Text
-                                    sx={{
-                                        color: "white",
-                                        textAlign: "center",
-                                        fontSize: "12px",
-                                        paddingRight: "4px",
-                                        transition: "all 0.2s ease-in-out",
-                                    }}
-                                >
-                                    {bite?.soundEmotesContext?.beetAmount}
-                                </Text>
-                            )}
-                    </Stack>
-
-                    <Stack
-                        direction='row'
-                        sx={{
                             backgroundColor: "grey6.real",
                             alignItems: "center",
                             justifyContent: "center",
@@ -427,6 +386,47 @@ const BiteComponent = ({
                                 </Text>
                             )}
                     </Stack>
+
+                    <Stack
+                        direction='row'
+                        sx={{
+                            backgroundColor: "#B43757",
+                            height: "24px",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            transition: "all 0.2s ease-in-out",
+                        }}
+                        onClick={() => {
+                            // setLocalCurrencyType("BEETS");
+                        }}
+                        onMouseEnter={() => setIsHoveredBeets(true)}
+                        onMouseLeave={() => setIsHoveredBeets(false)}
+                    >
+                        <img
+                            src='https://cdn.blerp.com/design/browser-extension/beet.svg'
+                            style={{
+                                width: "20px",
+                                height: "20px",
+                                paddingRight: "4px",
+                                paddingLeft: "2px",
+                            }}
+                        />
+
+                        {(currencyGlobalState === "BEETS" || isHoveredBeets) &&
+                            !isHoveredPoints && (
+                                <Text
+                                    sx={{
+                                        color: "white",
+                                        textAlign: "center",
+                                        fontSize: "12px",
+                                        paddingRight: "4px",
+                                        transition: "all 0.2s ease-in-out",
+                                    }}
+                                >
+                                    {bite?.soundEmotesContext?.beetAmount}
+                                </Text>
+                            )}
+                    </Stack>
                 </Stack>
             ) : (
                 <></>
@@ -460,9 +460,9 @@ const BiteComponent = ({
                         whiteSpace: "nowrap",
                         overflow: "hidden",
                         transition: "transform 3s linear",
-                        transform: isHovered
-                            ? "translateX(-100%)"
-                            : "translateX(0%)",
+                        // transform: isHovered
+                        //     ? "translateX(-15%)"
+                        //     : "translateX(0%)",
                         padding: "0 6px",
                         fontWeight: "300",
                     }}

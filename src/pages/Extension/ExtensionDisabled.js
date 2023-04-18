@@ -8,9 +8,7 @@ import {
     SnackbarContext,
     Tooltip,
 } from "@blerp/design";
-import { useQuery, useMutation } from "@apollo/client";
 
-import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
 import selectedProject from "../../projectConfig";
 
 const ExtensionDisabled = ({ currentStreamerBlerpUser }) => {

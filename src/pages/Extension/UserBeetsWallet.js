@@ -12,12 +12,7 @@ import {
 import { useQuery, useMutation } from "@apollo/client";
 import gql from "graphql-tag";
 
-import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
-
-import EllipsisLoader from "./EllipsisLoader";
 import selectedProject from "../../projectConfig";
-import { removeAndLogoutOfCacheJwt } from "../../globalCache";
-import OpenInNewRoundedIcon from "@mui/icons-material/OpenInNewRounded";
 
 import HelpRounded from "@mui/icons-material/HelpRounded";
 

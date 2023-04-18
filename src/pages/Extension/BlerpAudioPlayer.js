@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
 import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
+import { Tooltip, Text } from "@blerp/design";
 const AudioPlayer = ({
     imageUrl,
     audioUrl,
@@ -67,9 +68,39 @@ const AudioPlayer = ({
                         onClick={togglePlay}
                     >
                         {!isPlaying ? (
-                            <PlayArrowRoundedIcon
-                                sx={{ fontSize: "64px", color: "white" }}
-                            />
+                            <Tooltip
+                                title={
+                                    <Text
+                                        sx={{
+                                            color: "white.override",
+                                            fontWeight: "600",
+                                            fontSize: "16px",
+                                        }}
+                                    >
+                                        Preview
+                                    </Text>
+                                }
+                                placement='top'
+                                componentsProps={{
+                                    popper: {
+                                        sx: {
+                                            zIndex: 10000000,
+                                        },
+                                    },
+                                    tooltip: {
+                                        sx: {
+                                            backgroundColor: "#000",
+                                            color: "white",
+                                            borderRadius: "4px",
+                                            fontSize: "16px",
+                                        },
+                                    },
+                                }}
+                            >
+                                <PlayArrowRoundedIcon
+                                    sx={{ fontSize: "64px", color: "white" }}
+                                />
+                            </Tooltip>
                         ) : (
                             <PauseRoundedIcon
                                 sx={{ fontSize: "64px", color: "white" }}
@@ -88,15 +119,45 @@ const AudioPlayer = ({
                     onClick={togglePlay}
                 >
                     {!isPlaying ? (
-                        <PlayArrowRoundedIcon
-                            style={{
-                                fontSize: "64px",
-                                position: "absolute",
-                                top: "50%",
-                                left: "50%",
-                                transform: "translate(-50%, -50%)",
+                        <Tooltip
+                            title={
+                                <Text
+                                    sx={{
+                                        color: "white.override",
+                                        fontWeight: "600",
+                                        fontSize: "16px",
+                                    }}
+                                >
+                                    Preview
+                                </Text>
+                            }
+                            placement='top'
+                            componentsProps={{
+                                popper: {
+                                    sx: {
+                                        zIndex: 10000000,
+                                    },
+                                },
+                                tooltip: {
+                                    sx: {
+                                        backgroundColor: "#000",
+                                        color: "white",
+                                        borderRadius: "4px",
+                                        fontSize: "16px",
+                                    },
+                                },
                             }}
-                        />
+                        >
+                            <PlayArrowRoundedIcon
+                                style={{
+                                    fontSize: "64px",
+                                    position: "absolute",
+                                    top: "50%",
+                                    left: "50%",
+                                    transform: "translate(-50%, -50%)",
+                                }}
+                            />
+                        </Tooltip>
                     ) : (
                         <PauseRoundedIcon
                             style={{

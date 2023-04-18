@@ -25,7 +25,7 @@ const CurrencyTab = styled(Box)`
     display: flex;
     align-items: center;
     border-radius: 4px;
-    padding: 2px 4px;
+    padding: 2px 6px;
     font-size: 14px;
 `;
 
@@ -540,7 +540,7 @@ const ExtensionFooter = ({
                     spacing={1}
                     sx={{
                         padding: "4px 4px",
-                        backgroundColor: "rgba(103, 111, 112, 0.6);",
+                        backgroundColor: "rgba(103, 111, 112, 0.6)",
                         borderRadius: "4px",
                     }}
                 >
@@ -595,12 +595,12 @@ const ExtensionFooter = ({
                                         : "none",
                                 backgroundColor:
                                     currencyGlobalState === "POINTS"
-                                        ? "#474D4F"
+                                        ? "grey2.real"
                                         : "transparent",
 
                                 color:
                                     currencyGlobalState === "POINTS"
-                                        ? "#fff"
+                                        ? "#000000"
                                         : "grey3.real",
                                 opacity: currentStreamerBlerpUser
                                     ?.soundEmotesObject?.channelPointsDisabled
@@ -612,9 +612,10 @@ const ExtensionFooter = ({
                                 "&:hover": {
                                     backgroundColor:
                                         currencyGlobalState === "POINTS"
-                                            ? "#474D4F"
-                                            : "trans",
+                                            ? "grey2.real"
+                                            : "#474D4F",
                                 },
+
                                 cursor: "pointer",
                             }}
                         >
@@ -622,7 +623,7 @@ const ExtensionFooter = ({
                                 style={{
                                     color:
                                         currencyGlobalState === "POINTS"
-                                            ? "#fff"
+                                            ? "#000000"
                                             : "grey3.real",
                                     opacity: currentStreamerBlerpUser
                                         ?.soundEmotesObject
@@ -632,7 +633,11 @@ const ExtensionFooter = ({
                                         ? 1
                                         : 0.8,
                                 }}
-                                src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
+                                src={
+                                    currencyGlobalState === "POINTS"
+                                        ? "https://cdn.blerp.com/design/browser-extension/cp_black.svg"
+                                        : "https://cdn.blerp.com/design/browser-extension/cp_sub.svg"
+                                }
                             />
                             {currentStreamerBlerpUser?.soundEmotesObject
                                 ?.channelPointsDisabled
@@ -664,6 +669,7 @@ const ExtensionFooter = ({
                                 }
                             />
                         )}
+
                     <Tooltip
                         arrow={true}
                         title={
@@ -794,12 +800,7 @@ const ExtensionFooter = ({
                                     currencyGlobalState === "BEETS"
                                         ? "#fff"
                                         : "grey3.real",
-                                "&:hover": {
-                                    backgroundColor:
-                                        currencyGlobalState === "BEETS"
-                                            ? "#B43757"
-                                            : "trans",
-                                },
+
                                 opacity: currentStreamerBlerpUser
                                     ?.soundEmotesObject?.beetsDisabled
                                     ? 0.5
@@ -807,6 +808,13 @@ const ExtensionFooter = ({
                                     ? 1
                                     : 0.8,
                                 cursor: "pointer",
+
+                                "&:hover": {
+                                    backgroundColor:
+                                        currencyGlobalState === "BEETS"
+                                            ? "#773B4B"
+                                            : "#773B4B",
+                                },
                             }}
                         >
                             <CurrencyIcon
@@ -830,7 +838,7 @@ const ExtensionFooter = ({
                                 : (userSignedIn &&
                                       userSignedIn.userWallet &&
                                       userSignedIn.userWallet.beetBalance) ||
-                                  0}{" "}
+                                  0}
                         </CurrencyTab>
                     </Tooltip>
                 </Stack>

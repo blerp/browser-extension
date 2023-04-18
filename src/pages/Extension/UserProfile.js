@@ -96,7 +96,7 @@ const UserProfile = ({
         >
             <Stack
                 sx={{
-                    width: "100%",
+                    width: "90%",
                     alignItems: "center",
                     padding: "24px 0",
                 }}
@@ -105,12 +105,12 @@ const UserProfile = ({
                     sx={{
                         margin: "8px",
                         alignItems: "center",
+                        alignSelf: "flex-start",
                     }}
                 >
                     <Stack
                         direction='row'
                         sx={{
-                            alignItems: "center",
                             justifyContent: "flex-start",
                             width: "100%",
                             cursor: "pointer",
@@ -149,10 +149,10 @@ const UserProfile = ({
                                 textOverflow: "ellipsis",
                                 overflow: "hidden",
                                 fontSize: "24px",
+                                textTransform: "capitalize",
                             }}
                         >
-                            {userSignedIn.username &&
-                                userSignedIn.username.toUpperCase()}
+                            {userSignedIn.username}
                         </Text>
                     </Stack>
                 </Stack>

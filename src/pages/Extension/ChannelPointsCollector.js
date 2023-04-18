@@ -81,6 +81,10 @@ const ChannelPointsCollector = ({
         };
     }, [intervalMs, loading]);
 
+    if (!pointsAdded) {
+        return <></>;
+    }
+
     return (
         <Stack sx={{}}>
             {pointsAdded && (

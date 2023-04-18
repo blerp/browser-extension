@@ -70,7 +70,7 @@ const NoSearchResults = ({ currentStreamerBlerpUser, searchTerm }) => {
                 </Text>
             </Stack>
 
-            <NoSearchResultsFooter />
+            {/* <NoSearchResultsFooter /> */}
         </>
     );
 };

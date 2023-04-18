@@ -18,6 +18,7 @@ const NoSearchResultsFavorites = ({ currentStreamerBlerpUser, searchTerm }) => {
         <>
             <Stack
                 sx={{
+                    marginTop: "40px",
                     alignItems: "center",
                     justifyContent: "center",
                     display: "flex",
@@ -28,7 +29,6 @@ const NoSearchResultsFavorites = ({ currentStreamerBlerpUser, searchTerm }) => {
                     alignItems: "center",
                     padding: "10px",
                     gap: "4px",
-                    width: "280px",
                     borderRadius: "8px",
                 }}
             >
@@ -83,94 +83,6 @@ const NoSearchResultsFavorites = ({ currentStreamerBlerpUser, searchTerm }) => {
                     />
                     on the blerp page
                 </Text>
-            </Stack>
-
-            <Stack
-                sx={{
-                    display: "flex",
-                    flexDirection: "row",
-                    overflowY: "scroll",
-                    maxHeight: "200px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    display: "flex",
-                    paddingBottom: "32px",
-                    margin: "12px auto",
-
-                    display: "flex",
-                    alignItems: "center",
-                    padding: "10px",
-                    gap: "4px",
-
-                    backgroundColor: "grey7.real",
-                    borderRadius: "8px",
-
-                    /* Inside auto layout */
-
-                    flex: "none",
-                    order: 1,
-                    alignSelf: "stretch",
-                    flexGrow: 0,
-                }}
-            >
-                <Text
-                    sx={{
-                        fontFamily: "Odudo",
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        lineHeight: "130%",
-
-                        textAlign: "center",
-                        letterSpacing: "0.1em",
-                        margin: "0 6px",
-
-                        color: "black.real",
-                    }}
-                >
-                    Find all your favorites on Blerp.com
-                </Text>
-
-                {/* <Text
-                    sx={{
-                        fontFamily: "Odudo",
-                        fontStyle: "normal",
-                        fontWeight: 400,
-                        fontSize: "12px",
-                        lineHeight: "16px",
-
-                        textAlign: "center",
-                        letterSpacing: "0.1em",
-
-                        color: "grey3.real",
-                    }}
-                >
-                    Go to blerp.com to find the sound you’re looking for
-                </Text> */}
-
-                <Stack
-                    sx={{
-                        display: "flex",
-                        flexDirection: "row",
-                        alignItems: "flex-start",
-                        padding: "0px",
-                        gap: "20px",
-                        height: "36px",
-                    }}
-                >
-                    <Button
-                        variant='contained'
-                        color='whiteOverride'
-                        sx={{
-                            whiteSpace: "nowrap",
-                            color: "#000000",
-                        }}
-                        href={`${selectedProject.host}/my-library`}
-                        target='_blank'
-                        rel='noreferrer'
-                    >
-                        My Faves
-                    </Button>
-                </Stack>
             </Stack>
         </>
     );

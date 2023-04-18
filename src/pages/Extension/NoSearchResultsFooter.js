@@ -10,7 +10,7 @@ import {
 
 import selectedProject from "../../projectConfig";
 
-const NoSearchResultsFooter = ({}) => {
+const NoSearchResultsFooter = ({ channelOwner }) => {
     return (
         <Stack
             sx={{
@@ -64,8 +64,7 @@ const NoSearchResultsFooter = ({}) => {
 
             <Text
                 sx={{
-                    width: "260px",
-
+                    maxWidth: "200px",
                     fontFamily: "Odudo",
                     fontStyle: "normal",
                     fontWeight: 400,
@@ -99,9 +98,13 @@ const NoSearchResultsFooter = ({}) => {
                         whiteSpace: "nowrap",
                         color: "#000000",
                     }}
-                    href={`${selectedProject.host}/`}
-                    target='_blank'
                     rel='noreferrer'
+                    onClick={() => {
+                        window.open(
+                            `${selectedProject.host}/discover?pageType=SUGGESTIONS&channelOwnerId=${channelOwner?._id}`,
+                            "_blank",
+                        );
+                    }}
                 >
                     Suggest
                 </Button>
@@ -113,9 +116,13 @@ const NoSearchResultsFooter = ({}) => {
                         whiteSpace: "nowrap",
                         borderColor: "whiteOverride.main",
                     }}
-                    href={`${selectedProject.host}`}
-                    target='_blank'
                     rel='noreferrer'
+                    onClick={() => {
+                        window.open(
+                            `${selectedProject.host}/discover?pageType=SUGGESTIONS&channelOwnerId=${channelOwner?._id}`,
+                            "_blank",
+                        );
+                    }}
                 >
                     Discover
                 </Button>

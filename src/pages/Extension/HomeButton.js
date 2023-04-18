@@ -861,22 +861,26 @@ const HomeButton = ({
                             renderTabPage()
                         )}
 
-                        <ExtensionFooter
-                            setTabState={(tabState) => {
-                                handleTabChange(tabState);
-                                setShowSearch(false);
-                            }}
-                            tabState={tabState}
-                            setCurrencyGlobal={setCurrencyGlobal}
-                            currencyGlobalState={currencyGlobalState}
-                            userSignedIn={signedInUser}
-                            activeBlerp={activeBlerp}
-                            currentStreamerBlerpUser={currentStreamerBlerpUser}
-                            volume={volume}
-                            setVolume={setVolume}
-                            isStreaming={isStreaming}
-                            refetchAll={refetch}
-                        />
+                        {tabState !== "PROFILE" && (
+                            <ExtensionFooter
+                                setTabState={(tabState) => {
+                                    handleTabChange(tabState);
+                                    setShowSearch(false);
+                                }}
+                                tabState={tabState}
+                                setCurrencyGlobal={setCurrencyGlobal}
+                                currencyGlobalState={currencyGlobalState}
+                                userSignedIn={signedInUser}
+                                activeBlerp={activeBlerp}
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
+                                volume={volume}
+                                setVolume={setVolume}
+                                isStreaming={isStreaming}
+                                refetchAll={refetch}
+                            />
+                        )}
                     </Stack>
                 );
         }

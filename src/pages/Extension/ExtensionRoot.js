@@ -20,7 +20,9 @@ import NoSearchResults from "./NoSearchResults";
 import CustomDropdown from "./CustomDropdown";
 import NoSearchResultsFavorites from "./NoSearchResultsFavorites";
 import BlerpComponent from "./BlerpComponent";
-import { EXTENSION_HEIGHT, EXTENSION_HEIGHT_PX } from "../../constants";
+import { EXTENSION_HEIGHT } from "../../constants";
+import FavoritesFooter from "./FavoritesFooter";
+import NoSearchResultsFooter from "./NoSearchResultsFooter";
 
 const SleekStack = styled(Stack)`
     @keyframes fade-in-out {
@@ -357,6 +359,18 @@ const SearchPage = ({
                         </>
                     );
                 })}
+
+            {showFavorites ? (
+                <FavoritesFooter
+                    searchTerm={searchTerm}
+                    currentStreamerBlerpUser={currentStreamerBlerpUser}
+                />
+            ) : (
+                <NoSearchResultsFooter
+                    searchTerm={searchTerm}
+                    currentStreamerBlerpUser={currentStreamerBlerpUser}
+                />
+            )}
         </Stack>
     );
 };
@@ -563,7 +577,7 @@ const FeaturedPageNew = ({
                     ? "CHANNELPOINTSAMOUNT_ASC"
                     : "BEETAMOUNT_ASC", // make sure to only pass in if it's not null
         },
-        // fetchPolicy: "network-only",
+        fetchPolicy: showFavorites ? "network-only" : "cache-first",
     });
 
     const lastViewedAt =
@@ -701,6 +715,20 @@ const FeaturedPageNew = ({
                     </>
                 );
             })}
+
+            {showFavorites ? (
+                <FavoritesFooter
+                    searchTerm={searchTerm}
+                    currentStreamerBlerpUser={currentStreamerBlerpUser}
+                    channelOwner={currentStreamerBlerpUser}
+                />
+            ) : (
+                <NoSearchResultsFooter
+                    searchTerm={searchTerm}
+                    currentStreamerBlerpUser={currentStreamerBlerpUser}
+                    channelOwner={currentStreamerBlerpUser}
+                />
+            )}
         </Stack>
     );
 };
@@ -724,7 +752,8 @@ const ExtensionRoot = ({
         searchTerm: searchTerm,
         setSearchTerm: setSearchTerm,
         blerpSoundEmotesStreamer: blerpSoundEmotesStreamer,
-        currentStreamerBlerpUser: currentStreamerBlerpUser,
+        currentStreamerBlerpUser:
+            currentStreamerBlerpUser || blerpSoundEmotesStreamer,
         showFavorites,
 
         setCurrencyGlobal,
