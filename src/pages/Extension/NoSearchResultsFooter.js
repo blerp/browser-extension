@@ -22,7 +22,7 @@ const NoSearchResultsFooter = ({ channelOwner }) => {
                 justifyContent: "center",
                 display: "flex",
                 paddingBottom: "32px",
-                margin: "12px auto",
+                margin: "0px auto 12px",
 
                 display: "flex",
                 flexDirection: "column",
@@ -75,7 +75,7 @@ const NoSearchResultsFooter = ({ channelOwner }) => {
                     letterSpacing: "0.1em",
 
                     color: "grey3.real",
-                    margin: "4px 0",
+                    margin: "4px 0 12px",
                 }}
             >
                 Go to blerp.com to find the sound you’re looking for
@@ -97,6 +97,7 @@ const NoSearchResultsFooter = ({ channelOwner }) => {
                     sx={{
                         whiteSpace: "nowrap",
                         color: "#000000",
+                        fontSize: "14px",
                     }}
                     rel='noreferrer'
                     onClick={() => {
@@ -115,6 +116,7 @@ const NoSearchResultsFooter = ({ channelOwner }) => {
                     sx={{
                         whiteSpace: "nowrap",
                         borderColor: "whiteOverride.main",
+                        fontSize: "14px",
                     }}
                     rel='noreferrer'
                     onClick={() => {

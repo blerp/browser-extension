@@ -409,6 +409,7 @@ const ExtensionFooter = ({
                     </Tooltip>
 
                     <Tooltip
+                        arrow={true}
                         title={
                             rightSideMessage ? (
                                 currentStreamerBlerpUser?.soundEmotesObject
@@ -494,7 +495,7 @@ const ExtensionFooter = ({
                                 ""
                             )
                         }
-                        placement='bottom'
+                        placement='top'
                         componentsProps={{
                             popper: {
                                 sx: {

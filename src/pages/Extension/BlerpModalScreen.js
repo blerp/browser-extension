@@ -22,6 +22,7 @@ import SegmentedSwitch from "./SegmentedSwitch";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
+import { UPDATE_VIEWER_LOG } from "../../mainGraphQl";
 
 const headshake = keyframes`
   0% {
@@ -170,6 +171,8 @@ const BlerpModalScreen = ({
     const [showCongrats, setCongrats] = useState(false);
 
     const snackbarContext = useContext(SnackbarContext);
+
+    const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
 
     const currentDate = new Date();
     const pauseUntilDate = new Date(
@@ -406,6 +409,16 @@ const BlerpModalScreen = ({
                           });
                           refetchAll();
 
+                          try {
+                              const { data } = updateViewerLog({
+                                  variables: {
+                                      channelOwnerId: blerpStreamer?._id,
+                                  },
+                              });
+                          } catch (err) {
+                              console.log(err);
+                          }
+
                           // setShowSuccess(true);
                       })
                       .catch((err) => {
@@ -451,6 +464,16 @@ const BlerpModalScreen = ({
                               },
                           });
                           refetchAll();
+
+                          try {
+                              const { data } = updateViewerLog({
+                                  variables: {
+                                      channelOwnerId: blerpStreamer?._id,
+                                  },
+                              });
+                          } catch (err) {
+                              console.log(err);
+                          }
 
                           // setShowSuccess(true);
                       })
@@ -575,7 +598,7 @@ const BlerpModalScreen = ({
                                     fontSize: "12px",
                                 }}
                             >
-                                Login to Share Sounds
+                                Login to Share
                             </Button>
                         )}
                     </Stack>
@@ -1696,6 +1719,7 @@ const BlerpModalScreen = ({
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
+                height: "100%",
             }}
         >
             {renderScreen()}

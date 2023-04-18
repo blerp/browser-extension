@@ -13,14 +13,12 @@ const StreamerNeedsToSetup = ({}) => {
                 justifyContent: "center",
                 display: "flex",
                 paddingBottom: "32px",
-                margin: "12px auto",
+                margin: "0 auto",
 
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
                 padding: "10px",
-                gap: "20px",
-
                 width: "280px",
                 height: "170px",
 
@@ -59,8 +57,9 @@ const StreamerNeedsToSetup = ({}) => {
                     fontFamily: "Odudo",
                     fontStyle: "normal",
                     fontWeight: 400,
-                    fontSize: "12px",
+                    fontSize: "14px",
                     lineHeight: "16px",
+                    margin: "8px 0 12px",
 
                     textAlign: "center",
                     letterSpacing: "0.1em",

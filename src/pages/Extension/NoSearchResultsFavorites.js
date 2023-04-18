@@ -78,7 +78,7 @@ const NoSearchResultsFavorites = ({ currentStreamerBlerpUser, searchTerm }) => {
                             height: "18px",
                             cursor: "pointer",
                             margin: "0 4px",
-                            color: "grey4.main",
+                            color: "grey3.real",
                         }}
                     />
                     on the blerp page

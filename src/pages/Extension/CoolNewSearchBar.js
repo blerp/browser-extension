@@ -171,7 +171,7 @@ const CoolNewSearchbar = ({
                                     height: "18px",
                                     cursor: "pointer",
                                     margin: "0 2px",
-                                    color: "grey4.main",
+                                    color: "grey4.real",
                                 }}
                             />
                         </InputAdornment>

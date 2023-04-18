@@ -259,16 +259,18 @@ const HomeButton = ({
                                 setActiveBlerp(null);
                                 await refetch();
 
-                                try {
-                                    const { data } = await updateViewerLog({
-                                        variables: {
-                                            channelOwnerId:
-                                                currentStreamerBlerpUser?._id,
-                                        },
-                                    });
-                                } catch (err) {
-                                    console.log(err);
-                                }
+                                // const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
+
+                                // try {
+                                //     const { data } = await updateViewerLog({
+                                //         variables: {
+                                //             channelOwnerId:
+                                //                 currentStreamerBlerpUser?._id,
+                                //         },
+                                //     });
+                                // } catch (err) {
+                                //     console.log(err);
+                                // }
                             }}
                         />
 
@@ -661,6 +663,7 @@ const HomeButton = ({
                             backgroundColor: "grey7.real",
                             width: "100%",
                             minHeight: "44px",
+
                             padding: "2px 0",
 
                             position: "sticky",
@@ -890,7 +893,7 @@ const HomeButton = ({
         return (
             <Stack
                 sx={{
-                    padding: "3px",
+                    padding: "0",
                     position: "relative",
                 }}
             >
@@ -899,10 +902,12 @@ const HomeButton = ({
         );
     }
 
+    console.log("OPEN", open);
+
     return (
         <Stack
             sx={{
-                padding: "3px",
+                padding: "0 3px",
                 position: "relative",
             }}
         >
@@ -967,7 +972,11 @@ const HomeButton = ({
                         sx={{
                             width: "21px",
                             fontSize: "24px",
-                            color: themeMode === "light" ? "#000" : "#fff",
+                            color: open
+                                ? "ibisRed.main"
+                                : themeMode === "light"
+                                ? "#000"
+                                : "#fff",
                         }}
                     />
                 </Button>
@@ -979,12 +988,12 @@ const HomeButton = ({
                 anchorEl={anchorEl}
                 onClose={handleClose}
                 anchorOrigin={{
-                    vertical: "bottom",
+                    vertical: "top",
                     horizontal: "left",
                 }}
                 transformOrigin={{
-                    vertical: "top",
-                    horizontal: "center",
+                    vertical: "bottom",
+                    horizontal: "left",
                 }}
                 PaperProps={{
                     sx: {

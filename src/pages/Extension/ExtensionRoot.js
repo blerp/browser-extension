@@ -168,7 +168,7 @@ export const getArrayOfMpaaRatings = (rating) => {
     }
 };
 
-const PER_PAGE = 300;
+const PER_PAGE = 150;
 
 const renderEmptyBite = ({ index }) => {
     const delay = index * 0.2;
@@ -189,7 +189,7 @@ const NewSection = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                padding: "5px",
+                padding: "5px 0",
                 background:
                     "linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), linear-gradient(315deg, rgba(253, 41, 92, 0.4) 0%, rgba(53, 7, 180, 0.4) 100%)",
                 borderRadius: "12px",
@@ -375,172 +375,6 @@ const SearchPage = ({
     );
 };
 
-const GlobalSounds = ({
-    setActiveBlerp,
-    activeBlerp,
-    searchTerm,
-    blerpSoundEmotesStreamer,
-    currencyGlobalState,
-    userSignedIn,
-}) => {
-    const { loading, data, error } = useQuery(FEATURED_CONTENT, {
-        variables: {
-            searchTerm: searchTerm,
-            audienceRatings: getArrayOfMpaaRatings(
-                blerpSoundEmotesStreamer?.mpaaRating,
-            ),
-            page: 1,
-            perPage: PER_PAGE,
-            streamerId: blerpSoundEmotesStreamer?.ownerId,
-        },
-        fetchPolicy: "network-only",
-    });
-
-    return (
-        <>
-            {loading && <EllipsisLoader />}
-
-            {data?.browserExtension?.globalBlerps?.bites &&
-                data?.browserExtension?.globalBlerps?.bites.map((bite) => {
-                    return (
-                        <>
-                            <BlerpComponent
-                                bite={bite?.bite || bite}
-                                setActiveBlerp={setActiveBlerp}
-                                activeBlerp={activeBlerp}
-                                currencyGlobalState={currencyGlobalState}
-                                userSignedIn={userSignedIn}
-                            />
-                        </>
-                    );
-                })}
-        </>
-    );
-};
-
-const FeaturedPage = ({
-    setActiveBlerp,
-    activeBlerp,
-    searchTerm,
-    blerpSoundEmotesStreamer,
-    showSaved,
-    currencyGlobalState,
-    userSignedIn,
-}) => {
-    const [featuredSort, setFeaturedSort] = useState({
-        name: "Newest",
-        value: "CREATEDAT_DESC",
-    });
-
-    // figure out how to add featuredSort to variables only when it is not null
-
-    const { loading, data, error } = useQuery(GET_FEATURED_LIST_SOUND_EMOTES, {
-        variables: {
-            searchTerm: searchTerm,
-            audienceRatings: getArrayOfMpaaRatings(
-                blerpSoundEmotesStreamer?.mpaaRating,
-            ),
-            page: 1,
-            perPage: PER_PAGE,
-            streamerId: blerpSoundEmotesStreamer?.ownerId,
-            sortOverride: featuredSort?.value, // make sure to only pass in if it's not null
-        },
-        fetchPolicy: "network-only",
-    });
-
-    if (loading) {
-        return renderLoadingBites();
-    }
-
-    return (
-        <Stack
-            sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: "row",
-                overflowY: "scroll",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                paddingTop: "4px",
-                width: "100%",
-            }}
-        >
-            {/* {renderNewSection()} */}
-            <Stack
-                direction='row'
-                sx={{ width: "100%", margin: "4px 12px 12px" }}
-            >
-                <Text sx={{ width: "100%" }}>Streamer Featured Sounds</Text>
-
-                <CustomDropdown
-                    buttonTitle={featuredSort?.name || "Newest"}
-                    title={"Sort By"}
-                    buttonStyle={{
-                        width: "118px",
-                        // color: "notBlack.main",
-                        // fontColor: "notBlack.main",
-                        backgroundColor: "grey3.main",
-                    }}
-                    paperStyle={{}}
-                    onChange={async (option) => {
-                        setFeaturedSort(option);
-                    }}
-                    options={[
-                        { name: "Newest", value: "CREATEDAT_DESC" },
-                        { name: "Oldest", value: "CREATEDAT_ASC" },
-                        { name: "Beet Amount", value: "BEETAMOUNT_DESC" },
-                        // { name: "Beet Amount Reverse", value: "BEETAMOUNT_ASC" },
-                        {
-                            name: "Channel Points",
-                            value: "CHANNELPOINTSAMOUNT_DESC",
-                        },
-                        // {
-                        //     name: "Channel Points Reverse",
-                        //     value: "CHANNELPOINTSAMOUNT_ASC",
-                        // },
-                    ]}
-                />
-            </Stack>
-
-            {loading && <EllipsisLoader />}
-            {data?.browserExtension?.soundEmotesFeaturedContentPagination
-                ?.items &&
-                data?.browserExtension?.soundEmotesFeaturedContentPagination?.items.map(
-                    (bite) => {
-                        return (
-                            <>
-                                <BlerpComponent
-                                    bite={bite?.bite || bite}
-                                    setActiveBlerp={setActiveBlerp}
-                                    activeBlerp={activeBlerp}
-                                    currencyGlobalState={currencyGlobalState}
-                                    userSignedIn={userSignedIn}
-                                />
-                            </>
-                        );
-                    },
-                )}
-
-            {!blerpSoundEmotesStreamer?.simpleMode && !showSaved && (
-                <>
-                    <Text sx={{ width: "100%", margin: "4px 12px 12px" }}>
-                        Global Sounds
-                    </Text>
-
-                    <GlobalSounds
-                        setActiveBlerp={setActiveBlerp}
-                        activeBlerp={activeBlerp}
-                        searchTerm={searchTerm}
-                        blerpSoundEmotesStreamer={blerpSoundEmotesStreamer}
-                        currencyGlobalState={currencyGlobalState}
-                    />
-                </>
-            )}
-        </Stack>
-    );
-};
-
 const FeaturedPageNew = ({
     setActiveBlerp,
     activeBlerp,
@@ -561,28 +395,72 @@ const FeaturedPageNew = ({
     // });
     //featuredSort?.value
     // figure out how to add featuredSort to variables only when it is not null
+    const [loadingMore, setLoadingMore] = useState(false);
+    const [pageCount, setPageCount] = useState(1);
 
-    const { loading, data, error } = useQuery(GET_FEATURED_LIST_SOUND_EMOTES, {
-        variables: {
-            searchTerm: searchTerm,
-            audienceRatings: getArrayOfMpaaRatings(
-                blerpSoundEmotesStreamer?.mpaaRating,
-            ),
-            page: 1,
-            perPage: PER_PAGE,
-            streamerId: blerpSoundEmotesStreamer?.ownerId,
-            showSaved: showSavedOnly,
-            sortOverride:
-                currencyGlobalState === "POINTS"
-                    ? "CHANNELPOINTSAMOUNT_ASC"
-                    : "BEETAMOUNT_ASC", // make sure to only pass in if it's not null
+    const { loading, data, error, fetchMore } = useQuery(
+        GET_FEATURED_LIST_SOUND_EMOTES,
+        {
+            variables: {
+                searchTerm: searchTerm,
+                audienceRatings: getArrayOfMpaaRatings(
+                    blerpSoundEmotesStreamer?.mpaaRating,
+                ),
+                page: pageCount,
+                perPage: PER_PAGE,
+                streamerId: blerpSoundEmotesStreamer?.ownerId,
+                showSaved: showSavedOnly,
+                sortOverride:
+                    currencyGlobalState === "POINTS"
+                        ? "CHANNELPOINTSAMOUNT_ASC"
+                        : "BEETAMOUNT_ASC", // make sure to only pass in if it's not null
+            },
+            fetchPolicy: showFavorites ? "network-only" : "cache-first",
         },
-        fetchPolicy: showFavorites ? "network-only" : "cache-first",
-    });
+    );
+
+    const handleLoadMore = async () => {
+        if (
+            !data.browserExtension.soundEmotesFeaturedContentPagination.pageInfo
+                .hasNextPage ||
+            loadingMore
+        )
+            return;
+
+        setLoadingMore(true);
+
+        await fetchMore({
+            variables: {
+                page:
+                    data.browserExtension.soundEmotesFeaturedContentPagination
+                        .pageInfo.currentPage + 1,
+            },
+            updateQuery: (prev, { fetchMoreResult }) => {
+                if (!fetchMoreResult) return prev;
+
+                return {
+                    browserExtension: {
+                        ...fetchMoreResult.browserExtension,
+                        soundEmotesFeaturedContentPagination: {
+                            ...fetchMoreResult.browserExtension
+                                .soundEmotesFeaturedContentPagination,
+                            items: [
+                                ...prev.browserExtension
+                                    .soundEmotesFeaturedContentPagination.items,
+                                ...fetchMoreResult.browserExtension
+                                    .soundEmotesFeaturedContentPagination.items,
+                            ],
+                        },
+                    },
+                };
+            },
+        });
+
+        setLoadingMore(false);
+    };
 
     const lastViewedAt =
         currentStreamerBlerpUser?.loggedInChannelPointBasket?.lastViewedAt;
-
     const allBites =
         data?.browserExtension?.soundEmotesFeaturedContentPagination?.items ||
         [];
@@ -667,7 +545,7 @@ const FeaturedPageNew = ({
                 showFavorites ? (
                     <Stack
                         direction='column'
-                        sx={{ width: "100%", margin: "4px 12px 12px" }}
+                        sx={{ width: "100%", margin: "4px 12px 0px" }}
                     >
                         <NoSearchResultsFavorites
                             searchTerm={searchTerm}
@@ -677,7 +555,7 @@ const FeaturedPageNew = ({
                 ) : (
                     <Stack
                         direction='column'
-                        sx={{ width: "100%", margin: "4px 12px 12px" }}
+                        sx={{ width: "100%", margin: "4px 12px 0px" }}
                     >
                         <StreamerNeedsToSetup
                             currentStreamerBlerpUser={currentStreamerBlerpUser}
@@ -729,6 +607,43 @@ const FeaturedPageNew = ({
                     channelOwner={currentStreamerBlerpUser}
                 />
             )}
+
+            <Stack
+                direction={"column"}
+                sx={{
+                    padding: "4px",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                }}
+            >
+                {!loading &&
+                    data?.browserExtension
+                        ?.soundEmotesFeaturedContentPagination &&
+                    data?.browserExtension?.soundEmotesFeaturedContentPagination
+                        .items?.length &&
+                    data.browserExtension.soundEmotesFeaturedContentPagination
+                        .items?.length >= PER_PAGE && (
+                        <Button
+                            variant='outlined'
+                            onClick={handleLoadMore}
+                            sx={{
+                                backgroundColor: "transparent",
+                                border: "#fff 1px solid",
+                                color: "white.override",
+                                margin: "0 auto",
+                                alignSelf: "center",
+                            }}
+                            disabled={
+                                !data.browserExtension
+                                    .soundEmotesFeaturedContentPagination
+                                    .pageInfo.hasNextPage
+                            }
+                        >
+                            {loadingMore ? "Loading..." : "Load More"}
+                        </Button>
+                    )}
+            </Stack>
         </Stack>
     );
 };

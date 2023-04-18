@@ -443,6 +443,7 @@ const BlerpModalShare = ({
                                         color: "white.main",
                                         maxWidth: "280px",
                                         textTransform: "none",
+                                        fontSize: "16px",
                                     }}
                                 >
                                     Login to Share Sounds

@@ -23,7 +23,7 @@ const FavoritesFooter = ({ currentStreamerBlerpUser, searchTerm }) => {
                     justifyContent: "center",
                     display: "flex",
                     paddingBottom: "32px",
-                    margin: "12px auto",
+                    margin: "4px auto",
 
                     display: "flex",
                     alignItems: "center",
