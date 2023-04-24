@@ -1,12 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Dev Tools Panel</title>
-  </head>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Blerp Sounds Extension Panel</title>
 
-  <body>
-    <div id="app-container"></div>
-  </body>
+        <style>
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 100;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Light.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Light.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Light.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 200;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Light.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Light.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Light.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 300;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Light.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Light.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Light.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 300;
+                font-display: swap;
+                font-style: oblique;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-LightOblique.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-LightOblique.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-LightOblique.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 400;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Regular.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Regular.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Regular.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: normal;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Regular.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Regular.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Regular.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 400;
+                font-display: swap;
+                font-style: oblique;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-RegularOblique.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-RegularOblique.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-RegularOblique.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 500;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Regular.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Regular.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Regular.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 600;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBold.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBold.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-SemiBold.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: bold;
+                font-style: oblique;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBoldOblique.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBoldOblique.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-SemiBoldOblique.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 700;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBoldOblique.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBoldOblique.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-SemiBoldOblique.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: bold;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBold.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-SemiBold.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-SemiBold.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 800;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Bold.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Bold.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Bold.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 900;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Bold.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-Bold.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-Bold.woff")
+                        format("woff");
+            }
+
+            @font-face {
+                font-family: "Odudo";
+                font-weight: 900;
+                font-style: oblique;
+                font-display: swap;
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-BoldOblique.eot");
+                src: url("https://cdn.blerp.com/fonts/web/Odudo-BoldOblique.woff2")
+                        format("woff2"),
+                    url("https://cdn.blerp.com/fonts/web/Odudo-BoldOblique.woff")
+                        format("woff");
+            }
+
+            * {
+                scrollbar-color: rgb(102, 102, 102) transparent;
+                scrollbar-width: thin;
+            }
+
+            *::-webkit-scrollbar {
+                width: 0em;
+            }
+
+            *::-webkit-scrollbar-track {
+                box-shadow: inset 0 0 6px rgba(0, 0, 0, 0);
+            }
+
+            *::-webkit-scrollbar-thumb {
+                background-color: rgb(102, 102, 102);
+                border-radius: 16px;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="app-container"></div>
+    </body>
 </html>

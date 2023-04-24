@@ -107,6 +107,7 @@ const HomeButton = ({
                 twitchUsername: platform === "TWITCH" ? twitchUsername : null,
             },
             errorPolicy: "all",
+            awaitRefetchQueries: true, // Wait for refetches before resetting the store
         },
     );
 
@@ -257,7 +258,7 @@ const HomeButton = ({
                             }}
                             onClick={async () => {
                                 setActiveBlerp(null);
-                                await refetch();
+                                refetch();
 
                                 // const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
 

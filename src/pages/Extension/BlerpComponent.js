@@ -146,7 +146,7 @@ const BiteComponent = ({
             className='outer-component'
             key={bite?._id}
             sx={{
-                width: "93px",
+                width: "86px",
                 height: "127px",
                 position: "relative",
                 borderRadius: "8px",
@@ -173,8 +173,8 @@ const BiteComponent = ({
                     <FavoriteRoundedIcon
                         sx={{
                             position: "absolute",
-                            top: -8,
-                            right: -8,
+                            top: -4,
+                            right: -4,
                             color: "grey4.real",
                             borderRadius: "8px",
                             zIndex: 2,
@@ -212,8 +212,8 @@ const BiteComponent = ({
                     <FavoriteRoundedIcon
                         sx={{
                             position: "absolute",
-                            top: -8,
-                            right: -8,
+                            top: -4,
+                            right: -4,
                             borderRadius: "8px",
                             zIndex: 2,
                             opacity: savingBlerp ? 0.5 : 1,
@@ -251,8 +251,8 @@ const BiteComponent = ({
                     <FavoriteBorderRoundedIcon
                         sx={{
                             position: "absolute",
-                            top: -8,
-                            right: -8,
+                            top: -4,
+                            right: -4,
                             borderRadius: "8px",
                             zIndex: 2,
                             opacity: savingBlerp ? 0.5 : 1,
@@ -283,8 +283,8 @@ const BiteComponent = ({
             bite?.image?.original?.url ? (
                 <Stack
                     sx={{
-                        width: "93px",
-                        height: "93px",
+                        width: "86px",
+                        height: "86px",
                         borderRadius: "12px 12px 0 0",
                         position: "relative",
                     }}
@@ -321,8 +321,8 @@ const BiteComponent = ({
             ) : (
                 <Stack
                     sx={{
-                        width: "93px",
-                        height: "93px",
+                        width: "86px",
+                        height: "86px",
                         borderRadius: "12px 12px 0 0",
                         position: "relative",
                     }}
@@ -355,7 +355,7 @@ const BiteComponent = ({
                             justifyContent: "center",
                             transition: "all 0.2s ease-in-out",
                         }}
-                        onClick={() => {}}
+                        // onClick={() => {}}
                         onMouseEnter={() => setIsHoveredPoints(true)}
                         onMouseLeave={() => setIsHoveredPoints(false)}
                     >
@@ -396,9 +396,9 @@ const BiteComponent = ({
                             justifyContent: "center",
                             transition: "all 0.2s ease-in-out",
                         }}
-                        onClick={() => {
-                            // setLocalCurrencyType("BEETS");
-                        }}
+                        // onClick={() => {
+                        //     // setLocalCurrencyType("BEETS");
+                        // }}
                         onMouseEnter={() => setIsHoveredBeets(true)}
                         onMouseLeave={() => setIsHoveredBeets(false)}
                     >

@@ -102,7 +102,7 @@ const NoSearchResultsFooter = ({ channelOwner }) => {
                     rel='noreferrer'
                     onClick={() => {
                         window.open(
-                            `${selectedProject.host}/discover?pageType=SUGGESTIONS&channelOwnerId=${channelOwner?._id}`,
+                            `${selectedProject.host}/discover/top-blerps?pageType=SUGGESTIONS&channelOwnerId=${channelOwner?._id}`,
                             "_blank",
                         );
                     }}
@@ -121,7 +121,7 @@ const NoSearchResultsFooter = ({ channelOwner }) => {
                     rel='noreferrer'
                     onClick={() => {
                         window.open(
-                            `${selectedProject.host}/discover?pageType=SUGGESTIONS&channelOwnerId=${channelOwner?._id}`,
+                            `${selectedProject.host}/discover/trending-blerps?pageType=EXTENSION&channelOwnerId=${channelOwner?._id}`,
                             "_blank",
                         );
                     }}

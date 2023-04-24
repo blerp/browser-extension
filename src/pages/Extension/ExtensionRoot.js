@@ -35,7 +35,7 @@ const SleekStack = styled(Stack)`
         }
     }
 
-    width: 93px;
+    width: 86px;
     height: 127px;
     background-color: ${(props) => props.theme.colors.grey7};
     margin: 4px;
@@ -168,7 +168,7 @@ export const getArrayOfMpaaRatings = (rating) => {
     }
 };
 
-const PER_PAGE = 150;
+const PER_PAGE = 250;
 
 const renderEmptyBite = ({ index }) => {
     const delay = index * 0.2;
@@ -193,7 +193,7 @@ const NewSection = ({
                 background:
                     "linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), linear-gradient(315deg, rgba(253, 41, 92, 0.4) 0%, rgba(53, 7, 180, 0.4) 100%)",
                 borderRadius: "12px",
-                margin: "6px",
+                margin: "8px 8px",
             }}
         >
             <Text
@@ -568,7 +568,7 @@ const FeaturedPageNew = ({
 
             {loading && <EllipsisLoader />}
 
-            {lastViewedAt && newBites.length > 0 && (
+            {!!newBites?.length && newBites.length > 0 && (
                 <NewSection
                     bites={newBites}
                     userSignedIn={userSignedIn}
@@ -579,20 +579,21 @@ const FeaturedPageNew = ({
                 />
             )}
 
-            {oldBites.map((bite) => {
-                return (
-                    <>
-                        <BlerpComponent
-                            bite={bite?.bite || bite}
-                            setActiveBlerp={setActiveBlerp}
-                            activeBlerp={activeBlerp}
-                            currencyGlobalState={currencyGlobalState}
-                            searchTerm={searchTerm}
-                            userSignedIn={userSignedIn}
-                        />
-                    </>
-                );
-            })}
+            {!!oldBites?.length &&
+                oldBites.map((bite) => {
+                    return (
+                        <>
+                            <BlerpComponent
+                                bite={bite?.bite || bite}
+                                setActiveBlerp={setActiveBlerp}
+                                activeBlerp={activeBlerp}
+                                currencyGlobalState={currencyGlobalState}
+                                searchTerm={searchTerm}
+                                userSignedIn={userSignedIn}
+                            />
+                        </>
+                    );
+                })}
 
             {showFavorites ? (
                 <FavoritesFooter

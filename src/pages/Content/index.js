@@ -2,6 +2,7 @@ import { createRoot } from "react-dom";
 import HomeButton from "../Extension/HomeButton";
 import WithBlerp from "../../WithBlerp";
 import { setGlobalCacheJwt, setStreamerInfo } from "../../globalCache";
+import "./content.styles.css";
 
 let CURRENT_PLATFORM;
 let TWITCH_NAV_BUTTON_CONTAINER;
