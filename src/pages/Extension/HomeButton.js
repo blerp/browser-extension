@@ -210,6 +210,7 @@ const HomeButton = ({
         setSearchTerm("");
         setAnchorEl(null);
         setHideStreamerPaused(false);
+        apolloClient.stop();
         apolloClient.resetStore();
     };
 
@@ -997,11 +998,16 @@ const HomeButton = ({
                     horizontal: "left",
                 }}
                 PaperProps={{
+                    // None of this works
+                    // onClick: (event) => event.stopPropagation(),
+                    // onMouseDown: (event) => event.stopPropagation(),
                     sx: {
                         backgroundColor: "grey8.real",
                     },
                 }}
                 style={{ zIndex: 100000 }}
+                // disableBackdropClick={true}
+                // disableCloseOnEscape={true}
             >
                 {renderMainPage()}
             </Popover>

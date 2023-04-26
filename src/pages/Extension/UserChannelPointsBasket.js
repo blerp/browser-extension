@@ -91,8 +91,8 @@ const UserChannelPointsBasket = ({
                         {currentStreamerBlerpUser?.soundEmotesObject
                             ?.channelPointsTitle ||
                         currentStreamerBlerpUser?.username
-                            ? `${currentStreamerBlerpUser?.username} Currency`
-                            : "Channel Currency"}
+                            ? `${currentStreamerBlerpUser?.username} Points`
+                            : "Blerp Channel Points"}
                     </Text>
 
                     <Tooltip
@@ -178,7 +178,11 @@ const UserChannelPointsBasket = ({
                                 fontSize: "18px",
                             }}
                         >
-                            +{pointsAdded} points
+                            +{pointsAdded}{" "}
+                            {currentStreamerBlerpUser?.soundEmotesObject
+                                ?.channelPointsTitle ||
+                                currentStreamerBlerpUser?.username}{" "}
+                            points
                         </Text>
                     ) : currentStreamerBlerpUser &&
                       (!currentStreamerBlerpUser.loggedInChannelPointBasket ||

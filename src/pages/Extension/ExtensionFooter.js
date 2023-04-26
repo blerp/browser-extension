@@ -118,7 +118,10 @@ const ExtensionFooter = ({
 
     const leftSideMessage = currentStreamerBlerpUser?.soundEmotesObject
         ?.channelPointsDisabled
-        ? "The creator has points disabled, points cannot be used on any sounds."
+        ? `The creator has ${
+              currentStreamerBlerpUser?.soundEmotesObject?.channelPointsTitle ||
+              currentStreamerBlerpUser?.username
+          } points disabled, points cannot be used on any sounds.`
         : "Collect points when streamer is live";
 
     const rightSideMessage = currentStreamerBlerpUser?.soundEmotesObject
@@ -273,7 +276,11 @@ const ExtensionFooter = ({
                         fontSize: "11px",
                     }}
                 >
-                    +{pointsAdded} points
+                    +{pointsAdded}{" "}
+                    {currentStreamerBlerpUser?.soundEmotesObject
+                        ?.channelPointsTitle ||
+                        currentStreamerBlerpUser?.username}{" "}
+                    points
                 </Text>
             ) : currentStreamerBlerpUser &&
               (!currentStreamerBlerpUser.loggedInChannelPointBasket ||
@@ -813,7 +820,7 @@ const ExtensionFooter = ({
                                 "&:hover": {
                                     backgroundColor:
                                         currencyGlobalState === "BEETS"
-                                            ? "#773B4B"
+                                            ? "#B43757"
                                             : "#773B4B",
                                 },
                             }}

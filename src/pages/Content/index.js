@@ -59,6 +59,8 @@ let YT_CHAT_BUTTON_CONTAINER;
         } else {
             const newElement = document.createElement("div");
 
+            newElement.style.margin = "auto";
+
             if (target) {
                 target.insertBefore(
                     newElement,
