@@ -49,6 +49,7 @@ const UserProfile = ({
     userSignedIn,
     refetchAll,
     currentStreamerBlerpUser,
+    hideCollector,
 }) => {
     const snackbarContext = useContext(SnackbarContext);
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
@@ -168,6 +169,7 @@ const UserProfile = ({
                         <UserChannelPointsBasket
                             userSignedIn={userSignedIn}
                             currentStreamerBlerpUser={currentStreamerBlerpUser}
+                            hideCollector={true}
                         />
                     )}
 

@@ -62,7 +62,7 @@ const StreamerPaused = ({ currentStreamerBlerpUser, handleClose }) => {
             sx={{
                 display: "flex",
                 flexDirection: "column",
-                overflowY: "scroll",
+                // overflowY: "scroll",
                 alignItems: "center",
                 justifyContent: "center",
                 display: "flex",
@@ -75,7 +75,7 @@ const StreamerPaused = ({ currentStreamerBlerpUser, handleClose }) => {
                 gap: "6px",
 
                 width: "280px",
-                height: "360px",
+                // height: "360px",
 
                 backgroundColor: "grey7.real",
                 borderRadius: "8px",

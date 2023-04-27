@@ -31,6 +31,7 @@ const UserChannelPointsBasket = ({
     userSignedIn,
     refetchAll,
     currentStreamerBlerpUser,
+    hideCollector,
 }) => {
     const snackbarContext = useContext(SnackbarContext);
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
@@ -171,7 +172,9 @@ const UserChannelPointsBasket = ({
                         </Text>
                     </Stack>
 
-                    {typeof pointsAdded === "number" ? (
+                    {hideCollector ? (
+                        <></>
+                    ) : typeof pointsAdded === "number" ? (
                         <Text
                             sx={{
                                 color: "seafoam.main",

@@ -120,22 +120,22 @@ const BiteComponent = ({
                         searchQuery,
                     },
                 },
-            }).then((res) => {
-                setIsBlerpSaving(false);
+            })
+                .then((res) => {
+                    setIsBlerpSaving(false);
 
-                snackbarContext
-                    .triggerSnackbar({
+                    snackbarContext.triggerSnackbar({
                         message: "Removed from Saved!",
                         severity: "success",
                         position: {
                             vertical: "bottom",
                             horizontal: "right",
                         },
-                    })
-                    .catch((err) => {
-                        setIsBlerpSaving(false);
                     });
-            });
+                })
+                .catch((err) => {
+                    setIsBlerpSaving(false);
+                });
         } catch (err) {
             console.log(err);
         }

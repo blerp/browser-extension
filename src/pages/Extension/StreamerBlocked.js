@@ -20,7 +20,7 @@ import {
 
 import AudioPlayer from "./BlerpAudioPlayer";
 import EllipsisLoader from "./EllipsisLoader";
-import { EXTENSION_HEIGHT_PX, EXTENSION_WIDTH_PX } from "../../constants";
+import { EXTENSION_HEIGHT_MAX, EXTENSION_WIDTH_MAX } from "../../constants";
 
 const SAD_TROMBONE = gql`
     ${BITE_WITH_SOUND_EMOTES}
@@ -60,8 +60,8 @@ const StreamerBlocked = ({ currentStreamerBlerpUser, refetchAll }) => {
                 flexDirection: "column",
                 alignItems: "center",
                 justifyContent: "flex-start",
-                width: EXTENSION_WIDTH_PX,
-                height: EXTENSION_HEIGHT_PX,
+                width: EXTENSION_WIDTH_MAX,
+                height: EXTENSION_HEIGHT_MAX,
                 backgroundColor: "grey8.real",
                 height: "100%",
             }}

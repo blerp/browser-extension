@@ -80,7 +80,7 @@ const AudioPlayer = ({
                                         Preview
                                     </Text>
                                 }
-                                placement='top'
+                                placement='bottom'
                                 componentsProps={{
                                     popper: {
                                         sx: {

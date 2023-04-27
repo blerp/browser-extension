@@ -329,6 +329,7 @@ export const BITE = gql`
         strictAudienceRating
         audienceRating
         isPremium
+        featuredPlatforms
         pinned
         audioDuration
         owned
@@ -422,6 +423,7 @@ export const BITE_WITH_SOUND_EMOTES = gql`
         isPremium
         pinned
         audioDuration
+        featuredPlatforms
         owned
         streamerOwnsBite
         visibility
@@ -442,6 +444,7 @@ export const BITE_WITH_SOUND_EMOTES = gql`
             addedAt
             imageUrlCached
             title
+            canPlay
         }
         blockedContext(ownerId: $streamerId) {
             _id

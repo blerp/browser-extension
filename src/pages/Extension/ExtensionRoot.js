@@ -595,19 +595,21 @@ const FeaturedPageNew = ({
                     );
                 })}
 
-            {showFavorites ? (
-                <FavoritesFooter
-                    searchTerm={searchTerm}
-                    currentStreamerBlerpUser={currentStreamerBlerpUser}
-                    channelOwner={currentStreamerBlerpUser}
-                />
-            ) : (
-                <NoSearchResultsFooter
-                    searchTerm={searchTerm}
-                    currentStreamerBlerpUser={currentStreamerBlerpUser}
-                    channelOwner={currentStreamerBlerpUser}
-                />
-            )}
+            {!!data?.browserExtension?.soundEmotesFeaturedContentPagination
+                ?.items?.length &&
+                (showFavorites ? (
+                    <FavoritesFooter
+                        searchTerm={searchTerm}
+                        currentStreamerBlerpUser={currentStreamerBlerpUser}
+                        channelOwner={currentStreamerBlerpUser}
+                    />
+                ) : (
+                    <NoSearchResultsFooter
+                        searchTerm={searchTerm}
+                        currentStreamerBlerpUser={currentStreamerBlerpUser}
+                        channelOwner={currentStreamerBlerpUser}
+                    />
+                ))}
 
             <Stack
                 direction={"column"}
@@ -661,6 +663,8 @@ const ExtensionRoot = ({
 
     setCurrencyGlobal,
     currencyGlobalState,
+
+    isPopup,
 }) => {
     const pageProps = {
         setActiveBlerp: setActiveBlerp,
@@ -685,7 +689,7 @@ const ExtensionRoot = ({
                 padding: "0 4px 4px",
                 width: "100%",
                 height: "100%",
-                maxHeight: `${EXTENSION_HEIGHT - 40}px`,
+                maxHeight: isPopup ? "100%" : `${EXTENSION_HEIGHT - 40}px`,
             }}
         >
             {!blerpSoundEmotesStreamer && !searchTerm ? (

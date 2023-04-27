@@ -23,6 +23,7 @@ import SegmentedSwitch from "./SegmentedSwitch";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
 import { UPDATE_VIEWER_LOG } from "../../mainGraphQl";
+import { EXTENSION_HEIGHT_PX } from "../../constants";
 
 const headshake = keyframes`
   0% {
@@ -514,7 +515,6 @@ const BlerpModalScreen = ({
                     sx={{
                         padding: "32px",
                         position: "relative",
-                        height: "100%",
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "center",
@@ -626,7 +626,6 @@ const BlerpModalScreen = ({
                         padding: "32px",
                         position: "relative",
                         alignItems: "center",
-                        height: "100%",
                     }}
                 >
                     <Stack
@@ -678,7 +677,6 @@ const BlerpModalScreen = ({
                         padding: "32px",
                         position: "relative",
                         alignItems: "center",
-                        height: "100%",
                     }}
                 >
                     <Stack
@@ -730,7 +728,6 @@ const BlerpModalScreen = ({
                         padding: "32px",
                         position: "relative",
                         alignItems: "center",
-                        height: "100%",
                     }}
                 >
                     <Stack
@@ -1686,7 +1683,8 @@ const BlerpModalScreen = ({
                                 blerpStreamer?.soundEmotesObject?.beetsDisabled
                             }
                             rightSideDisabled={
-                                activeBlerp?.soundEmotesContext.beetsDisabled ||
+                                activeBlerp?.soundEmotesContext
+                                    ?.beetsDisabled ||
                                 blerpStreamer?.soundEmotesObject?.beetsDisabled
                             }
                             leftSideFullyDisabled={
@@ -1731,7 +1729,9 @@ const BlerpModalScreen = ({
                 display: "flex",
                 alignItems: "center",
                 width: "100%",
-                height: "100%",
+                // height: "100%",
+                maxHeight: EXTENSION_HEIGHT_PX,
+                overflowY: "scroll",
                 position: "relative",
             }}
         >
@@ -1740,7 +1740,6 @@ const BlerpModalScreen = ({
                     src='https://cdn.blerp.com/design/browser-extension/giftconfetti.gif'
                     style={{
                         width: "100%",
-                        height: "100%",
                         position: "absolute",
                         pointerEvents: "none",
                     }}
