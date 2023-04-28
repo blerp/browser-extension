@@ -1,6 +1,6 @@
 {
     "name": "blerp-browser-extension",
-    "version": "0.0.10",
+    "version": "0.0.11",
     "description": "Blerp built with React 18, Webpack 5, and Webpack Dev Server 4 + A chrome extension boilerplate +",
     "license": "MIT",
     "repository": {

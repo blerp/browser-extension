@@ -11,7 +11,7 @@
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0fKT7oP0ilZerT2CI4M8gO7Br++NVo93C2G7KyXN3zVZklDgM+ydcSOpfhRFmP56/uxIHbvThZ52N7QwX9rUvxCSBBHU23DS7gg4vvZQl/jyLMlmecJJj0lBwnmvyjCKhnrfgEi4Ho9hKbDA0zOQYYuRCxPL16e0N2Y+xDUfqFhDglsHsozC3NnsHa2am7VVuAuXJVeLkjuUF9JUo3tR6sJatBB3Oh68I/RTKoh33S6Cs0bWcNI0YXlPJPYxkfjkrnpnTDhDjbejhjSuSgVl60Lg9WEre2SOkRYlMjfi8eN0kXqxn/7gXy2MbPZauEcffBspd8HOZgi4MNa+b2znjwIDAQAB",
     "action": {
         "default_popup": "popup.html",
-        "default_icon": "icon-34.png"
+        "default_icon": "staging-icon-34.png"
     },
     "icons": {
         "128": "icon-128.png"
@@ -33,7 +33,11 @@
     },
     "web_accessible_resources": [
         {
-            "resources": ["content.styles.css", "icon-128.png", "icon-34.png"],
+            "resources": [
+                "content.styles.css",
+                "staging-icon-128.png",
+                "staging-icon-34.png"
+            ],
             "matches": []
         }
     ]
