@@ -381,7 +381,7 @@ const Popup = () => {
                     children: <span className='MuiTabs-indicatorSpan' />,
                 }}
                 sx={{
-                    position: "sticky",
+                    position: "fixed",
                     bottom: "0",
                     margin: "0 auto",
                     backgroundColor: "grey8.real",
@@ -389,6 +389,7 @@ const Popup = () => {
                     height: "40px",
                     minHeight: "40px",
                     borderRadius: false ? "0px" : "0 0 0 0",
+                    zIndex: 100000,
 
                     "& .MuiTabs-flexContainer": {
                         height: "40px",
@@ -492,7 +493,7 @@ const Popup = () => {
                                 margin: "0 6px 0 0 !important",
                                 fontSize: "18px",
                                 color:
-                                    tabState === "HOME"
+                                    tabState === "PROFILE"
                                         ? "whiteOverride.main"
                                         : "rgba(255,255,255,0.5)",
                             }}
@@ -523,7 +524,7 @@ const Popup = () => {
                         alignItems: "center",
                         fontSize: "16px",
                         color:
-                            tabState === "HOME"
+                            tabState === "PROFILE"
                                 ? "whiteOverride.main"
                                 : "rgba(255,255,255,0.5)",
                     }}
