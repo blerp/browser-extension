@@ -88,7 +88,7 @@ const ChannelPointsCollector = ({
     return (
         <Stack sx={{}}>
             {pointsAdded && (
-                <Text sx={{ color: "seafoam.main", fontSize: "10px" }}>
+                <Text sx={{ color: "seafoam.main", fontSize: "8px" }}>
                     +{pointsAdded} points
                 </Text>
             )}

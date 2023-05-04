@@ -319,15 +319,15 @@ const ExtensionFooter = ({
                                 setPointsAdded(false);
                             }, 3000);
 
-                            snackbarContext.triggerSnackbar({
-                                message: "Points Collected!",
-                                severity: "success",
-                                transitionType: "fade",
-                                position: {
-                                    vertical: "bottom",
-                                    horizontal: "right",
-                                },
-                            });
+                            // snackbarContext.triggerSnackbar({
+                            //     message: "Points Collected!",
+                            //     severity: "success",
+                            //     transitionType: "fade",
+                            //     position: {
+                            //         vertical: "bottom",
+                            //         horizontal: "right",
+                            //     },
+                            // });
                         } catch (err) {
                             snackbarContext.triggerSnackbar({
                                 message:
@@ -657,26 +657,6 @@ const ExtensionFooter = ({
                                   0}
                         </CurrencyTab>
                     </Tooltip>
-
-                    {currentStreamerBlerpUser?.loggedInChannelPointBasket
-                        ?.standardMS &&
-                        !currentStreamerBlerpUser.soundEmotesObject
-                            .extensionDisabled &&
-                        !currentStreamerBlerpUser.soundEmotesObject
-                            .extensionPaused &&
-                        !currentStreamerBlerpUser?.soundEmotesObject
-                            ?.channelPointsDisabled && (
-                            <ChannelPointsCollector
-                                blerpStreamer={currentStreamerBlerpUser}
-                                onTriggerSuccess={() => {}}
-                                onTriggerFail={() => {}}
-                                isStreaming={isStreaming}
-                                intervalMs={
-                                    currentStreamerBlerpUser
-                                        ?.loggedInChannelPointBasket?.standardMS
-                                }
-                            />
-                        )}
 
                     <Tooltip
                         arrow={true}

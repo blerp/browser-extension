@@ -56,6 +56,7 @@ import CustomDrawer from "./CustomDrawer";
 import TruncatedText from "./TruncatedText";
 import ExtensionDisabled from "./ExtensionDisabled";
 import { useApollo } from "../../networking/apolloClient";
+import ChannelPointsCollector from "./ChannelPointsCollector";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -909,6 +910,9 @@ const HomeButton = ({
             sx={{
                 padding: "0 3px",
                 position: "relative",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
             }}
         >
             <Tooltip
@@ -1011,6 +1015,23 @@ const HomeButton = ({
             >
                 {renderMainPage()}
             </Popover>
+
+            {currentStreamerBlerpUser?.loggedInChannelPointBasket?.standardMS &&
+                !currentStreamerBlerpUser.soundEmotesObject.extensionDisabled &&
+                !currentStreamerBlerpUser.soundEmotesObject.extensionPaused &&
+                !currentStreamerBlerpUser?.soundEmotesObject
+                    ?.channelPointsDisabled && (
+                    <ChannelPointsCollector
+                        blerpStreamer={currentStreamerBlerpUser}
+                        onTriggerSuccess={() => {}}
+                        onTriggerFail={() => {}}
+                        isStreaming={isStreaming}
+                        intervalMs={
+                            currentStreamerBlerpUser?.loggedInChannelPointBasket
+                                ?.standardMS
+                        }
+                    />
+                )}
 
             <BlerpModal setIsOpen={setIsOpen} isOpen={isOpen} />
         </Stack>
