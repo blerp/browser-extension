@@ -222,6 +222,29 @@ const HomeButton = ({
     const currentStreamerBlerpUser =
         data?.browserExtension?.currentStreamerPage?.streamerBlerpUser;
 
+    // Trigger first collection if not collected yet
+    useEffect(() => {
+        if (
+            !currentStreamerBlerpUser?.loggedInChannelPointBasket?.standardMS &&
+            currentStreamerBlerpUser?._id &&
+            signedInUser
+        ) {
+            earnSnootPoints({
+                variables: {
+                    channelOwnerId: currentStreamerBlerpUser?._id,
+                    manualEarn: false,
+                },
+            }).then((data) => {
+                // const pointsIncremented =
+                //     data?.browserExtension?.earningSnoots?.pointsIncremented;
+                // setPointsAdded(pointsIncremented);
+                // const timeoutId = setTimeout(() => {
+                //     setPointsAdded(false);
+                // }, 3000);
+            });
+        }
+    }, [currentStreamerBlerpUser]);
+
     const renderBlerpNav = () => {
         if (activeBlerp && tabState !== "PROFILE") {
             return (
