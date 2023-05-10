@@ -15,6 +15,7 @@ const Newtab = () => {
     const [currentPlatform, setCurrentPlatform] = useState(null);
     const [youtubeChannelId, setYoutubeChannelId] = useState(null);
     const [twitchUsername, setTwitchUsername] = useState(null);
+    const [kickUsername, setKickUsername] = useState(null);
 
     React.useEffect(() => {
         getStreamerInfo()
@@ -22,6 +23,7 @@ const Newtab = () => {
                 setCurrentPlatform(result.currentPlatform);
                 setYoutubeChannelId(result.youtubeChannelId);
                 setTwitchUsername(result.twitchUsername);
+                setKickUsername(result.kickUsername);
             })
             .catch((err) => {
                 console.log("ERROR_GETTING_INFO", err);

@@ -205,14 +205,14 @@ const BlerpModalScreen = ({
                         saved: res.data.browserExtension.saveBite?.bite?.saved,
                     });
                     if (res.data.browserExtension.saveBite?.bite?.saved) {
-                        snackbarContext.triggerSnackbar({
-                            message: "Saved!",
-                            severity: "success",
-                            position: {
-                                vertical: "bottom",
-                                horizontal: "right",
-                            },
-                        });
+                        // snackbarContext.triggerSnackbar({
+                        //     message: "Saved!",
+                        //     severity: "success",
+                        //     position: {
+                        //         vertical: "bottom",
+                        //         horizontal: "right",
+                        //     },
+                        // });
                     }
                 })
                 .catch((err) => {
@@ -234,27 +234,29 @@ const BlerpModalScreen = ({
                         searchQuery,
                     },
                 },
-            }).then((res) => {
-                setIsBlerpSaving(false);
+            })
+                .then((res) => {
+                    setIsBlerpSaving(false);
 
-                setActiveBlerp({
-                    ...activeBlerp,
-                    saved: res.data.browserExtension.unsaveBite?.bite?.saved,
-                });
-
-                snackbarContext
-                    .triggerSnackbar({
-                        message: "Removed from Saved!",
-                        severity: "success",
-                        position: {
-                            vertical: "bottom",
-                            horizontal: "right",
-                        },
-                    })
-                    .catch((err) => {
-                        setIsBlerpSaving(false);
+                    setActiveBlerp({
+                        ...activeBlerp,
+                        saved: res.data.browserExtension.unsaveBite?.bite
+                            ?.saved,
                     });
-            });
+
+                    // snackbarContext
+                    //     .triggerSnackbar({
+                    //         message: "Removed from Saved!",
+                    //         severity: "success",
+                    //         position: {
+                    //             vertical: "bottom",
+                    //             horizontal: "right",
+                    //         },
+                    //     })
+                })
+                .catch((err) => {
+                    setIsBlerpSaving(false);
+                });
         } catch (err) {
             console.log(err);
         }
@@ -293,28 +295,28 @@ const BlerpModalScreen = ({
 
     const handleShareClicked = (isChannelPoints) => {
         if (!activeBlerp) {
-            snackbarContext.triggerSnackbar({
-                message: `Must select a blerp to share`,
-                severity: "error",
-                transitionType: "fade",
-                position: {
-                    vertical: "bottom",
-                    horizontal: "right",
-                },
-            });
+            // snackbarContext.triggerSnackbar({
+            //     message: `Must select a blerp to share`,
+            //     severity: "error",
+            //     transitionType: "fade",
+            //     position: {
+            //         vertical: "bottom",
+            //         horizontal: "right",
+            //     },
+            // });
             return;
         }
 
         if (!userSignedIn || !userSignedIn._id) {
-            snackbarContext.triggerSnackbar({
-                message: `Must be logged in to share a blerp`,
-                severity: "error",
-                transitionType: "fade",
-                position: {
-                    vertical: "bottom",
-                    horizontal: "right",
-                },
-            });
+            // snackbarContext.triggerSnackbar({
+            //     message: `Must be logged in to share a blerp`,
+            //     severity: "error",
+            //     transitionType: "fade",
+            //     position: {
+            //         vertical: "bottom",
+            //         horizontal: "right",
+            //     },
+            // });
 
             const returnTo =
                 window.location.pathname !== "/tradeBeets"
@@ -337,15 +339,15 @@ const BlerpModalScreen = ({
                 },
             })
                 .then((res) => {
-                    snackbarContext.triggerSnackbar({
-                        message: "Successfully shared Blerp!",
-                        severity: "success",
-                        transitionType: "fade",
-                        position: {
-                            vertical: "bottom",
-                            horizontal: "right",
-                        },
-                    });
+                    // snackbarContext.triggerSnackbar({
+                    //     message: "Successfully shared Blerp!",
+                    //     severity: "success",
+                    //     transitionType: "fade",
+                    //     position: {
+                    //         vertical: "bottom",
+                    //         horizontal: "right",
+                    //     },
+                    // });
 
                     setShowSharedSucess(true);
                     setTimeout(() => setShowSharedSucess(false), 4600);
@@ -354,15 +356,15 @@ const BlerpModalScreen = ({
                     setShake(true);
                     setTimeout(() => setShake(false), 820);
 
-                    snackbarContext.triggerSnackbar({
-                        message: err && err.toString(),
-                        severity: "error",
-                        transitionType: "fade",
-                        position: {
-                            vertical: "bottom",
-                            horizontal: "right",
-                        },
-                    });
+                    // snackbarContext.triggerSnackbar({
+                    //     message: err && err.toString(),
+                    //     severity: "error",
+                    //     transitionType: "fade",
+                    //     position: {
+                    //         vertical: "bottom",
+                    //         horizontal: "right",
+                    //     },
+                    // });
                 })
                 .finally(() => {
                     setShowShared(false);
@@ -403,15 +405,15 @@ const BlerpModalScreen = ({
                       },
                   })
                       .then((res) => {
-                          snackbarContext.triggerSnackbar({
-                              message: "Successfully shared Blerp!",
-                              severity: "success",
-                              transitionType: "fade",
-                              position: {
-                                  vertical: "bottom",
-                                  horizontal: "right",
-                              },
-                          });
+                          //   snackbarContext.triggerSnackbar({
+                          //       message: "Successfully shared Blerp!",
+                          //       severity: "success",
+                          //       transitionType: "fade",
+                          //       position: {
+                          //           vertical: "bottom",
+                          //           horizontal: "right",
+                          //       },
+                          //   });
                           refetchAll();
 
                           try {
@@ -434,15 +436,15 @@ const BlerpModalScreen = ({
                           setTimeout(() => setShake(false), 820);
                           refetchAll();
 
-                          snackbarContext.triggerSnackbar({
-                              message: err && err.toString(),
-                              severity: "error",
-                              transitionType: "fade",
-                              position: {
-                                  vertical: "bottom",
-                                  horizontal: "right",
-                              },
-                          });
+                          //   snackbarContext.triggerSnackbar({
+                          //       message: err && err.toString(),
+                          //       severity: "error",
+                          //       transitionType: "fade",
+                          //       position: {
+                          //           vertical: "bottom",
+                          //           horizontal: "right",
+                          //       },
+                          //   });
                       })
                       .finally(() => {
                           setShowShared(false);
@@ -462,15 +464,15 @@ const BlerpModalScreen = ({
                       },
                   })
                       .then((res) => {
-                          snackbarContext.triggerSnackbar({
-                              message: "Successfully shared Blerp!",
-                              severity: "success",
-                              transitionType: "fade",
-                              position: {
-                                  vertical: "bottom",
-                                  horizontal: "right",
-                              },
-                          });
+                          //   snackbarContext.triggerSnackbar({
+                          //       message: "Successfully shared Blerp!",
+                          //       severity: "success",
+                          //       transitionType: "fade",
+                          //       position: {
+                          //           vertical: "bottom",
+                          //           horizontal: "right",
+                          //       },
+                          //   });
                           refetchAll();
 
                           try {
@@ -491,15 +493,15 @@ const BlerpModalScreen = ({
                           setShake(true);
                           setTimeout(() => setShake(false), 820);
                           refetchAll();
-                          snackbarContext.triggerSnackbar({
-                              message: err && err.toString(),
-                              severity: "error",
-                              transitionType: "fade",
-                              position: {
-                                  vertical: "bottom",
-                                  horizontal: "right",
-                              },
-                          });
+                          //   snackbarContext.triggerSnackbar({
+                          //       message: err && err.toString(),
+                          //       severity: "error",
+                          //       transitionType: "fade",
+                          //       position: {
+                          //           vertical: "bottom",
+                          //           horizontal: "right",
+                          //       },
+                          //   });
                       })
                       .finally(() => {
                           setShowShared(false);

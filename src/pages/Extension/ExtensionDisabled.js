@@ -47,7 +47,7 @@ const ExtensionDisabled = ({ currentStreamerBlerpUser }) => {
                     }}
                 >
                     This creator doesn’t have Blerp enabled, tell them to add it
-                    to their stream.
+                    and finish Onboarding!
                 </Text>
 
                 <Button

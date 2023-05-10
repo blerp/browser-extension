@@ -144,9 +144,19 @@ const CoolNewSearchbar = ({
                     "& fieldset": {
                         border: "none !important",
                     },
+
+                    "& fieldset:focus": {
+                        outline: "none !important", // Remove the outline style
+                        boxShadow: "none !important",
+                    },
+                    "& input:focus": {
+                        outline: "none !important", // Remove the outline style
+                        boxShadow: "none !important",
+                    },
                     "& div": {
                         padding: "0 0 0 5px",
                     },
+                    outline: "none !important", // Remove the outline style
                 }}
                 InputProps={{
                     sx: {
@@ -163,6 +173,7 @@ const CoolNewSearchbar = ({
                         caretColor: "#0FEBC5",
                         fontSize: "14px",
                     },
+
                     startAdornment: showFavorite ? (
                         <InputAdornment position='start'>
                             <FavoriteRoundedIcon

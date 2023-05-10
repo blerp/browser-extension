@@ -56,6 +56,7 @@ const ExtensionFooter = ({
     const snackbarContext = useContext(SnackbarContext);
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
+    const [pointsError, setPointsError] = useState(false);
 
     const [openBeets, setOpenBeets] = useState(true);
     const handleIconClick = (state) => {
@@ -269,6 +270,16 @@ const ExtensionFooter = ({
                 currentStreamerBlerpUser.soundEmotesObject
                     .channelPointsDisabled) ? (
                 <></>
+            ) : pointsError ? (
+                <Text
+                    sx={{
+                        color: "whiteOverride.main",
+                        fontSize: "11px",
+                        maxWidth: "116px",
+                    }}
+                >
+                    {pointsError}
+                </Text>
             ) : typeof pointsAdded === "number" ? (
                 <Text
                     sx={{
@@ -329,16 +340,22 @@ const ExtensionFooter = ({
                             //     },
                             // });
                         } catch (err) {
-                            snackbarContext.triggerSnackbar({
-                                message:
-                                    "Can only collect points when stream is live!",
-                                severity: "error",
-                                transitionType: "fade",
-                                position: {
-                                    vertical: "bottom",
-                                    horizontal: "right",
-                                },
-                            });
+                            setPointsError(
+                                "Streamer must be live to collect points!",
+                            );
+                            const timeoutId = setTimeout(() => {
+                                setPointsError(false);
+                            }, 3000);
+                            // snackbarContext.triggerSnackbar({
+                            //     message:
+                            //         "Can only collect points when stream is live!",
+                            //     severity: "error",
+                            //     transitionType: "fade",
+                            //     position: {
+                            //         vertical: "bottom",
+                            //         horizontal: "right",
+                            //     },
+                            // });
                         }
                     }}
                 >

@@ -65,12 +65,14 @@ const VIEWER_BROWSER_EXTENSION = gql`
         $userId: MongoID
         $youtubeChannelId: String
         $twitchUsername: String
+        $kickUsername: String
     ) {
         browserExtension {
             currentStreamerPage(
                 userId: $userId
                 youtubeChannelId: $youtubeChannelId
                 twitchUsername: $twitchUsername
+                kickUsername: $kickUsername
             ) {
                 streamerBlerpUser {
                     ...BlerpStreamerFragment
@@ -92,6 +94,8 @@ const HomeButton = ({
     userId,
     youtubeChannelId,
     twitchUsername,
+    kickUsername,
+
     platform,
     optionalButtonText,
     isStreaming,
@@ -106,11 +110,21 @@ const HomeButton = ({
                 youtubeChannelId:
                     platform === "YOUTUBE" ? youtubeChannelId : null,
                 twitchUsername: platform === "TWITCH" ? twitchUsername : null,
+                kickUsername: platform === "KICK" ? kickUsername : null,
             },
             errorPolicy: "all",
-            awaitRefetchQueries: true, // Wait for refetches before resetting the store
+            // awaitRefetchQueries: true, // Wait for refetches before resetting the store
         },
     );
+
+    // console.log(
+    //     "CHECKINg HOMEBUTTON!!",
+    //     platform,
+    //     youtubeChannelId,
+    //     twitchUsername,
+    //     kickUsername,
+    //     isStreaming,
+    // );
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -227,21 +241,26 @@ const HomeButton = ({
         if (
             !currentStreamerBlerpUser?.loggedInChannelPointBasket?.standardMS &&
             currentStreamerBlerpUser?._id &&
-            signedInUser
+            signedInUser &&
+            isStreaming
         ) {
             earnSnootPoints({
                 variables: {
                     channelOwnerId: currentStreamerBlerpUser?._id,
                     manualEarn: false,
                 },
-            }).then((data) => {
-                // const pointsIncremented =
-                //     data?.browserExtension?.earningSnoots?.pointsIncremented;
-                // setPointsAdded(pointsIncremented);
-                // const timeoutId = setTimeout(() => {
-                //     setPointsAdded(false);
-                // }, 3000);
-            });
+            })
+                .then((data) => {
+                    // const pointsIncremented =
+                    //     data?.browserExtension?.earningSnoots?.pointsIncremented;
+                    // setPointsAdded(pointsIncremented);
+                    // const timeoutId = setTimeout(() => {
+                    //     setPointsAdded(false);
+                    // }, 3000);
+                })
+                .catch((err) => {
+                    console.log("Initial cp error", err);
+                });
         }
     }, [currentStreamerBlerpUser]);
 
@@ -1039,7 +1058,9 @@ const HomeButton = ({
                 {renderMainPage()}
             </Popover>
 
-            {currentStreamerBlerpUser?.loggedInChannelPointBasket?.standardMS &&
+            {isStreaming &&
+                currentStreamerBlerpUser?.loggedInChannelPointBasket
+                    ?.standardMS &&
                 !currentStreamerBlerpUser.soundEmotesObject.extensionDisabled &&
                 !currentStreamerBlerpUser.soundEmotesObject.extensionPaused &&
                 !currentStreamerBlerpUser?.soundEmotesObject

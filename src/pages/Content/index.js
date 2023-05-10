@@ -9,6 +9,7 @@ let TWITCH_NAV_BUTTON_CONTAINER;
 let TWITCH_CHAT_BUTTON_CONTAINER;
 let YT_NAV_BUTTON_CONTAINER;
 let YT_CHAT_BUTTON_CONTAINER;
+let KICK_CHAT_BUTTON_CONTAINER;
 
 //[data-a-target="top-nav-container"]
 (() => {
@@ -25,6 +26,8 @@ let YT_CHAT_BUTTON_CONTAINER;
         host === "localhost:1500"
     ) {
         CURRENT_PLATFORM = "BLERP";
+    } else if (host === "www.kick.com" || host === "kick.com") {
+        CURRENT_PLATFORM = "KICK";
     } else {
         CURRENT_PLATFORM = "Unknown";
     }
@@ -34,7 +37,11 @@ let YT_CHAT_BUTTON_CONTAINER;
         return;
     }
 
-    if (CURRENT_PLATFORM !== "TWITCH" && CURRENT_PLATFORM !== "YOUTUBE") {
+    if (
+        CURRENT_PLATFORM !== "TWITCH" &&
+        CURRENT_PLATFORM !== "YOUTUBE" &&
+        CURRENT_PLATFORM !== "KICK"
+    ) {
         console.log("Platform not supported", CURRENT_PLATFORM);
         return;
     }
@@ -48,9 +55,24 @@ let YT_CHAT_BUTTON_CONTAINER;
     } else if (CURRENT_PLATFORM === "TWITCH") {
         // Twitch backend check is more reliable
         isStreaming = true;
-    }
+    } else if (CURRENT_PLATFORM === "KICK") {
+        const isStreamingElement = true;
 
-    console.log("STREAMING_CHECK", isStreaming);
+        // TODO: Figure out why this isn't working
+        // [
+        //     document.querySelector("div.avatar-holder"),
+        //     document.querySelector("div.owner-avatar"),
+        //     document.querySelector("div.live-status"),
+        //     document.querySelector("div.avatar-live-tag"),
+        // ].find((element) => {
+        //     console.log("EKENETB", element);
+        //     const textContent =
+        //         element && element.textContent && element.textContent.trim();
+        //     return textContent === "Live";
+        // });
+
+        isStreaming = !!isStreamingElement;
+    }
 
     const getElementByIdOrCreate = (id, target) => {
         // const existingElement = document.getElementById(id);
@@ -59,7 +81,7 @@ let YT_CHAT_BUTTON_CONTAINER;
         } else {
             const newElement = document.createElement("div");
 
-            newElement.style.margin = "auto";
+            newElement.style.margin = "auto 0";
 
             if (target) {
                 target.insertBefore(
@@ -72,7 +94,57 @@ let YT_CHAT_BUTTON_CONTAINER;
         }
     };
 
+    let kickChatIntervalId = null;
+
+    const renderKickChat = ({ kickUsername }) => {
+        let counter = 0;
+
+        // setTimeout(() => {
+        console.log("TIMEOUT_CALLED_CHAT_WITH_REPEAT", counter);
+        if (kickChatIntervalId) {
+            return;
+        }
+
+        kickChatIntervalId = setInterval(() => {
+            let target = document.querySelector(".send-row");
+
+            if (target) {
+                clearInterval(kickChatIntervalId);
+                kickChatIntervalId = null;
+
+                const container = document.createElement("div");
+                container.style.margin = "auto 0";
+
+                target.insertBefore(container, target.firstChild || null);
+
+                KICK_CHAT_BUTTON_CONTAINER = createRoot(container);
+
+                KICK_CHAT_BUTTON_CONTAINER.render(
+                    WithBlerp({
+                        Component: HomeButton,
+                        pageProps: {
+                            userId: null,
+                            youtubeChannelId: null,
+                            twitchUsername: null,
+                            kickUsername: kickUsername,
+                            platform: CURRENT_PLATFORM,
+                            isStreaming,
+                        },
+                    }),
+                );
+            } else if (counter >= 20) {
+                clearInterval(kickChatIntervalId);
+                kickChatIntervalId = null;
+            }
+
+            counter++;
+            console.log("CHECK_RENDERER", target, counter);
+        }, 5000);
+        // }, 1000);
+    };
+
     let twitchChatIntervalId = null;
+
     const renderTwitchChat = ({ twitchUsername }) => {
         let counter = 0;
 
@@ -236,29 +308,40 @@ let YT_CHAT_BUTTON_CONTAINER;
         }
 
         ytChatIntervalId = setInterval(() => {
-            const youtubeChatIframe = window.frames["chatframe"]
-                ?.contentDocument
-                ? window.frames["chatframe"]?.contentDocument
-                : document.querySelector("#chatframe")?.contentDocument;
+            // const youtubeChatIframe = window.frames["chatframe"]
+            //     ?.contentDocument
+            //     ? window.frames["chatframe"]?.contentDocument
+            //     : document.querySelector("#chatframe")?.contentDocument;
 
-            let target =
-                document.querySelector("#top-level-buttons-computed")
-                    ?.firstChild ??
-                youtubeChatIframe?.querySelector(
-                    "#picker-buttons.yt-live-chat-message-input-renderer",
-                )?.parentElement ??
-                youtubeChatIframe?.querySelector("#message-buttons")
-                    ?.parentElement;
+            // let target =
+            //     document.querySelector("#top-level-buttons-computed")
+            //         ?.firstChild ??
+            //     youtubeChatIframe?.querySelector(
+            //         "#picker-buttons.yt-live-chat-message-input-renderer",
+            //     )?.parentElement ??
+            //     youtubeChatIframe?.querySelector("#message-buttons")
+            //         ?.parentElement;
+            // const youtubeChatIframe = window.frames["chatframe"]
+            //     ?.contentDocument
+            //     ? window.frames["chatframe"]?.contentDocument
+            //     : document.querySelector("#chatframe")?.contentDocument;
+
+            let target = document.querySelector("#top-level-buttons-computed");
 
             if (target) {
                 clearInterval(ytChatIntervalId);
                 ytChatIntervalId = null;
 
                 if (!YT_CHAT_BUTTON_CONTAINER) {
-                    const container = getElementByIdOrCreate(
-                        "yt-nav-button-container-blerp",
-                        target,
-                    );
+                    // const container = getElementByIdOrCreate(
+                    //     "yt-nav-button-container-blerp",
+                    //     target,
+                    // );
+
+                    const container = document.createElement("div");
+                    container.style.margin = "auto 0";
+
+                    target.insertBefore(container, target.firstChild || null);
 
                     YT_CHAT_BUTTON_CONTAINER = createRoot(container);
                 }
@@ -281,12 +364,79 @@ let YT_CHAT_BUTTON_CONTAINER;
             }
 
             counter++;
+            console.log("CHECK_RENDERER_CHAT", target, counter);
         }, 5000);
         // }, 1000);
     };
 
     const renderAllContentPage = () => {
-        if (CURRENT_PLATFORM === "TWITCH") {
+        console.log("RENDER_ALL_CONTENT_PAGE", CURRENT_PLATFORM);
+
+        if (CURRENT_PLATFORM === "KICK") {
+            let kickUsername = null;
+
+            let streamUsername = document.querySelector(".stream-username");
+            if (streamUsername) {
+                kickUsername = streamUsername.textContent.trim();
+            }
+
+            console.log("FIRST", kickUsername);
+
+            // If the username is still not found, try to get it from the URL
+            if (!kickUsername) {
+                let urlParts = window.location.href.split("/");
+                let usernameIndex = urlParts.indexOf("username");
+
+                if (
+                    usernameIndex !== -1 &&
+                    usernameIndex < urlParts.length - 1
+                ) {
+                    kickUsername = urlParts[usernameIndex + 1];
+                }
+            }
+            console.log("SECOND", kickUsername);
+
+            if (!kickUsername) {
+                // Try to get the username from the page title
+                let pageTitle = document.querySelector("title").textContent;
+
+                if (pageTitle && pageTitle.includes(" | Kick")) {
+                    kickUsername = pageTitle.replace(" | Kick", "");
+                    kickUsername =
+                        kickUsername !== "Search" ? kickUsername.trim() : "";
+                }
+            }
+
+            console.log("THIRD", kickUsername);
+
+            // If the username was not found in the page title, try to get it from the URL
+            if (!kickUsername) {
+                let match = window.location.pathname.match(/^\/user\/([^/]+)/);
+                if (match) {
+                    kickUsername = match[1];
+                }
+            }
+
+            // renderKickNav({ kickUsername });
+
+            // If the username was not found, display an error message
+            if (!kickUsername) {
+                console.error(
+                    "BLERP: Could not find Kick username on this page!",
+                );
+                return;
+            }
+
+            setStreamerInfo({
+                kickUsername: kickUsername,
+                currentPlatform: CURRENT_PLATFORM,
+            });
+
+            // Finally, log or display the username as needed
+            console.log(`Kick username: ${kickUsername}`);
+
+            renderKickChat({ kickUsername });
+        } else if (CURRENT_PLATFORM === "TWITCH") {
             let twitchUsername = null;
 
             // If the username was still not found, try to get it from the page URL

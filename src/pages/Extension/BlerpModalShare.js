@@ -168,28 +168,28 @@ const BlerpModalShare = ({
 
     const handleShareClicked = (isChannelPoints) => {
         if (!activeBlerp) {
-            snackbarContext.triggerSnackbar({
-                message: `Must select a blerp to share`,
-                severity: "error",
-                transitionType: "fade",
-                position: {
-                    vertical: "bottom",
-                    horizontal: "right",
-                },
-            });
+            // snackbarContext.triggerSnackbar({
+            //     message: `Must select a blerp to share`,
+            //     severity: "error",
+            //     transitionType: "fade",
+            //     position: {
+            //         vertical: "bottom",
+            //         horizontal: "right",
+            //     },
+            // });
             return;
         }
 
         if (!userSignedIn || !userSignedIn._id) {
-            snackbarContext.triggerSnackbar({
-                message: `Must be logged in to share a blerp`,
-                severity: "error",
-                transitionType: "fade",
-                position: {
-                    vertical: "bottom",
-                    horizontal: "right",
-                },
-            });
+            // snackbarContext.triggerSnackbar({
+            //     message: `Must be logged in to share a blerp`,
+            //     severity: "error",
+            //     transitionType: "fade",
+            //     position: {
+            //         vertical: "bottom",
+            //         horizontal: "right",
+            //     },
+            // });
 
             const returnTo =
                 window.location.pathname !== "/tradeBeets"

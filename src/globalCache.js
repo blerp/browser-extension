@@ -11,7 +11,12 @@ export const getStreamerInfo = async () => {
         try {
             const data = await new Promise((resolve, reject) => {
                 chrome.storage.local.get(
-                    ["twitchUsername", "youtubeChannelId", "currentPlatform"],
+                    [
+                        "twitchUsername",
+                        "youtubeChannelId",
+                        "kickUsername",
+                        "currentPlatform",
+                    ],
                     function (result) {
                         if (chrome.runtime.lastError) {
                             reject(chrome.runtime.lastError);
@@ -23,6 +28,7 @@ export const getStreamerInfo = async () => {
             });
 
             return {
+                kickUsername: data?.kickUsername,
                 twitchUsername: data?.twitchUsername,
                 youtubeChannelId: data?.youtubeChannelId,
                 currentPlatform: data?.currentPlatform,
@@ -42,12 +48,14 @@ export const getStreamerInfo = async () => {
         try {
             const data = await browser.storage.local.get([
                 "twitchUsername",
+                "kickUsername",
                 "youtubeChannelId",
                 "currentPlatform",
             ]);
 
             return {
                 twitchUsername: data?.twitchUsername,
+                kickUsername: data?.kickUsername,
                 youtubeChannelId: data?.youtubeChannelId,
                 currentPlatform: data?.currentPlatform,
             };
@@ -62,6 +70,7 @@ export const setStreamerInfo = ({
     twitchUsername,
     youtubeChannelId,
     currentPlatform,
+    kickUsername,
 }) => {
     if (typeof chrome === "undefined" && typeof browser === "undefined") {
         return;
@@ -69,6 +78,11 @@ export const setStreamerInfo = ({
 
     if (chrome.storage || browser.storage) {
         const storage = chrome?.storage?.local || browser?.storage?.local;
+
+        if (kickUsername) {
+            storage.remove(["kickUsername"]);
+            storage.set({ kickUsername });
+        }
 
         if (twitchUsername) {
             storage.remove(["twitchUsername"]);

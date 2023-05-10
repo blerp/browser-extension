@@ -36,6 +36,7 @@ const HOME_PAGE_POPUP = gql`
         $userId: MongoID
         $youtubeChannelId: String
         $twitchUsername: String
+        $kickUsername: String
     ) {
         browserExtension {
             biteRandomOne {
@@ -50,6 +51,7 @@ const HOME_PAGE_POPUP = gql`
                 userId: $userId
                 youtubeChannelId: $youtubeChannelId
                 twitchUsername: $twitchUsername
+                kickUsername: $kickUsername
             ) {
                 streamerBlerpUser {
                     ...BlerpStreamerFragment
@@ -63,6 +65,7 @@ const Popup = () => {
     const [currentPlatform, setCurrentPlatform] = useState(null);
     const [youtubeChannelId, setYoutubeChannelId] = useState(null);
     const [twitchUsername, setTwitchUsername] = useState(null);
+    const [kickUsername, setKickUsername] = useState(null);
     const [storedUserId, setUserId] = useState(null);
 
     const { loading, data, error, refetch } = useQuery(HOME_PAGE_POPUP, {
@@ -72,6 +75,7 @@ const Popup = () => {
                 currentPlatform === "YOUTUBE" ? youtubeChannelId : null,
             twitchUsername:
                 currentPlatform === "TWITCH" ? twitchUsername : null,
+            kickUsername: currentPlatform === "KICK" ? kickUsername : null,
         },
         errorPolicy: "all",
     });
