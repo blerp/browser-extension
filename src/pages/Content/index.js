@@ -375,14 +375,6 @@ let KICK_CHAT_BUTTON_CONTAINER;
         if (CURRENT_PLATFORM === "KICK") {
             let kickUsername = null;
 
-            let streamUsername = document.querySelector(".stream-username");
-            if (streamUsername) {
-                kickUsername = streamUsername.textContent.trim();
-            }
-
-            console.log("FIRST", kickUsername);
-
-            // If the username is still not found, try to get it from the URL
             if (!kickUsername) {
                 let urlParts = window.location.href.split("/");
                 let usernameIndex = urlParts.indexOf("username");
@@ -394,6 +386,11 @@ let KICK_CHAT_BUTTON_CONTAINER;
                     kickUsername = urlParts[usernameIndex + 1];
                 }
             }
+
+            console.log("FIRST_R", kickUsername);
+
+            // If the username is still not found, try to get it from the URL
+
             console.log("SECOND", kickUsername);
 
             if (!kickUsername) {
@@ -415,6 +412,11 @@ let KICK_CHAT_BUTTON_CONTAINER;
                 if (match) {
                     kickUsername = match[1];
                 }
+            }
+
+            let streamUsername = document.querySelector(".stream-username");
+            if (!kickUsername && streamUsername) {
+                kickUsername = streamUsername.textContent.trim();
             }
 
             // renderKickNav({ kickUsername });

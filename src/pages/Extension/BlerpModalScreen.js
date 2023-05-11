@@ -185,6 +185,8 @@ const BlerpModalScreen = ({
         (blerpStreamer?.soundEmotesObject?.pauseUntilDate &&
             currentDate < pauseUntilDate);
 
+    const isOwner = (userSignedIn && userSignedIn._id) === blerpStreamer?._id;
+
     const handleSave = async (bite) => {
         try {
             setIsBlerpSaving(true);
@@ -328,8 +330,8 @@ const BlerpModalScreen = ({
         setShowShared(true);
 
         if (
-            !isChannelPoints &&
-            (userSignedIn && userSignedIn._id) === blerpStreamer?._id
+            // !isChannelPoints &&
+            isOwner
         ) {
             sendTest({
                 variables: {
@@ -980,7 +982,8 @@ const BlerpModalScreen = ({
             } else if (
                 localCurrencyType === "BEETS" &&
                 beetBasket?.beetBalance <
-                    activeBlerp?.soundEmotesContext?.beetAmount
+                    activeBlerp?.soundEmotesContext?.beetAmount &&
+                !isOwner
             ) {
                 return (
                     <Text
@@ -1009,7 +1012,8 @@ const BlerpModalScreen = ({
             } else if (
                 localCurrencyType === "POINTS" &&
                 pointsBasket?.points <
-                    activeBlerp?.soundEmotesContext?.channelPointsAmount
+                    activeBlerp?.soundEmotesContext?.channelPointsAmount &&
+                !isOwner
             ) {
                 return (
                     <Text
@@ -1147,7 +1151,8 @@ const BlerpModalScreen = ({
             ) {
                 if (
                     beetBasket?.beetBalance <
-                    activeBlerp?.soundEmotesContext?.beetAmount
+                        activeBlerp?.soundEmotesContext?.beetAmount &&
+                    !isOwner
                 ) {
                     return;
                 }
@@ -1197,7 +1202,8 @@ const BlerpModalScreen = ({
             ) {
                 if (
                     pointsBasket?.points <
-                    activeBlerp?.soundEmotesContext?.channelPointsAmount
+                        activeBlerp?.soundEmotesContext?.channelPointsAmount &&
+                    !isOwner
                 ) {
                     return <></>;
                 }

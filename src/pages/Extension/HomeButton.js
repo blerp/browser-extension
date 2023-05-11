@@ -1059,6 +1059,7 @@ const HomeButton = ({
             </Popover>
 
             {isStreaming &&
+                currentStreamerBlerpUser &&
                 currentStreamerBlerpUser?.loggedInChannelPointBasket
                     ?.standardMS &&
                 !currentStreamerBlerpUser.soundEmotesObject.extensionDisabled &&

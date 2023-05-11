@@ -202,7 +202,7 @@ const BlerpModalShare = ({
         setShowShared(true);
 
         if (
-            !isChannelPoints &&
+            // !isChannelPoints &&
             (userSignedIn && userSignedIn._id) === blerpStreamer?._id
         ) {
             sendTest({
