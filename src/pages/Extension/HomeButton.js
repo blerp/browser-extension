@@ -102,15 +102,21 @@ const HomeButton = ({
     themeMode, // light/dark
     showJustPanel,
 }) => {
+    const [newYoutubeChannelId, setYoutubeChannelId] =
+        useState(youtubeChannelId);
+    const [newTwitchUsername, setTwitchUsername] = useState(twitchUsername);
+    const [newKickUsername, setKickUsername] = useState(kickUsername);
+
     const { loading, data, error, refetch } = useQuery(
         VIEWER_BROWSER_EXTENSION,
         {
             variables: {
                 userId: userId,
                 youtubeChannelId:
-                    platform === "YOUTUBE" ? youtubeChannelId : null,
-                twitchUsername: platform === "TWITCH" ? twitchUsername : null,
-                kickUsername: platform === "KICK" ? kickUsername : null,
+                    platform === "YOUTUBE" ? newYoutubeChannelId : null,
+                twitchUsername:
+                    platform === "TWITCH" ? newTwitchUsername : null,
+                kickUsername: platform === "KICK" ? newKickUsername : null,
             },
             errorPolicy: "all",
             // awaitRefetchQueries: true, // Wait for refetches before resetting the store
@@ -213,12 +219,62 @@ const HomeButton = ({
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [earnSnootPoints] = useMutation(EARN_SNOOT_POINTS);
     const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
-
     const snackbarContext = useContext(SnackbarContext);
 
     const handleClick = async (event) => {
+        if (platform === "YOUTUBE") {
+            // console.log(
+            //     "NEW",
+            //     newYoutubeChannelId,
+            //     "OLD",
+            //     youtubeChannelId,
+            //     window.ytInitialData,
+            // );
+            // TODO: Implement
+        } else if (platform === "TWITCH") {
+            let matchMoreStuff = window.location.pathname.match(/^\/([^/]+)/);
+            let nameInputOne = null;
+            nameInputOne = matchMoreStuff[1];
+
+            // console.log(
+            //     "NEW",
+            //     newTwitchUsername,
+            //     "OLD",
+            //     twitchUsername,
+            //     "TEST",
+            //     nameInputOne,
+            // );
+
+            if (nameInputOne) {
+                setTwitchUsername(nameInputOne);
+            }
+        } else if (platform === "KICK") {
+            // Try to get the username from the page title
+            let newNameInput2 = null;
+            let pageTitleAgain = document.querySelector("title").textContent;
+
+            if (pageTitleAgain && pageTitleAgain.includes(" | Kick")) {
+                newNameInput2 = pageTitleAgain.replace(" | Kick", "");
+                newNameInput2 =
+                    newNameInput2 !== "Search" ? newNameInput2.trim() : "";
+            }
+
+            // console.log(
+            //     "NEW",
+            //     kickUsername,
+            //     "OLD",
+            //     newKickUsername,
+            //     "NEW",
+            //     newNameInput2,
+            // );
+
+            if (newNameInput2) {
+                setKickUsername(newNameInput2);
+            }
+        }
+
         setAnchorEl(event.currentTarget);
-        await refetch();
+        refetch();
     };
 
     const handleClose = () => {

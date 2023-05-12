@@ -50,8 +50,10 @@ let KICK_CHAT_BUTTON_CONTAINER;
 
     if (CURRENT_PLATFORM === "YOUTUBE") {
         const canonicalURLTag = document.querySelector("link[rel=canonical]");
-        const canonicalURL = canonicalURLTag.getAttribute("href");
-        isStreaming = canonicalURL.includes("/watch?v=");
+        if (canonicalURLTag) {
+            const canonicalURL = canonicalURLTag.getAttribute("href");
+            isStreaming = canonicalURL.includes("/watch?v=");
+        }
     } else if (CURRENT_PLATFORM === "TWITCH") {
         // Twitch backend check is more reliable
         isStreaming = true;
@@ -73,6 +75,8 @@ let KICK_CHAT_BUTTON_CONTAINER;
 
         isStreaming = !!isStreamingElement;
     }
+
+    console.log("WORKINGHERE!!!", window.ytInitialData);
 
     const getElementByIdOrCreate = (id, target) => {
         // const existingElement = document.getElementById(id);
@@ -426,7 +430,7 @@ let KICK_CHAT_BUTTON_CONTAINER;
                 console.error(
                     "BLERP: Could not find Kick username on this page!",
                 );
-                return;
+                //     return;
             }
 
             setStreamerInfo({
@@ -465,11 +469,17 @@ let KICK_CHAT_BUTTON_CONTAINER;
             // renderTwitchNav({ twitchUsername });
 
             // If the username was not found, display an error message
+            // if (!twitchUsername) {
+            //     console.error(
+            //         "BLERP: Could not find Twitch username on this page!",
+            //     );
+            //     return;
+            // }
+
             if (!twitchUsername) {
                 console.error(
                     "BLERP: Could not find Twitch username on this page!",
                 );
-                return;
             }
 
             setStreamerInfo({
@@ -520,8 +530,11 @@ let KICK_CHAT_BUTTON_CONTAINER;
             // If the channelId was not found, display an error message
             if (!youtubeChannelId) {
                 console.error("Could not find YouTube channel ID on this page");
-                return;
+                //     return;
             }
+
+            console.error("Channel found for this channel", youtubeChannelId);
+            // console.error("Could not find YouTube channel ID on this page");
 
             setStreamerInfo({
                 youtubeChannelId: youtubeChannelId,
