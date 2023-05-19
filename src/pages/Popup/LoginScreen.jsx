@@ -119,7 +119,7 @@ const LOG_IN_QUERY = gql`
 
 const LoginScreen = ({
     signUp = false,
-    returnTo = `/soundboard-browser-extension`,
+    returnTo = `/soundboard-browser-extension-return`,
     sx,
     refetchAll,
 }) => {
@@ -179,7 +179,7 @@ const LoginScreen = ({
             }}
         >
             <OAuthLink
-                href={`${apiHost}/auth/discord?pass=${currentHost}/soundboard-browser-extension?returnTo=${
+                href={`${apiHost}/auth/discord?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
                     returnTo ?? "/"
                 }&loggedWith=discord&fail=${currentHost}/auth-fail`}
                 target='_blank'
@@ -200,7 +200,7 @@ const LoginScreen = ({
                 >{`${signUp ? "Signup" : "Login"} With Discord`}</Text>
             </OAuthLink>
             <OAuthLink
-                href={`${apiHost}/auth/twitch?pass=${currentHost}/soundboard-browser-extension?returnTo=${
+                href={`${apiHost}/auth/twitch?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
                     returnTo ?? "/"
                 }&loggedWith=twitch&fail=${currentHost}/auth-fail`}
                 target='_blank'
@@ -222,7 +222,7 @@ const LoginScreen = ({
             </OAuthLink>
 
             <OAuthLink
-                href={`${apiHost}/auth/youtube?pass=${currentHost}/soundboard-browser-extension?returnTo=${
+                href={`${apiHost}/auth/youtube?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
                     returnTo ?? "/"
                 }&loggedWith=youtube&fail=${currentHost}/auth-fail`}
                 target='_blank'
@@ -246,7 +246,7 @@ const LoginScreen = ({
             </OAuthLink>
 
             <OAuthLink
-                href={`${apiHost}/auth/google?pass=${currentHost}/soundboard-browser-extension?returnTo=${
+                href={`${apiHost}/auth/google?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
                     returnTo ?? "/"
                 }&loggedWith=google&fail=${currentHost}/auth-fail`}
                 target='_blank'
@@ -268,7 +268,7 @@ const LoginScreen = ({
             </OAuthLink>
 
             {/* <OAuthLink
-                href={`${apiHost}/auth/tiktok?pass=${currentHost}/soundboard-browser-extension?returnTo=${
+                href={`${apiHost}/auth/tiktok?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
                     returnTo ?? "/"
                 }&loggedWith=tiktok&fail=${currentHost}/auth-fail`}
                 // target='_blank'
@@ -291,7 +291,7 @@ const LoginScreen = ({
             {!notMatchError && <UseEmailDivider text='or use email/username' />}
 
             {/* <OAuthLink
-                href={`${apiHost}/auth/youtube?pass=${currentHost}/soundboard-browser-extension?returnTo=${
+                href={`${apiHost}/auth/youtube?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
                     returnTo ?? "/"
                 }&loggedWith=youtube&fail=${currentHost}/auth-fail`}
                 // target='_blank'

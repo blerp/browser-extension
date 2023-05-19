@@ -76,8 +76,6 @@ let KICK_CHAT_BUTTON_CONTAINER;
         isStreaming = !!isStreamingElement;
     }
 
-    console.log("WORKINGHERE!!!", window.ytInitialData);
-
     const getElementByIdOrCreate = (id, target) => {
         // const existingElement = document.getElementById(id);
         if (false) {

@@ -78,7 +78,7 @@ const UserLoginScreen = ({ currentStreamerBlerpUser }) => {
                     variant='contained'
                     href={`${
                         selectedProject.host
-                    }/login?returnTo=${`/soundboard-browser-extension`}`}
+                    }/login?returnTo=${`/soundboard-browser-extension-return`}`}
                     target='_blank'
                     rel='noreferrer'
                     color='notBlack'

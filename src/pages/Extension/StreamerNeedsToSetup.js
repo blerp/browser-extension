@@ -13,7 +13,7 @@ const StreamerNeedsToSetup = ({}) => {
                 justifyContent: "center",
                 display: "flex",
                 paddingBottom: "32px",
-                margin: "0 auto",
+                margin: "24px auto",
 
                 display: "flex",
                 flexDirection: "column",
@@ -47,7 +47,7 @@ const StreamerNeedsToSetup = ({}) => {
                     color: "black.real",
                 }}
             >
-                Streamer has not added Sounds
+                There has not been any sounds added to this panel yet!
             </Text>
 
             <Text
@@ -68,7 +68,7 @@ const StreamerNeedsToSetup = ({}) => {
                 }}
             >
                 Tell streamer or mod to go to their dashboard and add sounds to
-                this panel!
+                this panel.
             </Text>
 
             <Stack
@@ -90,14 +90,14 @@ const StreamerNeedsToSetup = ({}) => {
                         margin: "0 4px",
                         fontSize: "14px",
                     }}
-                    href={`${selectedProject.host}/soundEmotes`}
+                    href={`${selectedProject.host}/x`}
                     target='_blank'
                     rel='noreferrer'
                 >
-                    Streamer Setup
+                    Setup Sounds
                 </Button>
 
-                <Button
+                {/* <Button
                     variant='outlined'
                     color='whiteOverride'
                     sx={{
@@ -108,7 +108,7 @@ const StreamerNeedsToSetup = ({}) => {
                     onClick={() => window.location.reload()}
                 >
                     Reload
-                </Button>
+                </Button> */}
             </Stack>
         </Stack>
     );
