@@ -17,12 +17,17 @@ let KICK_CHAT_BUTTON_CONTAINER;
 
     if (host === "www.youtube.com" || host === "youtube.com") {
         CURRENT_PLATFORM = "YOUTUBE";
-    } else if (host === "www.twitch.tv" || host === "twitch.tv") {
+    } else if (
+        host === "www.twitch.tv" ||
+        host === "twitch.tv" ||
+        host === "dashboard.twitch.tv"
+    ) {
         CURRENT_PLATFORM = "TWITCH";
     } else if (
         host === "www.blerp.com" ||
         host === "blerp.com" ||
         host === "localhost:3000" ||
+        host === "localhost:3002" ||
         host === "localhost:1500"
     ) {
         CURRENT_PLATFORM = "BLERP";
@@ -42,7 +47,7 @@ let KICK_CHAT_BUTTON_CONTAINER;
         CURRENT_PLATFORM !== "YOUTUBE" &&
         CURRENT_PLATFORM !== "KICK"
     ) {
-        console.log("Platform not supported", CURRENT_PLATFORM);
+        console.log("Platform not supported", CURRENT_PLATFORM, host);
         return;
     }
 
@@ -443,6 +448,15 @@ let KICK_CHAT_BUTTON_CONTAINER;
         } else if (CURRENT_PLATFORM === "TWITCH") {
             let twitchUsername = null;
 
+            if (!twitchUsername && host === "dashboard.twitch.tv") {
+                const pathSegments = window.location.pathname
+                    .split("/")
+                    .filter((segment) => segment.trim() !== "");
+                if (pathSegments.length >= 2 && pathSegments[0] === "u") {
+                    twitchUsername = pathSegments[1];
+                }
+            }
+
             // If the username was still not found, try to get it from the page URL
             if (!twitchUsername) {
                 let match = window.location.pathname.match(/^\/([^/]+)/);
@@ -492,54 +506,151 @@ let KICK_CHAT_BUTTON_CONTAINER;
         } else if (CURRENT_PLATFORM === "YOUTUBE") {
             // content script
 
-            // First, try to get the channelId from the URL
-            let searchParams = new URLSearchParams(window.location.search);
-            let youtubeChannelId = searchParams.get("channel");
+            // Find the <a> element with the specified class
+            const spanElement = document.querySelector(
+                'span[itemprop="author"]',
+            );
 
-            let channelLink = document.querySelector("a.ytp-ce-channel-title");
-            if (channelLink) {
-                let regex = /\/channel\/([\w-]+)/;
-                let match = channelLink.href.match(regex);
-                if (match) {
-                    youtubeChannelId = match[1];
-                }
-            }
+            // Check if the element is found
 
-            // If the channelId was not found in the URL, try to find it in the page metadata
-            if (!youtubeChannelId) {
-                let meta = document.querySelector('meta[itemprop="channelId"]');
-                if (meta) {
-                    youtubeChannelId = meta.getAttribute("content");
-                }
-            }
-
-            // If the channelId was still not found, try to get it from the page metadata using other properties
-            if (!youtubeChannelId) {
-                let meta = document.querySelector(
-                    'meta[property="og:video:channel_id"]',
+            if (spanElement) {
+                const linkElement = spanElement.querySelector(
+                    'link[itemprop="url"]',
                 );
-                if (meta) {
-                    youtubeChannelId = meta.getAttribute("content");
+
+                if (linkElement) {
+                    // Get the href attribute of the <a> element
+                    var href = linkElement.getAttribute("href");
+                    href = href.replace("http://", "https://");
+
+                    // Fetch the URL and get the canonical URL from the response
+                    let youtubeChannelId = null;
+
+                    if (!href.includes("youtube")) {
+                        console.log("Not a YouTube channel");
+                        return; // return or do something else
+                    }
+
+                    fetch(href)
+                        .then((response) => {
+                            return response.text();
+                        })
+                        .then((html) => {
+                            let parser = new DOMParser();
+                            let doc = parser.parseFromString(html, "text/html");
+
+                            // Check if the <link> element with rel="canonical" is found
+                            let canonicalElement = doc.querySelector(
+                                'link[rel="canonical"]',
+                            );
+
+                            console.log("canonical element", canonicalElement);
+
+                            if (canonicalElement) {
+                                let canonicalUrl =
+                                    canonicalElement.getAttribute("href");
+                                console.log("Canonical URL:", canonicalUrl);
+
+                                // Extract the channelId from the canonical URL
+                                let regex = /\/channel\/([\w-]+)/;
+                                let match = canonicalUrl.match(regex);
+                                if (match) {
+                                    youtubeChannelId = match[1];
+                                    // Render the components using the extracted channelId
+                                    renderYTNav({
+                                        youtubeChannelId: youtubeChannelId,
+                                    });
+                                    setStreamerInfo({
+                                        youtubeChannelId: youtubeChannelId,
+                                        currentPlatform: CURRENT_PLATFORM,
+                                    });
+                                    renderYTChat({
+                                        youtubeChannelId: youtubeChannelId,
+                                    });
+                                }
+                            } else {
+                                let canonicalUrl =
+                                    canonicalElement.getAttribute("href");
+                                console.log("Canonical URL:", canonicalUrl);
+
+                                // Extract the channelId from the canonical URL
+                                let regex2 = /\/channel\/([\w-]+)/;
+                                let match3 = canonicalUrl.match(regex2);
+                                if (match3) {
+                                    youtubeChannelId = match3[1];
+                                    // Render the components using the extracted channelId
+                                    renderYTNav({
+                                        youtubeChannelId: youtubeChannelId,
+                                    });
+                                    setStreamerInfo({
+                                        youtubeChannelId: youtubeChannelId,
+                                        currentPlatform: CURRENT_PLATFORM,
+                                    });
+                                    renderYTChat({
+                                        youtubeChannelId: youtubeChannelId,
+                                    });
+                                }
+                            }
+                        })
+                        .catch((error) => {
+                            console.log("Error fetching URL:", error);
+                        });
+                } else {
+                    console.log("Link element not found.");
                 }
             }
 
-            renderYTNav({ youtubeChannelId: youtubeChannelId });
+            // First, try to get the channelId from the URL
+            // let searchParams = new URLSearchParams(window.location.search);
+            // let youtubeChannelId = searchParams.get("channel");
 
-            // If the channelId was not found, display an error message
-            if (!youtubeChannelId) {
-                console.error("Could not find YouTube channel ID on this page");
-                //     return;
-            }
+            // let channelLink = document.querySelector("a.ytp-ce-channel-title");
+            // if (channelLink) {
+            //     let regex = /\/channel\/([\w-]+)/;
+            //     let match = channelLink.href.match(regex);
+            //     if (match) {
+            //         youtubeChannelId = match[1];
+            //     }
+            // }
 
-            console.error("Channel found for this channel", youtubeChannelId);
-            // console.error("Could not find YouTube channel ID on this page");
+            // // If the channelId was not found in the URL, try to find it in the page metadata
+            // if (!youtubeChannelId) {
+            //     let meta = document.querySelector('meta[itemprop="channelId"]');
+            //     if (meta) {
+            //         youtubeChannelId = meta.getAttribute("content");
+            //     }
+            // }
 
-            setStreamerInfo({
-                youtubeChannelId: youtubeChannelId,
-                currentPlatform: CURRENT_PLATFORM,
-            });
+            // // If the channelId was still not found, try to get it from the page metadata using other properties
+            // if (!youtubeChannelId) {
+            //     let meta = document.querySelector(
+            //         'meta[property="og:video:channel_id"]',
+            //     );
+            //     if (meta) {
+            //         youtubeChannelId = meta.getAttribute("content");
+            //     }
+            // }
 
-            renderYTChat({ youtubeChannelId: youtubeChannelId });
+            // if (!youtubeChannelId) {
+            //     return;
+            // }
+
+            // renderYTNav({ youtubeChannelId: youtubeChannelId });
+
+            // // If the channelId was not found, display an error message
+            // if (!youtubeChannelId) {
+            //     console.error("Could not find YouTube channel ID on this page");
+            // }
+
+            // console.error("Channel found for this channel", youtubeChannelId);
+            // // console.error("Could not find YouTube channel ID on this page");
+
+            // setStreamerInfo({
+            //     youtubeChannelId: youtubeChannelId,
+            //     currentPlatform: CURRENT_PLATFORM,
+            // });
+
+            // renderYTChat({ youtubeChannelId: youtubeChannelId });
         } else {
         }
     };

@@ -259,6 +259,15 @@ const HomeButton = ({
             let nameInputOne = null;
             nameInputOne = matchMoreStuff[1];
 
+            if (window.location.host === "dashboard.twitch.tv") {
+                const pathSegments = window.location.pathname
+                    .split("/")
+                    .filter((segment) => segment.trim() !== "");
+                if (pathSegments.length >= 2 && pathSegments[0] === "u") {
+                    nameInputOne = pathSegments[1];
+                }
+            }
+
             // console.log(
             //     "NEW",
             //     newTwitchUsername,
@@ -895,7 +904,10 @@ const HomeButton = ({
     };
 
     const renderMainPage = () => {
-        if (newKickUsername === "Creator Dashboard") {
+        if (
+            newKickUsername === "Creator Dashboard" ||
+            newKickUsername === "Moderation Dashboard"
+        ) {
             return (
                 <>
                     <Stack
