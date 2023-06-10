@@ -91,6 +91,8 @@ const HomeButton = ({
     userId,
     youtubeChannelId,
     twitchUsername,
+    kickUsername,
+    trovoUsername,
     platform,
     optionalButtonText,
     isStreaming,
@@ -105,6 +107,8 @@ const HomeButton = ({
                 youtubeChannelId:
                     platform === "YOUTUBE" ? youtubeChannelId : null,
                 twitchUsername: platform === "TWITCH" ? twitchUsername : null,
+                kickUsername: platform === "KICK" ? kickUsername : null,
+                trovoUsername: platform === "TROVO" ? trovoUsername : null,
             },
             errorPolicy: "all",
             awaitRefetchQueries: true, // Wait for refetches before resetting the store

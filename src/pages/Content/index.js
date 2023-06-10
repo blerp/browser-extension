@@ -10,6 +10,7 @@ let TWITCH_CHAT_BUTTON_CONTAINER;
 let YT_NAV_BUTTON_CONTAINER;
 let YT_CHAT_BUTTON_CONTAINER;
 let KICK_CHAT_BUTTON_CONTAINER;
+let TROVO_CHAT_BUTTON_CONTAINER;
 
 //[data-a-target="top-nav-container"]
 (() => {
@@ -33,6 +34,8 @@ let KICK_CHAT_BUTTON_CONTAINER;
         CURRENT_PLATFORM = "BLERP";
     } else if (host === "www.kick.com" || host === "kick.com") {
         CURRENT_PLATFORM = "KICK";
+    } else if (host === "www.trovo.live" || host === "trovo.live") {
+        CURRENT_PLATFORM = "TROVO";
     } else {
         CURRENT_PLATFORM = "Unknown";
     }
@@ -45,7 +48,8 @@ let KICK_CHAT_BUTTON_CONTAINER;
     if (
         CURRENT_PLATFORM !== "TWITCH" &&
         CURRENT_PLATFORM !== "YOUTUBE" &&
-        CURRENT_PLATFORM !== "KICK"
+        CURRENT_PLATFORM !== "KICK" &&
+        CURRENT_PLATFORM !== "TROVO"
     ) {
         console.log("Platform not supported", CURRENT_PLATFORM, host);
         return;
@@ -77,6 +81,10 @@ let KICK_CHAT_BUTTON_CONTAINER;
         //         element && element.textContent && element.textContent.trim();
         //     return textContent === "Live";
         // });
+
+        isStreaming = !!isStreamingElement;
+    } else if (CURRENT_PLATFORM === "TROVO") {
+        const isStreamingElement = true;
 
         isStreaming = !!isStreamingElement;
     }
@@ -148,6 +156,54 @@ let KICK_CHAT_BUTTON_CONTAINER;
             console.log("CHECK_RENDERER", target, counter);
         }, 5000);
         // }, 1000);
+    };
+
+    let trovoChatIntervalId = null;
+
+    const renderTrovoChat = ({ trovoUsername }) => {
+        let counter = 0;
+
+        // setTimeout(() => {
+        if (trovoChatIntervalId) {
+            return;
+        }
+
+        trovoChatIntervalId = setInterval(() => {
+            let target = document.querySelector(".input-feature-box");
+
+            if (target) {
+                clearInterval(trovoChatIntervalId);
+                trovoChatIntervalId = null;
+
+                const container = document.createElement("div");
+                container.style.margin = "auto 0";
+
+                target.insertBefore(container, target.firstChild || null);
+
+                TROVO_CHAT_BUTTON_CONTAINER = createRoot(container);
+
+                TROVO_CHAT_BUTTON_CONTAINER.render(
+                    WithBlerp({
+                        Component: HomeButton,
+                        pageProps: {
+                            userId: null,
+                            youtubeChannelId: null,
+                            twitchUsername: null,
+                            kickUsername: null,
+                            trovoUsername: trovoUsername,
+                            platform: CURRENT_PLATFORM,
+                            isStreaming,
+                        },
+                    }),
+                );
+            } else if (counter >= 20) {
+                clearInterval(trovoChatIntervalId);
+                trovoChatIntervalId = null;
+            }
+
+            counter++;
+            console.log("CHECK_RENDERER", target, counter);
+        }, 5000);
     };
 
     let twitchChatIntervalId = null;
@@ -379,7 +435,45 @@ let KICK_CHAT_BUTTON_CONTAINER;
     const renderAllContentPage = () => {
         console.log("RENDER_ALL_CONTENT_PAGE", CURRENT_PLATFORM);
 
-        if (CURRENT_PLATFORM === "KICK") {
+        if (CURRENT_PLATFORM === "TROVO") {
+            let trovoUsername = null;
+
+            if (!trovoUsername) {
+                // Extract the username using regex
+                try {
+                    const pattern = /\/s\/([^/?]+)/;
+                    const match = window.location
+                        ? window.location.toString().match(pattern)
+                        : null;
+
+                    if (match) {
+                        // Remove any query parameters from the username
+                        trovoUsername = match[1];
+
+                        console.log("URL", trovoUsername);
+                    }
+                } catch (err) {
+                    console.log("ERROR", err);
+                }
+            }
+
+            if (!trovoUsername) {
+                console.error(
+                    "BLERP: Could not find Kick username on this page!",
+                );
+                //     return;
+            }
+
+            setStreamerInfo({
+                trovoUsername: trovoUsername,
+                currentPlatform: CURRENT_PLATFORM,
+            });
+
+            // Finally, log or display the username as needed
+            console.log(`Trovo username: ${trovoUsername}`);
+
+            renderTrovoChat({ trovoUsername });
+        } else if (CURRENT_PLATFORM === "KICK") {
             let kickUsername = null;
 
             if (!kickUsername) {
@@ -400,6 +494,7 @@ let KICK_CHAT_BUTTON_CONTAINER;
 
             console.log("SECOND", kickUsername);
 
+            // not working
             if (!kickUsername) {
                 // Try to get the username from the page title
                 let pageTitle = document.querySelector("title").textContent;
@@ -692,6 +787,14 @@ let KICK_CHAT_BUTTON_CONTAINER;
                 if (TWITCH_NAV_BUTTON_CONTAINER) {
                     TWITCH_NAV_BUTTON_CONTAINER.unmount();
                     TWITCH_NAV_BUTTON_CONTAINER = null;
+                }
+                if (KICK_CHAT_BUTTON_CONTAINER) {
+                    KICK_CHAT_BUTTON_CONTAINER.unmount();
+                    KICK_CHAT_BUTTON_CONTAINER = null;
+                }
+                if (TROVO_CHAT_BUTTON_CONTAINER) {
+                    TROVO_CHAT_BUTTON_CONTAINER.unmount();
+                    TROVO_CHAT_BUTTON_CONTAINER = null;
                 }
 
                 clearInterval(ytNavIntervalId);

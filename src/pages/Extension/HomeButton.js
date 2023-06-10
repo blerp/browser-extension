@@ -66,6 +66,7 @@ const VIEWER_BROWSER_EXTENSION = gql`
         $youtubeChannelId: String
         $twitchUsername: String
         $kickUsername: String
+        $trovoUsername: String
     ) {
         browserExtension {
             currentStreamerPage(
@@ -73,6 +74,7 @@ const VIEWER_BROWSER_EXTENSION = gql`
                 youtubeChannelId: $youtubeChannelId
                 twitchUsername: $twitchUsername
                 kickUsername: $kickUsername
+                trovoUsername: $trovoUsername
             ) {
                 streamerBlerpUser {
                     ...BlerpStreamerFragment
@@ -95,6 +97,7 @@ const HomeButton = ({
     youtubeChannelId,
     twitchUsername,
     kickUsername,
+    trovoUsername,
 
     platform,
     optionalButtonText,
@@ -106,6 +109,7 @@ const HomeButton = ({
         useState(youtubeChannelId);
     const [newTwitchUsername, setTwitchUsername] = useState(twitchUsername);
     const [newKickUsername, setKickUsername] = useState(kickUsername);
+    const [newTrovoUsername, setTrovoUsername] = useState(trovoUsername);
 
     const { loading, data, error, refetch } = useQuery(
         VIEWER_BROWSER_EXTENSION,
@@ -117,6 +121,7 @@ const HomeButton = ({
                 twitchUsername:
                     platform === "TWITCH" ? newTwitchUsername : null,
                 kickUsername: platform === "KICK" ? newKickUsername : null,
+                trovoUsername: platform === "TROVO" ? newTrovoUsername : null,
             },
             errorPolicy: "all",
             // awaitRefetchQueries: true, // Wait for refetches before resetting the store
@@ -291,17 +296,31 @@ const HomeButton = ({
                     newNameInput2 !== "Search" ? newNameInput2.trim() : "";
             }
 
-            // console.log(
-            //     "NEW",
-            //     kickUsername,
-            //     "OLD",
-            //     newKickUsername,
-            //     "NEW",
-            //     newNameInput2,
-            // );
+            console.log(
+                "NEW",
+                kickUsername,
+                "OLD",
+                newKickUsername,
+                "NEW",
+                newNameInput2,
+            );
 
             if (newNameInput2) {
                 setKickUsername(newNameInput2);
+            }
+        } else if (platform === "TROVO") {
+            try {
+                const pattern = /\/s\/([^/?]+)/;
+                const match = window.location
+                    ? window.location.toString().match(pattern)
+                    : null;
+
+                if (match) {
+                    const username = match[1];
+                    setTrovoUsername(username);
+                }
+            } catch (err) {
+                console.log("ERROR", err);
             }
         }
 

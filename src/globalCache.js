@@ -67,6 +67,7 @@ export const getStreamerInfo = async () => {
 };
 
 export const setStreamerInfo = ({
+    trovoUsername,
     twitchUsername,
     youtubeChannelId,
     currentPlatform,
@@ -92,6 +93,11 @@ export const setStreamerInfo = ({
         if (youtubeChannelId) {
             storage.remove(["youtubeChannelId"]);
             storage.set({ youtubeChannelId });
+        }
+
+        if (trovoUsername) {
+            storage.remove(["trovoUsername"]);
+            storage.set({ trovoUsername });
         }
 
         if (currentPlatform) {
