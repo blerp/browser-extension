@@ -330,6 +330,12 @@ const ExtensionFooter = ({
                                 setPointsAdded(false);
                             }, 3000);
 
+                            if (
+                                !currentStreamerBlerpUser.loggedInChannelPointBasket
+                            ) {
+                                refetchAll();
+                            }
+
                             // snackbarContext.triggerSnackbar({
                             //     message: "Points Collected!",
                             //     severity: "success",

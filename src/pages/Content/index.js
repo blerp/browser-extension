@@ -122,9 +122,12 @@ let TROVO_CHAT_BUTTON_CONTAINER;
 
         kickChatIntervalId = setInterval(() => {
             let target = document.querySelector(".send-row");
+            let homeButtonExists = document.querySelector(
+                "#blerp-detector-icon-home-check",
+            );
 
-            if (target) {
-                clearInterval(kickChatIntervalId);
+            if (target && !homeButtonExists) {
+                // clearInterval(kickChatIntervalId);
                 kickChatIntervalId = null;
 
                 const container = document.createElement("div");
@@ -147,14 +150,14 @@ let TROVO_CHAT_BUTTON_CONTAINER;
                         },
                     }),
                 );
-            } else if (counter >= 20) {
+            } else if (counter >= 120) {
                 clearInterval(kickChatIntervalId);
                 kickChatIntervalId = null;
             }
 
             counter++;
             console.log("CHECK_RENDERER", target, counter);
-        }, 5000);
+        }, 6000);
         // }, 1000);
     };
 
@@ -170,9 +173,12 @@ let TROVO_CHAT_BUTTON_CONTAINER;
 
         trovoChatIntervalId = setInterval(() => {
             let target = document.querySelector(".input-feature-box");
+            let homeButtonExists = document.querySelector(
+                "#blerp-detector-icon-home-check",
+            );
 
-            if (target) {
-                clearInterval(trovoChatIntervalId);
+            if (target && !homeButtonExists) {
+                // clearInterval(trovoChatIntervalId);
                 trovoChatIntervalId = null;
 
                 const container = document.createElement("div");
@@ -196,7 +202,7 @@ let TROVO_CHAT_BUTTON_CONTAINER;
                         },
                     }),
                 );
-            } else if (counter >= 20) {
+            } else if (counter >= 120) {
                 clearInterval(trovoChatIntervalId);
                 trovoChatIntervalId = null;
             }
@@ -222,8 +228,12 @@ let TROVO_CHAT_BUTTON_CONTAINER;
                 `div[data-test-selector="chat-input-buttons-container"]`,
             );
 
-            if (target) {
-                clearInterval(twitchChatIntervalId);
+            let homeButtonExists = document.querySelector(
+                "#blerp-detector-icon-home-check",
+            );
+
+            if (target && !homeButtonExists) {
+                // clearInterval(twitchChatIntervalId);
                 twitchChatIntervalId = null;
 
                 const firstDivInsideTarget = target.querySelector(
@@ -251,7 +261,7 @@ let TROVO_CHAT_BUTTON_CONTAINER;
                         },
                     }),
                 );
-            } else if (counter >= 20) {
+            } else if (counter >= 120) {
                 clearInterval(twitchChatIntervalId);
                 twitchChatIntervalId = null;
             }
@@ -324,8 +334,12 @@ let TROVO_CHAT_BUTTON_CONTAINER;
         ytNavIntervalId = setInterval(() => {
             let targetNav = document.querySelector("#buttons");
 
-            if (targetNav) {
-                clearInterval(ytNavIntervalId);
+            let homeButtonExists = document.querySelector(
+                "#blerp-detector-icon-home-check",
+            );
+
+            if (targetNav && !homeButtonExists) {
+                // clearInterval(ytNavIntervalId);
                 ytNavIntervalId = null;
 
                 if (!YT_NAV_BUTTON_CONTAINER) {
@@ -350,7 +364,7 @@ let TROVO_CHAT_BUTTON_CONTAINER;
                         },
                     }),
                 );
-            } else if (counter >= 100) {
+            } else if (counter >= 120) {
                 clearInterval(ytNavIntervalId);
                 ytNavIntervalId = null;
             }

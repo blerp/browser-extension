@@ -30,6 +30,7 @@ const NoSearchResultsFavorites = ({ currentStreamerBlerpUser, searchTerm }) => {
                     padding: "10px",
                     gap: "4px",
                     borderRadius: "8px",
+                    overflow: "none",
                 }}
             >
                 <Text

@@ -364,6 +364,7 @@ const HomeButton = ({
                     // const timeoutId = setTimeout(() => {
                     //     setPointsAdded(false);
                     // }, 3000);
+                    refetch();
                 })
                 .catch((err) => {
                     console.log("Initial cp error", err);
@@ -1294,6 +1295,7 @@ const HomeButton = ({
                     target='_blank'
                     rel='noreferrer'
                     variant='custom'
+                    id='blerp-detector-icon-home-check'
                     sx={{
                         margin: "0 2px",
                         padding: "2px 4px",
