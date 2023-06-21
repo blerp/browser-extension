@@ -22,7 +22,7 @@ import SegmentedSwitch from "./SegmentedSwitch";
 
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
-import { UPDATE_VIEWER_LOG } from "../../mainGraphQl";
+import { BITE_WITH_SOUND_EMOTES, UPDATE_VIEWER_LOG } from "../../mainGraphQl";
 
 const headshake = keyframes`
   0% {
@@ -140,14 +140,25 @@ const PLAY_TEST_SOUND = gql`
     }
 `;
 
+const GET_BITE_BY_ID = gql`
+    ${BITE_WITH_SOUND_EMOTES}
+    query webBitePageGetBite($_id: MongoID!, $streamerId: MongoID) {
+        web {
+            biteById(_id: $_id) {
+                ...BiteSoundEmotesFragment
+            }
+        }
+    }
+`;
+
 const BlerpModalScreen = ({
     isOpen,
     setActiveBlerp,
-    activeBlerp,
+    activeBlerpStart,
     blerpStreamer,
     userSignedIn,
     activeSearchQuery,
-    refetchAll,
+    refetchStreamer,
     refetching,
 
     beetBasket,
@@ -186,6 +197,26 @@ const BlerpModalScreen = ({
             currentDate < pauseUntilDate);
 
     const isOwner = (userSignedIn && userSignedIn._id) === blerpStreamer?._id;
+
+    const {
+        loading,
+        data,
+        error,
+        refetch: refetchBite,
+    } = useQuery(GET_BITE_BY_ID, {
+        variables: {
+            _id: activeBlerpStart?._id,
+            streamerId: blerpStreamer?._id,
+        },
+        fetchPolicy: "network-only",
+    });
+
+    const refetchAll = async () => {
+        await refetchStreamer();
+        // await refetchBite();
+    };
+
+    const activeBlerp = data?.web?.biteById;
 
     const handleSave = async (bite) => {
         try {
@@ -615,6 +646,21 @@ const BlerpModalScreen = ({
                             </Button>
                         )}
                     </Stack>
+                </Stack>
+            );
+        }
+
+        if (loading) {
+            return (
+                <Stack
+                    sx={{
+                        padding: "32px",
+                        position: "relative",
+                        alignItems: "center",
+                        height: "100%",
+                    }}
+                >
+                    <EllipsisLoader />
                 </Stack>
             );
         }

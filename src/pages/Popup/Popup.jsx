@@ -103,7 +103,7 @@ const Popup = () => {
         if (typeof window !== "undefined")
             setAudioClip(
                 new Audio(
-                    "https://cdn.blerp.com/normalized/400876b0-4412-11ed-a2d4-6748414eda0b",
+                    "https://cdn.blerp.com/normalized/84dccb60-662f-11ea-aa81-619380d8dcdf",
                 ),
             );
     }, []);

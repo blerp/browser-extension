@@ -18,6 +18,7 @@ import {
 } from "@blerp/design";
 
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
+
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 
 import selectedProject from "../../projectConfig";
@@ -116,6 +117,9 @@ const HomeButton = ({
         {
             variables: {
                 userId: userId,
+                // selectedProject?.env === "DEV"
+                //     ? "5f724737644a5a0061f28a62"
+                //     : userId,
                 youtubeChannelId:
                     platform === "YOUTUBE" ? newYoutubeChannelId : null,
                 twitchUsername:
@@ -124,7 +128,6 @@ const HomeButton = ({
                 trovoUsername: platform === "TROVO" ? newTrovoUsername : null,
             },
             errorPolicy: "all",
-            // awaitRefetchQueries: true, // Wait for refetches before resetting the store
         },
     );
 
@@ -209,6 +212,7 @@ const HomeButton = ({
 
     // create a function that sets the new tab state and the previous tab state to what it used to be
     const handleTabChange = (newValue) => {
+        setShowSearch(false);
         setSearchTerm("");
         setPreviousTabState(tabState);
         setTabState(newValue);
@@ -220,6 +224,7 @@ const HomeButton = ({
     const [hideStreamerPaused, setHideStreamerPaused] = useState(false);
 
     const [pointsAdded, setPointsAdded] = useState(false);
+    const [pointsError, setPointsError] = useState(false);
 
     const [anchorEl, setAnchorEl] = React.useState(null);
     const [earnSnootPoints] = useMutation(EARN_SNOOT_POINTS);
@@ -329,7 +334,6 @@ const HomeButton = ({
     };
 
     const handleClose = () => {
-        setSearchTerm("");
         setAnchorEl(null);
         setHideStreamerPaused(false);
         apolloClient.stop();
@@ -389,7 +393,7 @@ const HomeButton = ({
 
                         position: "sticky",
                         top: "0px",
-                        zIndex: 3001,
+                        zIndex: 3000000001,
                     }}
                 >
                     <Stack
@@ -410,7 +414,13 @@ const HomeButton = ({
                             }}
                             onClick={async () => {
                                 setActiveBlerp(null);
-                                refetch();
+                                // await refetch();
+
+                                if (searchTerm) {
+                                } else {
+                                    setShowSearch(false);
+                                    setSearchTerm("");
+                                }
 
                                 // const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
 
@@ -566,7 +576,7 @@ const HomeButton = ({
 
                             position: "sticky",
                             top: "0px",
-                            zIndex: 3001,
+                            zIndex: 3000000001,
                         }}
                     >
                         <Stack
@@ -587,7 +597,7 @@ const HomeButton = ({
                                 }}
                                 onClick={async () => {
                                     handleTabChange("HOME");
-                                    await refetch();
+                                    // await refetch();
                                 }}
                             />
 
@@ -694,7 +704,7 @@ const HomeButton = ({
 
                             position: "sticky",
                             top: "0px",
-                            zIndex: 3001,
+                            zIndex: 3000000001,
                         }}
                     >
                         <Stack
@@ -726,24 +736,18 @@ const HomeButton = ({
                                         width: "100%",
                                     }}
                                 >
-                                    <Stack
-                                        sx={{
-                                            width: "96%",
+                                    <CoolNewSearchBar
+                                        setSearchTerm={setSearchTerm}
+                                        searchTerm={searchTerm}
+                                        onClose={() => {
+                                            setShowSearch(false);
                                         }}
-                                    >
-                                        <CoolNewSearchBar
-                                            setSearchTerm={setSearchTerm}
-                                            searchTerm={searchTerm}
-                                            onClose={() => {
-                                                setShowSearch(false);
-                                            }}
-                                            handleCloseBar={() => {
-                                                setShowSearch(false);
-                                            }}
-                                            showFavorite={true}
-                                            placeholderText='Search'
-                                        />
-                                    </Stack>
+                                        handleCloseBar={() => {
+                                            setShowSearch(false);
+                                        }}
+                                        showFavorite={true}
+                                        placeholderText='Search'
+                                    />
                                 </Stack>
                             ) : (
                                 <Text
@@ -821,7 +825,7 @@ const HomeButton = ({
 
                             position: "sticky",
                             top: "0px",
-                            zIndex: 3001,
+                            zIndex: 3000000001,
                         }}
                     >
                         <Stack
@@ -832,20 +836,14 @@ const HomeButton = ({
                                 width: "100%",
                             }}
                         >
-                            <Stack
-                                sx={{
-                                    width: "96%",
-                                }}
-                            >
-                                <CoolNewSearchBar
-                                    setSearchTerm={setSearchTerm}
-                                    searchTerm={searchTerm}
-                                    onClose={() => {}}
-                                    placeholderText={`${capitalizeFirstLetter(
-                                        currentStreamerBlerpUser?.username,
-                                    )} Sounds`}
-                                />
-                            </Stack>
+                            <CoolNewSearchBar
+                                setSearchTerm={setSearchTerm}
+                                searchTerm={searchTerm}
+                                onClose={() => {}}
+                                placeholderText={`${capitalizeFirstLetter(
+                                    currentStreamerBlerpUser?.username,
+                                )} Sounds`}
+                            />
                         </Stack>
 
                         {!showJustPanel && (
@@ -1180,12 +1178,12 @@ const HomeButton = ({
                         {activeBlerp ? (
                             <BlerpModalScreen
                                 currencyGlobalState={currencyGlobalState}
-                                activeBlerp={activeBlerp}
                                 setActiveBlerp={setActiveBlerp}
                                 isOpen={activeBlerp?._id}
                                 blerpStreamer={currentStreamerBlerpUser}
                                 userSignedIn={signedInUser}
-                                refetchAll={async () => {
+                                activeBlerpStart={activeBlerp}
+                                refetchStreamer={async () => {
                                     await refetch();
                                 }}
                                 activeSearchQuery={searchTerm}
@@ -1258,6 +1256,115 @@ const HomeButton = ({
                 justifyContent: "center",
             }}
         >
+            {!signedInUser?._id ||
+            (currentStreamerBlerpUser?.soundEmotesObject &&
+                currentStreamerBlerpUser.soundEmotesObject.extensionDisabled) ||
+            (currentStreamerBlerpUser?.soundEmotesObject &&
+                currentStreamerBlerpUser.soundEmotesObject
+                    .channelPointsDisabled) ? (
+                <></>
+            ) : pointsError ? (
+                <Text
+                    sx={{
+                        color: "#8A9193",
+                        fontSize: "11px",
+                        maxWidth: "116px",
+                    }}
+                >
+                    {pointsError}
+                </Text>
+            ) : typeof pointsAdded === "number" ? (
+                <Text
+                    sx={{
+                        color: "seafoam.main",
+                        fontSize: "11px",
+                    }}
+                >
+                    +{pointsAdded}{" "}
+                    {currentStreamerBlerpUser?.soundEmotesObject
+                        ?.channelPointsTitle ||
+                        currentStreamerBlerpUser?.username}{" "}
+                    points
+                </Text>
+            ) : currentStreamerBlerpUser &&
+              (!currentStreamerBlerpUser.loggedInChannelPointBasket ||
+                  currentStreamerBlerpUser.loggedInChannelPointBasket
+                      ?.showManualButton) ? (
+                <Button
+                    variant='text'
+                    color='notBlack'
+                    disableElevation={true}
+                    sx={{
+                        fontSize: "10px",
+                        cursor: "pointer",
+                        padding: "0px",
+                        color: themeMode === "light" ? "#E2E2E6" : "#8A9193",
+
+                        "&:hover": {
+                            color: "seafoam.main",
+                        },
+                        textTransform: "capitalize",
+                    }}
+                    onClick={async () => {
+                        try {
+                            const { data } = await earnSnootPoints({
+                                variables: {
+                                    channelOwnerId:
+                                        currentStreamerBlerpUser?._id,
+                                    manualEarn: true,
+                                },
+                            });
+
+                            const pointsIncremented =
+                                data?.browserExtension?.earningSnoots
+                                    ?.pointsIncremented;
+
+                            setPointsAdded(pointsIncremented);
+                            const timeoutId = setTimeout(() => {
+                                setPointsAdded(false);
+                            }, 3000);
+
+                            if (
+                                !currentStreamerBlerpUser.loggedInChannelPointBasket
+                            ) {
+                                refetchAll();
+                            }
+
+                            // snackbarContext.triggerSnackbar({
+                            //     message: "Points Collected!",
+                            //     severity: "success",
+                            //     transitionType: "fade",
+                            //     position: {
+                            //         vertical: "bottom",
+                            //         horizontal: "right",
+                            //     },
+                            // });
+                        } catch (err) {
+                            setPointsError(
+                                "Streamer must be live to collect points!",
+                            );
+                            const timeoutId = setTimeout(() => {
+                                setPointsError(false);
+                            }, 3000);
+                            // snackbarContext.triggerSnackbar({
+                            //     message:
+                            //         "Can only collect points when stream is live!",
+                            //     severity: "error",
+                            //     transitionType: "fade",
+                            //     position: {
+                            //         vertical: "bottom",
+                            //         horizontal: "right",
+                            //     },
+                            // });
+                        }
+                    }}
+                >
+                    Bonus Points
+                </Button>
+            ) : (
+                <></>
+            )}
+
             <Tooltip
                 componentsProps={{
                     tooltip: {

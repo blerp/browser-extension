@@ -139,6 +139,7 @@ const ExtensionFooter = ({
                 justifyContent: "space-around",
                 position: "sticky",
                 backgroundColor: "grey7.real",
+
                 width: "100%",
                 minHeight: "40px",
                 padding: "2px 0",

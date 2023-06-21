@@ -18,6 +18,7 @@ import styled from "styled-components";
 import EllipsisLoader from "./EllipsisLoader";
 import AudioPlayer from "./BlerpAudioPlayer";
 import selectedProject from "../../projectConfig";
+import { BITE, BITE_WITH_SOUND_EMOTES } from "../../mainGraphQl";
 
 const PLAY_AND_TRANSFER_BEETS = gql`
     mutation soundEmotesBeetsTradeToCreator(
@@ -80,17 +81,12 @@ const PLAY_TEST_SOUND = gql`
     }
 `;
 
-const GET_RANDOM_BITE = gql`
-    query getRandomBite {
+const GET_BITE_BY_ID = gql`
+    ${BITE_WITH_SOUND_EMOTES}
+    query webBitePageGetBite($_id: MongoID!, $streamerId: MongoID) {
         web {
-            biteRandomOne {
-                _id
-                title
-                saved
-            }
-            userSignedIn {
-                _id
-                username
+            biteById(_id: $_id) {
+                ...BiteSoundEmotesFragment
             }
         }
     }
@@ -143,7 +139,7 @@ const ModalContainer = styled.div`
 const BlerpModalShare = ({
     isOpen,
     setActiveBlerp,
-    activeBlerp,
+    activeBlerpStart,
     blerpStreamer,
     userSignedIn,
     activeSearchQuery,
@@ -153,9 +149,15 @@ const BlerpModalShare = ({
     beetBasket,
     pointsBasket,
 }) => {
-    const { loading, data, error } = useQuery(GET_RANDOM_BITE, {
-        variables: {},
+    const { loading, data, error } = useQuery(GET_BITE_BY_ID, {
+        variables: {
+            _id: activeBlerpStart?._id,
+            streamerId: blerpStreamer?._id,
+        },
+        fetchPolicy: "network-only",
     });
+
+    const activeBlerp = data?.web?.biteById;
 
     const [currentContent, setCurrentContent] = useState(false);
     const [showShared, setShowShared] = useState(false);
@@ -346,6 +348,36 @@ const BlerpModalShare = ({
                       });
         }
     };
+
+    if (loading) {
+        return (
+            <Modal
+                style={{ zIndex: 100001 }}
+                sx={{
+                    backdropFilter: "blur(8px)",
+                }}
+                open={isOpen}
+                onClose={() => {
+                    setActiveBlerp(null);
+                }}
+                aria-labelledby='subscription-gifting-modal'
+                aria-describedby='subscription-gifting-modal'
+            >
+                <ModalContainer>
+                    <Stack
+                        sx={{
+                            backgroundColor: "grey7.real",
+                            padding: "32px",
+                            borderRadius: "12px",
+                            position: "relative",
+                        }}
+                    >
+                        <EllipsisLoader />
+                    </Stack>
+                </ModalContainer>
+            </Modal>
+        );
+    }
 
     return (
         <Modal

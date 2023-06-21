@@ -279,7 +279,7 @@ const SearchPage = ({
             streamerId: blerpSoundEmotesStreamer?.ownerId,
             showUserContent: showFavorites,
         },
-        fetchPolicy: "network-only",
+        // fetchPolicy: "network-only",
     });
 
     if (loading) {

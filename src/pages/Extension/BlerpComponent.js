@@ -11,9 +11,12 @@ import {
     Select,
     MenuItem,
     SnackbarContext,
+    Tooltip,
 } from "@blerp/design";
 import gql from "graphql-tag";
 import { useMutation } from "@apollo/client";
+import PlayArrowRoundedIcon from "@mui/icons-material/PlayArrowRounded";
+import PauseRoundedIcon from "@mui/icons-material/PauseRounded";
 
 const SAVE_BITE = gql`
     mutation webSaveBite($biteId: MongoID!, $data: JSON) {
@@ -65,6 +68,34 @@ const BiteComponent = ({
     const snackbarContext = useContext(SnackbarContext);
     const [saveBlerp] = useMutation(SAVE_BITE);
     const [unsaveBlerp] = useMutation(UNSAVE_BITE);
+
+    const audioRef = useRef(null);
+    const [isPlaying, setIsPlaying] = useState(false);
+
+    const [progress, setProgress] = useState(0);
+    const togglePlay = () => {
+        setIsPlaying(!isPlaying);
+        audioRef.current.volume = 1;
+        isPlaying ? audioRef.current.pause() : audioRef.current.play();
+        audioRef.current.currentTime = 0;
+    };
+
+    useEffect(() => {
+        if (isPlaying) {
+            const timer = setInterval(() => {
+                const duration = audioRef.current.duration;
+                const currentTime = audioRef.current.currentTime;
+                const progressPercent = Math.round(
+                    (currentTime / duration) * 100,
+                );
+                setProgress(progressPercent);
+            }, 100);
+
+            return () => clearInterval(timer);
+        } else {
+            setProgress(0);
+        }
+    }, [isPlaying]);
 
     // useEffect(() => {
     //     if (currencyGlobalState) {
@@ -150,14 +181,11 @@ const BiteComponent = ({
                 height: "127px",
                 position: "relative",
                 borderRadius: "8px",
-                margin: marginBite || "4px",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                // borderColor: "seafoam.main",
-                // borderStyle: "solid",
-                // borderWidth: activeBlerp?._id === bite?._id ? "8px" : "0px",
+                margin: marginBite || "2px 4px",
 
                 "&:hover": {
                     opacity: 1,
@@ -166,8 +194,78 @@ const BiteComponent = ({
                     visibility: "visible",
                     opacity: 1,
                 },
+
+                "&:hover .blerp-playbutton": {
+                    visibility: "visible",
+                    opacity: 1,
+                },
             }}
         >
+            <audio
+                ref={audioRef}
+                src={bite?.audio?.mp3?.url}
+                onEnded={() => setIsPlaying(false)}
+            />
+
+            <Stack
+                className='blerp-playbutton'
+                sx={{
+                    position: "absolute",
+                    top: "20%",
+                    // height: "32px",
+                    // width: "32px",
+                    backgroundColor: "rgba(0, 0, 0, 0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    zIndex: "100",
+                    borderRadius: "120px",
+                    opacity: 0,
+                }}
+                onClick={togglePlay}
+            >
+                {!isPlaying ? (
+                    <Tooltip
+                        title={
+                            <Text
+                                sx={{
+                                    color: "white.override",
+                                    fontWeight: "600",
+                                    fontSize: "16px",
+                                }}
+                            >
+                                Preview
+                            </Text>
+                        }
+                        placement='bottom'
+                        componentsProps={{
+                            popper: {
+                                sx: {
+                                    zIndex: 100000,
+                                },
+                            },
+                            tooltip: {
+                                sx: {
+                                    backgroundColor: "#000",
+                                    color: "white",
+                                    borderRadius: "4px",
+                                    fontSize: "16px",
+                                },
+                            },
+                        }}
+                    >
+                        <PlayArrowRoundedIcon
+                            sx={{ fontSize: "40px", color: "white" }}
+                        />
+                    </Tooltip>
+                ) : (
+                    <PauseRoundedIcon
+                        sx={{ fontSize: "40px", color: "white" }}
+                    />
+                )}
+            </Stack>
+
             {showSavedIcon &&
                 (savingBlerp ? (
                     <FavoriteRoundedIcon
