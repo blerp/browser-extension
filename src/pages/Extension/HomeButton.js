@@ -1256,7 +1256,7 @@ const HomeButton = ({
                 justifyContent: "center",
             }}
         >
-            {!signedInUser?._id ||
+            {/* {!signedInUser?._id ||
             (currentStreamerBlerpUser?.soundEmotesObject &&
                 currentStreamerBlerpUser.soundEmotesObject.extensionDisabled) ||
             (currentStreamerBlerpUser?.soundEmotesObject &&
@@ -1363,7 +1363,7 @@ const HomeButton = ({
                 </Button>
             ) : (
                 <></>
-            )}
+            )} */}
 
             <Tooltip
                 componentsProps={{
