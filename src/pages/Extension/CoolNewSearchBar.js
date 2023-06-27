@@ -1,5 +1,5 @@
 import { Button, InputAdornment, Divider, Input, Stack } from "@blerp/design";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -84,12 +84,16 @@ const CoolNewSearchbar = ({
     showFavorite,
     placeholderText,
     handleCloseBar,
+
+    setForcedLoading,
+    forcedLoading,
 }) => {
     const size = useWindowSize();
     const [active, setActive] = useState(searchTerm);
     const [searchInput, setSearchInput] = useState(searchTerm);
     const [searchRating, setSearchRating] = useState("R");
     const [searchDuration, setSearchDuration] = useState();
+    const delayTimerRef = useRef(null);
 
     // useEffect(() => {
     //     const handleKeydown = (e) => {
@@ -120,7 +124,6 @@ const CoolNewSearchbar = ({
         if (!searchInput || searchInput === "") {
             return;
         }
-        const searchValue = searchInput.split(" ").join("-");
         setSearchTerm(searchInput);
     };
 
@@ -131,7 +134,7 @@ const CoolNewSearchbar = ({
                 width: "96%",
             }}
         >
-            {!showFavorite && searchTerm && (
+            {!showFavorite && searchInput && (
                 <ChevronLeftRoundedIcon
                     sx={{
                         width: "32px",
@@ -143,6 +146,8 @@ const CoolNewSearchbar = ({
                     onClick={async () => {
                         setSearchTerm("");
                         setSearchInput("");
+                        clearTimeout(delayTimerRef.current);
+
                         if (handleCloseBar) handleCloseBar();
                     }}
                 />
@@ -159,6 +164,7 @@ const CoolNewSearchbar = ({
                             if (searchInput === "") {
                                 setSearchTerm("");
                                 setSearchInput("");
+                                clearTimeout(delayTimerRef.current);
                                 if (handleCloseBar) handleCloseBar();
                             }
                         }
@@ -171,8 +177,28 @@ const CoolNewSearchbar = ({
                         if (e.target.value === "") {
                             setSearchTerm("");
                             setSearchInput("");
+                            setForcedLoading(true);
+
+                            clearTimeout(delayTimerRef.current);
+                            delayTimerRef.current = setTimeout(() => {
+                                setSearchTerm("");
+                                setSearchInput("");
+                                setForcedLoading(false);
+                                // Call your function here
+                            }, 300);
+
+                            clearTimeout(delayTimerRef.current);
+
                             if (handleCloseBar) handleCloseBar();
                         }
+
+                        setForcedLoading(true);
+                        clearTimeout(delayTimerRef.current);
+                        delayTimerRef.current = setTimeout(() => {
+                            setSearchTerm(e.target.value);
+                            setForcedLoading(false);
+                            // Call your function here
+                        }, 700);
                     }}
                     sx={{
                         border: "none",
@@ -226,7 +252,7 @@ const CoolNewSearchbar = ({
                         ),
                         endAdornment: (
                             <InputAdornment position='end'>
-                                {!showFavorite && searchTerm && (
+                                {!showFavorite && searchInput && (
                                     <CloseRoundedIcon
                                         sx={{
                                             width: "20px",
@@ -238,6 +264,8 @@ const CoolNewSearchbar = ({
                                         onClick={() => {
                                             setSearchTerm("");
                                             setSearchInput("");
+                                            clearTimeout(delayTimerRef.current);
+
                                             if (handleCloseBar)
                                                 handleCloseBar();
                                         }}
@@ -284,6 +312,9 @@ const CoolNewSearchbar = ({
                                                         color: "notBlack.main",
                                                     }}
                                                     onClick={() => {
+                                                        clearTimeout(
+                                                            delayTimerRef.current,
+                                                        );
                                                         if (handleCloseBar)
                                                             handleCloseBar();
                                                     }}

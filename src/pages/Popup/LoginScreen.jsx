@@ -122,6 +122,8 @@ const LoginScreen = ({
     returnTo = `/soundboard-browser-extension-return`,
     sx,
     refetchAll,
+    showOnlyInput,
+    onFinishedLoggingIn,
 }) => {
     const apolloClient = useApollo();
 
@@ -178,94 +180,98 @@ const LoginScreen = ({
                 ...sx,
             }}
         >
-            <OAuthLink
-                href={`${apiHost}/auth/discord?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
-                    returnTo ?? "/"
-                }&loggedWith=discord&fail=${currentHost}/auth-fail`}
-                target='_blank'
-                background='#758AD4'
-                squareColor='#758AD4'
-            >
-                <div>
-                    <img
-                        src='https://cdn.blerp.com/design/web/discord-mark-white.png'
-                        alt=''
-                    />
-                </div>
-                <Text
-                    sx={{
-                        fontSize: "14px",
-                        color: "white.override",
-                    }}
-                >{`${signUp ? "Signup" : "Login"} With Discord`}</Text>
-            </OAuthLink>
-            <OAuthLink
-                href={`${apiHost}/auth/twitch?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
-                    returnTo ?? "/"
-                }&loggedWith=twitch&fail=${currentHost}/auth-fail`}
-                target='_blank'
-                background='#9146FF'
-                squareColor='#9146FF'
-            >
-                <div>
-                    <img
-                        src='https://cdn.blerp.com/design/web/TwitchGlitchWhite.svg'
-                        alt=''
-                    />
-                </div>
-                <Text
-                    sx={{
-                        fontSize: "14px",
-                        color: "white.override",
-                    }}
-                >{`${signUp ? "Signup" : "Login"} With Twitch`}</Text>
-            </OAuthLink>
+            {!showOnlyInput && (
+                <>
+                    <OAuthLink
+                        href={`${apiHost}/auth/discord?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
+                            returnTo ?? "/"
+                        }&loggedWith=discord&fail=${currentHost}/auth-fail`}
+                        target='_blank'
+                        background='#758AD4'
+                        squareColor='#758AD4'
+                    >
+                        <div>
+                            <img
+                                src='https://cdn.blerp.com/design/web/discord-mark-white.png'
+                                alt=''
+                            />
+                        </div>
+                        <Text
+                            sx={{
+                                fontSize: "14px",
+                                color: "white.override",
+                            }}
+                        >{`${signUp ? "Signup" : "Login"} With Discord`}</Text>
+                    </OAuthLink>
+                    <OAuthLink
+                        href={`${apiHost}/auth/twitch?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
+                            returnTo ?? "/"
+                        }&loggedWith=twitch&fail=${currentHost}/auth-fail`}
+                        target='_blank'
+                        background='#9146FF'
+                        squareColor='#9146FF'
+                    >
+                        <div>
+                            <img
+                                src='https://cdn.blerp.com/design/web/TwitchGlitchWhite.svg'
+                                alt=''
+                            />
+                        </div>
+                        <Text
+                            sx={{
+                                fontSize: "14px",
+                                color: "white.override",
+                            }}
+                        >{`${signUp ? "Signup" : "Login"} With Twitch`}</Text>
+                    </OAuthLink>
 
-            <OAuthLink
-                href={`${apiHost}/auth/youtube?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
-                    returnTo ?? "/"
-                }&loggedWith=youtube&fail=${currentHost}/auth-fail`}
-                target='_blank'
-                background='#FF0000'
-                squareColor='#FF0000'
-            >
-                <div>
-                    <img
-                        // src='https://cdn.blerp.com/design/web/yt_icon_rgb.png'
-                        src='https://cdn.blerp.com/design/web/yt_icon_mono_dark.png'
-                        alt=''
-                        style={{ width: "58%" }}
-                    />
-                </div>
-                <Text
-                    sx={{
-                        fontSize: "14px",
-                        color: "white.override",
-                    }}
-                >{`${signUp ? "Signup" : "Login"} With YouTube`}</Text>
-            </OAuthLink>
+                    <OAuthLink
+                        href={`${apiHost}/auth/youtube?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
+                            returnTo ?? "/"
+                        }&loggedWith=youtube&fail=${currentHost}/auth-fail`}
+                        target='_blank'
+                        background='#FF0000'
+                        squareColor='#FF0000'
+                    >
+                        <div>
+                            <img
+                                // src='https://cdn.blerp.com/design/web/yt_icon_rgb.png'
+                                src='https://cdn.blerp.com/design/web/yt_icon_mono_dark.png'
+                                alt=''
+                                style={{ width: "58%" }}
+                            />
+                        </div>
+                        <Text
+                            sx={{
+                                fontSize: "14px",
+                                color: "white.override",
+                            }}
+                        >{`${signUp ? "Signup" : "Login"} With YouTube`}</Text>
+                    </OAuthLink>
 
-            <OAuthLink
-                href={`${apiHost}/auth/google?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
-                    returnTo ?? "/"
-                }&loggedWith=google&fail=${currentHost}/auth-fail`}
-                target='_blank'
-                background='#4285F4'
-                squareColor='#fff'
-            >
-                <div>
-                    <img
-                        src='https://cdn.blerp.com/blerp-web-images/sign-in/btn_google_light_normal.svg'
-                        alt=''
-                    />
-                </div>
-                <Text
-                    sx={{
-                        fontSize: "14px",
-                        color: "white.override",
-                    }}
-                >{`${signUp ? "Signup" : "Login"} With Google`}</Text>
-            </OAuthLink>
+                    <OAuthLink
+                        href={`${apiHost}/auth/google?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
+                            returnTo ?? "/"
+                        }&loggedWith=google&fail=${currentHost}/auth-fail`}
+                        target='_blank'
+                        background='#4285F4'
+                        squareColor='#fff'
+                    >
+                        <div>
+                            <img
+                                src='https://cdn.blerp.com/blerp-web-images/sign-in/btn_google_light_normal.svg'
+                                alt=''
+                            />
+                        </div>
+                        <Text
+                            sx={{
+                                fontSize: "14px",
+                                color: "white.override",
+                            }}
+                        >{`${signUp ? "Signup" : "Login"} With Google`}</Text>
+                    </OAuthLink>
+                </>
+            )}
 
             {/* <OAuthLink
                 href={`${apiHost}/auth/tiktok?pass=${currentHost}/soundboard-browser-extension-return?returnTo=${
@@ -450,6 +456,9 @@ const LoginScreen = ({
 
                         if (refetchAll) {
                             await refetchAll();
+                        }
+                        if (onFinishedLoggingIn) {
+                            onFinishedLoggingIn();
                         }
 
                         setLoadingLogin(false);

@@ -9,6 +9,7 @@ import {
     Tabs,
     CogIcon,
     BlerpyIcon,
+    DiscordIcon,
 } from "@blerp/design";
 import selectedProject from "../../projectConfig";
 import gql from "graphql-tag";
@@ -119,19 +120,6 @@ const Popup = () => {
         }
     };
 
-    // React.useEffect(() => {
-    //     setUserId(signedInUser?._id);
-    //     // getStreamerInfo()
-    //     //     .then((result) => {
-    //     //         setCurrentPlatform(result.currentPlatform);
-    //     //         setYoutubeChannelId(result.youtubeChannelId);
-    //     //         setTwitchUsername(result.twitchUsername);
-    //     //     })
-    //     //     .catch((err) => {
-    //     //         console.log("ERROR_GETTING_INFO", err);
-    //     //     });
-    // }, [signedInUser]);
-
     const renderTabPage = () => {
         if (loading) {
             return <EllipsisLoader />;
@@ -151,162 +139,6 @@ const Popup = () => {
                         hideCollector={true}
                     />
                 );
-            case "HOME_OLD":
-                return (
-                    <>
-                        <Stack
-                            sx={{
-                                display: "flex",
-                                width: "100%",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                justifyContent: "space-around",
-                                marginTop: "12px",
-                            }}
-                        >
-                            <Stack
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <img
-                                    src={
-                                        "https://cdn.blerp.com/blerp_products/Icons/BasketoBeets-Grey7.svg"
-                                    }
-                                    style={{
-                                        width: "60px",
-                                        margin: "12px 4px",
-                                    }}
-                                />
-
-                                <Stack
-                                    sx={{
-                                        display: "flex",
-                                        direction: "column",
-                                    }}
-                                >
-                                    <Text
-                                        fontColor='ibisRed'
-                                        fontSize='18px'
-                                        style={{ margin: 0 }}
-                                    >
-                                        {(signedInUser &&
-                                            signedInUser.userWallet &&
-                                            signedInUser.userWallet
-                                                .beetBalance) ||
-                                            0}
-                                    </Text>
-
-                                    <Text
-                                        fontColor='white'
-                                        fontWeight='light'
-                                        fontSize='12px'
-                                        style={{
-                                            margin: 0,
-                                        }}
-                                    >
-                                        My Basket
-                                    </Text>
-                                </Stack>
-                            </Stack>
-
-                            {/* {(twitchUsername || youtubeChannelId) && (
-                                <HomeButton
-                                    userId={null}
-                                    youtubeChannelId={youtubeChannelId}
-                                    twitchUsername={twitchUsername}
-                                    platform={currentPlatform}
-                                    optionalButtonText='Share'
-                                    isStreaming={true}
-                                />
-                            )} */}
-                        </Stack>
-
-                        <Button
-                            href={`${selectedProject.host}/soundboard-browser-extension`}
-                            target='_blank'
-                            rel='noreferrer'
-                            variant='contained'
-                            sx={{ margin: "8px 12px 8px 16px" }}
-                        >
-                            Setup Guide
-                        </Button>
-
-                        {/* <Button
-                            onClick={async () => {
-                                const { data } = await apolloClient.query({
-                                    query: HOME_PAGE_POPUP,
-                                    variables: {},
-                                    fetchPolicy: "network-only",
-                                });
-                                console.log("Make Work", data);
-                            }}
-                            target='_blank'
-                            rel='noreferrer'
-                            variant='contained'
-                            sx={{ margin: "8px 12px 8px 16px" }}
-                        >
-                            Call Query
-                        </Button> */}
-                        {/* <Button
-                            onClick={async () => {
-                                const token = await getGlobalCacheJwt();
-                                console.log("Make Work", token);
-                            }}
-                            target='_blank'
-                            rel='noreferrer'
-                            variant='contained'
-                            sx={{ margin: "8px 12px 8px 16px" }}
-                        >
-                            Check Token
-                        </Button> */}
-
-                        <Button
-                            target='_blank'
-                            rel='noreferrer'
-                            variant='contained'
-                            sx={{ margin: "8px 12px 8px 16px" }}
-                            onClick={() => {
-                                setShowPopup(true);
-                            }}
-                        >
-                            Open Modal
-                        </Button>
-
-                        <Button
-                            // href={`${selectedProject.host}/tradeBeets`}
-                            // target='_blank'
-                            rel='noreferrer'
-                            variant='contained'
-                            color='seafoam'
-                            onClick={() => {
-                                setShowPopup(true);
-                            }}
-                            sx={{
-                                margin: "8px 12px 8px 16px",
-                                cursor: "pointer",
-                                // fontSize: "1em",
-                                color: "#000",
-                                // width: "160px",
-                            }}
-                        >
-                            <img
-                                src={
-                                    "https://cdn.blerp.com/blerp_products/Icons/Beet-NotBlack.svg"
-                                }
-                                style={{
-                                    width: "20px",
-                                    height: "20px",
-                                    paddingRight: "4px",
-                                }}
-                            />
-                            Get Beets
-                        </Button>
-                    </>
-                );
 
             case "HOME":
                 return (
@@ -315,7 +147,7 @@ const Popup = () => {
                             sx={{
                                 display: "flex",
                                 flexDirection: "column",
-                                maxHeight: "200px",
+                                maxHeight: "280px",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 display: "flex",
@@ -327,7 +159,7 @@ const Popup = () => {
                                 alignItems: "center",
                                 padding: "10px",
                                 width: "280px",
-                                height: "170px",
+                                height: "280px",
 
                                 backgroundColor: "grey7.real",
                                 borderRadius: "8px",
@@ -340,19 +172,23 @@ const Popup = () => {
                                 flexGrow: 0,
                             }}
                         >
+                            <img
+                                src='https://cdn.blerp.com/design/emotes/celebration2x.png'
+                                style={{ width: "80px", height: "80px" }}
+                            />
                             <Text
                                 sx={{
                                     width: "260px",
                                     fontFamily: "Odudo",
                                     fontStyle: "normal",
                                     fontWeight: 400,
-                                    fontSize: "16px",
+                                    fontSize: "20px",
                                     lineHeight: "130%",
 
                                     textAlign: "center",
                                     letterSpacing: "0.1em",
                                     color: "black.real",
-                                    marginBottom: "12px",
+                                    margin: "12px 0 16px",
                                 }}
                             >
                                 Share Sounds on Stream?
@@ -381,6 +217,7 @@ const Popup = () => {
                                     target='_blank'
                                     rel='noreferrer'
                                     variant='custom'
+                                    // disabled={true}
                                     sx={{
                                         margin: "0 2px",
                                         padding: "2px 4px",
@@ -419,46 +256,6 @@ const Popup = () => {
                                     />
                                 </Button>
                             </Text>
-
-                            {/* <Stack
-                                sx={{
-                                    display: "flex",
-                                    flexDirection: "row",
-                                    alignItems: "flex-start",
-                                    padding: "0px",
-                                    gap: "4px",
-                                    height: "36px",
-                                }}
-                            >
-                                <Button
-                                    variant='outlined'
-                                    color='whiteOverride'
-                                    sx={{
-                                        whiteSpace: "nowrap",
-                                        // color: "#000000",
-                                        margin: "12px 4px",
-                                        fontSize: "14px",
-                                    }}
-                                    href={`${selectedProject.host}/soundboard-browser-extension?referralId=bsp`}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                >
-                                    Share Extension?
-                                </Button>
-
-                                <Button
-                                    variant='outlined'
-                                    color='whiteOverride'
-                                    sx={{
-                                        whiteSpace: "nowrap",
-                                        borderColor: "whiteOverride.main",
-                                        fontSize: "14px",
-                                    }}
-                                    onClick={() => window.location.reload()}
-                                >
-                                    Reload
-                                </Button>
-                            </Stack> */}
                         </Stack>
                         <Stack
                             sx={{
@@ -488,98 +285,14 @@ const Popup = () => {
                                 flexGrow: 0,
                             }}
                         >
-                            <img
-                                src='https://cdn.blerp.com/design/emotes/celebration2x.png'
-                                style={{ width: "80px", height: "80px" }}
-                            />
-
-                            {/* <Text
-                                sx={{
-                                    width: "260px",
-                                    fontFamily: "Odudo",
-                                    fontStyle: "normal",
-                                    fontWeight: 400,
-                                    fontSize: "16px",
-                                    lineHeight: "130%",
-
-                                    textAlign: "center",
-                                    letterSpacing: "0.1em",
-                                    color: "black.real",
-                                    marginBottom: "12px",
-                                }}
-                            >
-                                Share Sounds on Stream?
-                            </Text>
-
-                            <Text
-                                sx={{
-                                    width: "260px",
-                                    fontFamily: "Odudo",
-                                    fontStyle: "normal",
-                                    fontWeight: 300,
-                                    fontSize: "12px",
-                                    lineHeight: "130%",
-
-                                    textAlign: "center",
-                                    letterSpacing: "0.1em",
-                                    color: "black.real",
-                                }}
-                            >
-                                Look underneath chat on a Blerp enabled stream
-                                for this white Blerpy button{" "}
-                                <Button
-                                    onClick={() => {
-                                        handlePlayPause();
-                                    }}
-                                    target='_blank'
-                                    rel='noreferrer'
-                                    variant='custom'
-                                    sx={{
-                                        margin: "0 2px",
-                                        padding: "2px 4px",
-                                        cursor: "pointer",
-                                        display: "flex",
-                                        alignItems: "center",
-                                        justifyContent: "center",
-
-                                        width: "30px",
-                                        height: "30px",
-                                        fontSize: "18px",
-                                        borderRadius: "4px",
-                                        minWidth: "0px",
-
-                                        display: "inline",
-                                        backgroundColor:
-                                            themeMode === "light"
-                                                ? "#E2E2E6"
-                                                : "#35353B",
-
-                                        "&:hover": {
-                                            backgroundColor: "grey4.real",
-                                        },
-                                    }}
-                                >
-                                    <BlerpyIcon
-                                        sx={{
-                                            width: "21px",
-                                            fontSize: "24px",
-                                            color: false
-                                                ? "ibisRed.main"
-                                                : themeMode === "light"
-                                                ? "#000"
-                                                : "#fff",
-                                        }}
-                                    />
-                                </Button>
-                            </Text> */}
-
                             <Stack
                                 sx={{
                                     display: "flex",
                                     flexDirection: "row",
                                     alignItems: "flex-start",
+                                    justifyContent: "center",
                                     padding: "0px",
-                                    gap: "4px",
+                                    margin: "12px 0",
                                 }}
                             >
                                 <Button
@@ -588,7 +301,7 @@ const Popup = () => {
                                     sx={{
                                         whiteSpace: "nowrap",
                                         // color: "#000000",
-                                        margin: "12px 4px",
+                                        margin: "0 4px",
                                         fontSize: "14px",
                                     }}
                                     href={`${selectedProject.host}/soundboard-browser-extension?referralId=univeralp`}
@@ -598,18 +311,28 @@ const Popup = () => {
                                     Share Extension?
                                 </Button>
 
-                                {/* <Button
-                                variant='outlined'
-                                color='whiteOverride'
-                                sx={{
-                                    whiteSpace: "nowrap",
-                                    borderColor: "whiteOverride.main",
-                                    fontSize: "14px",
-                                }}
-                                onClick={() => window.location.reload()}
-                            >
-                                Reload
-                            </Button> */}
+                                <Button
+                                    // variant='outlined'
+                                    color='whiteOverride'
+                                    startIcon={
+                                        <DiscordIcon
+                                            sx={{ color: "black.real" }}
+                                        />
+                                    }
+                                    sx={{
+                                        whiteSpace: "nowrap",
+                                        borderColor: "whiteOverride.main",
+                                        fontSize: "14px",
+                                    }}
+                                    onClick={() =>
+                                        window.open(
+                                            "https://discord.gg/7RdRZ29RHr",
+                                            "_blank",
+                                        )
+                                    }
+                                >
+                                    Help
+                                </Button>
                             </Stack>
                         </Stack>
                     </>
@@ -670,7 +393,8 @@ const Popup = () => {
             >
                 <img
                     src={
-                        "https://cdn.blerp.com/blerp-products/Web/Misc/blerp_logo_transparent.svg"
+                        "https://cdn.blerp.com/design/browser-extension/blerp_logo_transp.svg"
+                        // "https://cdn.blerp.com/blerp-products/Web/Misc/blerp_logo_transparent.svg"
                     }
                     style={{
                         margin: "12px",
@@ -706,7 +430,7 @@ const Popup = () => {
 
             <BlerpModal setIsOpen={setShowPopup} isOpen={showPopup} />
 
-            <Tabs
+            {/* <Tabs
                 value={tabState}
                 onChange={(e, newValue) => {
                     setTabState(newValue);
@@ -867,7 +591,7 @@ const Popup = () => {
                                 : "rgba(255,255,255,0.5)",
                     }}
                 />
-            </Tabs>
+            </Tabs> */}
         </Stack>
     );
 };

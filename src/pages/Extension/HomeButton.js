@@ -58,6 +58,8 @@ import TruncatedText from "./TruncatedText";
 import ExtensionDisabled from "./ExtensionDisabled";
 import { useApollo } from "../../networking/apolloClient";
 import ChannelPointsCollector from "./ChannelPointsCollector";
+import KickModPlaceholder from "./KickModPlaceholder";
+import ExtensionLoadingBites from "./ExtensionLoadingBites";
 
 const VIEWER_BROWSER_EXTENSION = gql`
     ${BLERP_USER_STREAMER}
@@ -105,6 +107,8 @@ const HomeButton = ({
     isStreaming,
     themeMode, // light/dark
     showJustPanel,
+
+    forceHideInputProps,
 }) => {
     const [newYoutubeChannelId, setYoutubeChannelId] =
         useState(youtubeChannelId);
@@ -130,15 +134,6 @@ const HomeButton = ({
             errorPolicy: "all",
         },
     );
-
-    // console.log(
-    //     "CHECKINg HOMEBUTTON!!",
-    //     platform,
-    //     youtubeChannelId,
-    //     twitchUsername,
-    //     kickUsername,
-    //     isStreaming,
-    // );
 
     const [searchTerm, setSearchTerm] = useState("");
 
@@ -231,6 +226,7 @@ const HomeButton = ({
     const [updateViewerLog] = useMutation(UPDATE_VIEWER_LOG);
     const snackbarContext = useContext(SnackbarContext);
 
+    const [forcedLoading, setForcedLoading] = useState(false);
     const [isPlaying, setIsPlaying] = useState(false);
     const [audioClip, setAudioClip] = useState();
 
@@ -255,78 +251,86 @@ const HomeButton = ({
     };
 
     const handleClick = async (event) => {
-        if (platform === "YOUTUBE") {
-            // console.log(
-            //     "NEW",
-            //     newYoutubeChannelId,
-            //     "OLD",
-            //     youtubeChannelId,
-            //     window.ytInitialData,
-            // );
-            // TODO: Implement
-        } else if (platform === "TWITCH") {
-            let matchMoreStuff = window.location.pathname.match(/^\/([^/]+)/);
-            let nameInputOne = null;
-            nameInputOne = matchMoreStuff[1];
+        if (!forceHideInputProps) {
+            if (platform === "YOUTUBE") {
+                // console.log(
+                //     "NEW",
+                //     newYoutubeChannelId,
+                //     "OLD",
+                //     youtubeChannelId,
+                //     window.ytInitialData,
+                // );
+                // TODO: Implement
+            } else if (platform === "TWITCH") {
+                let matchMoreStuff =
+                    window.location.pathname.match(/^\/([^/]+)/);
+                let nameInputOne = null;
+                nameInputOne = matchMoreStuff[1];
 
-            if (window.location.host === "dashboard.twitch.tv") {
-                const pathSegments = window.location.pathname
-                    .split("/")
-                    .filter((segment) => segment.trim() !== "");
-                if (pathSegments.length >= 2 && pathSegments[0] === "u") {
-                    nameInputOne = pathSegments[1];
+                if (window.location.host === "dashboard.twitch.tv") {
+                    const pathSegments = window.location.pathname
+                        .split("/")
+                        .filter((segment) => segment.trim() !== "");
+                    if (pathSegments.length >= 2 && pathSegments[0] === "u") {
+                        nameInputOne = pathSegments[1];
+                    }
+                }
+
+                // console.log(
+                //     "NEW",
+                //     newTwitchUsername,
+                //     "OLD",
+                //     twitchUsername,
+                //     "TEST",
+                //     nameInputOne,
+                // );
+                if (nameInputOne) {
+                    setTwitchUsername(nameInputOne);
+                }
+            } else if (platform === "KICK") {
+                // Try to get the username from the page title
+                let newNameInput2 = null;
+                let pageTitleAgain =
+                    document.querySelector("title").textContent;
+
+                if (pageTitleAgain && pageTitleAgain.includes(" | Kick")) {
+                    newNameInput2 = pageTitleAgain.replace(" | Kick", "");
+                    newNameInput2 =
+                        newNameInput2 !== "Search" ? newNameInput2.trim() : "";
+                }
+
+                console.log(
+                    "NEW",
+                    kickUsername,
+                    "OLD",
+                    newKickUsername,
+                    "NEW",
+                    newNameInput2,
+                );
+
+                if (newNameInput2) {
+                    setKickUsername(newNameInput2);
+                }
+            } else if (platform === "TROVO") {
+                try {
+                    const pattern = /\/s\/([^/?]+)/;
+                    const match = window.location
+                        ? window.location.toString().match(pattern)
+                        : null;
+
+                    if (match) {
+                        const username = match[1];
+                        setTrovoUsername(username);
+                    }
+                } catch (err) {
+                    console.log("ERROR", err);
                 }
             }
-
-            // console.log(
-            //     "NEW",
-            //     newTwitchUsername,
-            //     "OLD",
-            //     twitchUsername,
-            //     "TEST",
-            //     nameInputOne,
-            // );
-
-            if (nameInputOne) {
-                setTwitchUsername(nameInputOne);
-            }
-        } else if (platform === "KICK") {
-            // Try to get the username from the page title
-            let newNameInput2 = null;
-            let pageTitleAgain = document.querySelector("title").textContent;
-
-            if (pageTitleAgain && pageTitleAgain.includes(" | Kick")) {
-                newNameInput2 = pageTitleAgain.replace(" | Kick", "");
-                newNameInput2 =
-                    newNameInput2 !== "Search" ? newNameInput2.trim() : "";
-            }
-
-            console.log(
-                "NEW",
-                kickUsername,
-                "OLD",
-                newKickUsername,
-                "NEW",
-                newNameInput2,
-            );
-
-            if (newNameInput2) {
-                setKickUsername(newNameInput2);
-            }
-        } else if (platform === "TROVO") {
-            try {
-                const pattern = /\/s\/([^/?]+)/;
-                const match = window.location
-                    ? window.location.toString().match(pattern)
-                    : null;
-
-                if (match) {
-                    const username = match[1];
-                    setTrovoUsername(username);
-                }
-            } catch (err) {
-                console.log("ERROR", err);
-            }
+        } else {
+            setYoutubeChannelId(youtubeChannelId);
+            setKickUsername(kickUsername);
+            setTrovoUsername(trovoUsername);
+            setTwitchUsername(twitchUsername);
         }
 
         setAnchorEl(event.currentTarget);
@@ -747,6 +751,8 @@ const HomeButton = ({
                                         }}
                                         showFavorite={true}
                                         placeholderText='Search'
+                                        setForcedLoading={setForcedLoading}
+                                        forcedLoading={forcedLoading}
                                     />
                                 </Stack>
                             ) : (
@@ -843,6 +849,8 @@ const HomeButton = ({
                                 placeholderText={`${capitalizeFirstLetter(
                                     currentStreamerBlerpUser?.username,
                                 )} Sounds`}
+                                setForcedLoading={setForcedLoading}
+                                forcedLoading={forcedLoading}
                             />
                         </Stack>
 
@@ -864,6 +872,10 @@ const HomeButton = ({
     };
 
     const renderTabPage = () => {
+        if (forcedLoading) {
+            return <ExtensionLoadingBites />;
+        }
+
         if (
             !currentStreamerBlerpUser?.soundEmotesObject ||
             currentStreamerBlerpUser?.soundEmotesObject?.extensionDisabled
@@ -915,322 +927,133 @@ const HomeButton = ({
                         )}
                     </>
                 );
-
             case "DEFAULT":
                 return <></>;
         }
     };
 
     const renderMainPage = () => {
+        // TODO: Make this component work for kick's creator and moderator dashboard
         if (
             newKickUsername === "Creator Dashboard" ||
             newKickUsername === "Moderation Dashboard"
         ) {
             return (
                 <>
-                    <Stack
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            maxHeight: "200px",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            display: "flex",
-                            paddingBottom: "32px",
-                            margin: "24px auto",
-
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            padding: "10px",
-                            width: "280px",
-                            height: "180px",
-
-                            backgroundColor: "grey7.real",
-                            borderRadius: "8px",
-
-                            /* Inside auto layout */
-
-                            flex: "none",
-                            order: 1,
-                            alignSelf: "stretch",
-                            flexGrow: 0,
-                            margin: "24px",
-                        }}
-                    >
-                        <Text
-                            sx={{
-                                width: "260px",
-                                fontFamily: "Odudo",
-                                fontStyle: "normal",
-                                fontWeight: 400,
-                                fontSize: "14px",
-                                lineHeight: "130%",
-
-                                textAlign: "center",
-                                letterSpacing: "0.1em",
-                                color: "black.real",
-                                marginBottom: "12px",
-                            }}
-                        >
-                            Watch your stream from the Kick Viewer page to share
-                            sounds
-                        </Text>
-
-                        <Text
-                            sx={{
-                                width: "260px",
-                                fontFamily: "Odudo",
-                                fontStyle: "normal",
-                                fontWeight: 300,
-                                fontSize: "12px",
-                                lineHeight: "140%",
-
-                                textAlign: "center",
-                                letterSpacing: "0.1em",
-                                color: "black.real",
-                            }}
-                        >
-                            Tell your viewers to go look underneath chat on your
-                            Kick page and find this white Blerpy button to share
-                            sounds{" "}
-                            <Button
-                                onClick={() => {
-                                    handlePlayPause();
-                                }}
-                                target='_blank'
-                                rel='noreferrer'
-                                variant='custom'
-                                sx={{
-                                    margin: "0 2px",
-                                    padding: "2px 4px",
-                                    cursor: "pointer",
-                                    display: "flex",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-
-                                    width: "30px",
-                                    height: "30px",
-                                    fontSize: "18px",
-                                    borderRadius: "4px",
-                                    minWidth: "0px",
-                                    display: "inline-flex",
-
-                                    backgroundColor:
-                                        themeMode === "light"
-                                            ? "#E2E2E6"
-                                            : "#35353B",
-
-                                    "&:hover": {
-                                        backgroundColor: "grey4.real",
-                                    },
-                                }}
-                            >
-                                <BlerpyIcon
-                                    sx={{
-                                        width: "21px",
-                                        fontSize: "24px",
-                                        color: false
-                                            ? "ibisRed.main"
-                                            : themeMode === "light"
-                                            ? "#000"
-                                            : "#fff",
-                                    }}
-                                />
-                            </Button>
-                        </Text>
-                    </Stack>
-                    <Stack
-                        sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            // height: "80px",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            display: "flex",
-                            paddingBottom: "32px",
-                            margin: "0 auto",
-
-                            display: "flex",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            padding: "10px",
-                            width: "280px",
-
-                            // backgroundColor: "grey7.real",
-                            borderRadius: "8px",
-
-                            /* Inside auto layout */
-
-                            flex: "none",
-                            order: 1,
-                            alignSelf: "stretch",
-                            flexGrow: 0,
-                        }}
-                    >
-                        <img
-                            src='https://cdn.blerp.com/design/emotes/celebration2x.png'
-                            style={{ width: "80px", height: "80px" }}
-                        />
-
-                        <Stack
-                            sx={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "flex-start",
-                                padding: "0px",
-                                gap: "4px",
-                            }}
-                        >
-                            <Button
-                                variant='outlined'
-                                color='whiteOverride'
-                                sx={{
-                                    whiteSpace: "nowrap",
-                                    // color: "#000000",
-                                    margin: "12px 4px",
-                                    fontSize: "14px",
-                                }}
-                                href={`${selectedProject.host}/soundboard-browser-extension?referralId=univeralpc`}
-                                target='_blank'
-                                rel='noreferrer'
-                            >
-                                Share Extension?
-                            </Button>
-
-                            {/* <Button
-                    variant='outlined'
-                    color='whiteOverride'
-                    sx={{
-                        whiteSpace: "nowrap",
-                        borderColor: "whiteOverride.main",
-                        fontSize: "14px",
-                    }}
-                    onClick={() => window.location.reload()}
-                >
-                    Reload
-                </Button> */}
-                        </Stack>
-                    </Stack>
+                    <KickModPlaceholder
+                        handlePlayPause={handlePlayPause}
+                        themeMode={themeMode}
+                    />
                 </>
             );
         }
+
         if (loading) {
             return <EllipsisLoader />;
         }
 
-        switch (currentStreamerBlerpUser?.loggedInUserIsBlocked) {
-            case true:
-                return (
-                    <StreamerBlocked
+        if (currentStreamerBlerpUser?.loggedInUserIsBlocked) {
+            return (
+                <StreamerBlocked
+                    currentStreamerBlerpUser={currentStreamerBlerpUser}
+                    refetchAll={refetch}
+                />
+            );
+        }
+
+        return (
+            <Stack
+                sx={{
+                    display: "flex",
+                    width: "100%",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "flex-start",
+                    width: EXTENSION_WIDTH_PX,
+                    height: EXTENSION_HEIGHT_PX,
+                    backgroundColor: "grey8.real",
+                }}
+            >
+                {renderBlerpNav()}
+                {!currentStreamerBlerpUser?.soundEmotesObject
+                    ?.extensionDisabled &&
+                    !hideStreamerPaused &&
+                    !activeBlerp && (
+                        <StreamerPaused
+                            currentStreamerBlerpUser={currentStreamerBlerpUser}
+                            handleClose={() => {
+                                setHideStreamerPaused(true);
+                            }}
+                        />
+                    )}
+                <CustomDrawer
+                    containerSelector={".blerp-extension-container"}
+                    open={tabState === "PROFILE"}
+                    anchor='bottom'
+                    onClose={() => {
+                        handleTabChange(previousTabState || "HOME");
+                    }}
+                >
+                    <UserProfile
+                        userSignedIn={signedInUser}
+                        refetchAll={refetch}
                         currentStreamerBlerpUser={currentStreamerBlerpUser}
+                    />
+                </CustomDrawer>
+
+                {activeBlerp && (
+                    <BlerpModalScreen
+                        currencyGlobalState={currencyGlobalState}
+                        setActiveBlerp={setActiveBlerp}
+                        isOpen={activeBlerp?._id}
+                        blerpStreamer={currentStreamerBlerpUser}
+                        userSignedIn={signedInUser}
+                        activeBlerpStart={activeBlerp}
+                        refetchStreamer={async () => {
+                            await refetch();
+                        }}
+                        activeSearchQuery={searchTerm}
+                        beetBasket={
+                            (signedInUser &&
+                                signedInUser.userWallet &&
+                                signedInUser.userWallet) || {
+                                beetBalance: 0,
+                            }
+                        }
+                        pointsBasket={
+                            (currentStreamerBlerpUser &&
+                                currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                                currentStreamerBlerpUser.loggedInChannelPointBasket) || {
+                                points: 0,
+                            }
+                        }
+                        volume={volume}
+                        setVolume={setVolume}
+                    />
+                )}
+
+                {renderTabPage()}
+
+                {tabState !== "PROFILE" && (
+                    <ExtensionFooter
+                        setTabState={(tabState) => {
+                            handleTabChange(tabState);
+                            setShowSearch(false);
+                        }}
+                        tabState={tabState}
+                        setCurrencyGlobal={setCurrencyGlobal}
+                        currencyGlobalState={currencyGlobalState}
+                        userSignedIn={signedInUser}
+                        activeBlerp={activeBlerp}
+                        currentStreamerBlerpUser={currentStreamerBlerpUser}
+                        volume={volume}
+                        setVolume={setVolume}
+                        isStreaming={isStreaming}
                         refetchAll={refetch}
                     />
-                );
-            case false:
-            default:
-                return (
-                    <Stack
-                        sx={{
-                            display: "flex",
-                            width: "100%",
-                            flexDirection: "column",
-                            alignItems: "center",
-                            justifyContent: "flex-start",
-                            width: EXTENSION_WIDTH_PX,
-                            height: EXTENSION_HEIGHT_PX,
-                            backgroundColor: "grey8.real",
-                        }}
-                    >
-                        {renderBlerpNav()}
-
-                        {!currentStreamerBlerpUser?.soundEmotesObject
-                            ?.extensionDisabled &&
-                            !hideStreamerPaused &&
-                            !activeBlerp && (
-                                <StreamerPaused
-                                    currentStreamerBlerpUser={
-                                        currentStreamerBlerpUser
-                                    }
-                                    handleClose={() => {
-                                        setHideStreamerPaused(true);
-                                    }}
-                                />
-                            )}
-
-                        <CustomDrawer
-                            containerSelector={".blerp-extension-container"}
-                            open={tabState === "PROFILE"}
-                            anchor='bottom'
-                            onClose={() => {
-                                handleTabChange(previousTabState || "HOME");
-                            }}
-                        >
-                            <UserProfile
-                                userSignedIn={signedInUser}
-                                refetchAll={refetch}
-                                currentStreamerBlerpUser={
-                                    currentStreamerBlerpUser
-                                }
-                            />
-                        </CustomDrawer>
-
-                        {activeBlerp ? (
-                            <BlerpModalScreen
-                                currencyGlobalState={currencyGlobalState}
-                                setActiveBlerp={setActiveBlerp}
-                                isOpen={activeBlerp?._id}
-                                blerpStreamer={currentStreamerBlerpUser}
-                                userSignedIn={signedInUser}
-                                activeBlerpStart={activeBlerp}
-                                refetchStreamer={async () => {
-                                    await refetch();
-                                }}
-                                activeSearchQuery={searchTerm}
-                                beetBasket={
-                                    (signedInUser &&
-                                        signedInUser.userWallet &&
-                                        signedInUser.userWallet) || {
-                                        beetBalance: 0,
-                                    }
-                                }
-                                pointsBasket={
-                                    (currentStreamerBlerpUser &&
-                                        currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                                        currentStreamerBlerpUser.loggedInChannelPointBasket) || {
-                                        points: 0,
-                                    }
-                                }
-                                volume={volume}
-                                setVolume={setVolume}
-                            />
-                        ) : (
-                            renderTabPage()
-                        )}
-
-                        {tabState !== "PROFILE" && (
-                            <ExtensionFooter
-                                setTabState={(tabState) => {
-                                    handleTabChange(tabState);
-                                    setShowSearch(false);
-                                }}
-                                tabState={tabState}
-                                setCurrencyGlobal={setCurrencyGlobal}
-                                currencyGlobalState={currencyGlobalState}
-                                userSignedIn={signedInUser}
-                                activeBlerp={activeBlerp}
-                                currentStreamerBlerpUser={
-                                    currentStreamerBlerpUser
-                                }
-                                volume={volume}
-                                setVolume={setVolume}
-                                isStreaming={isStreaming}
-                                refetchAll={refetch}
-                            />
-                        )}
-                    </Stack>
-                );
-        }
+                )}
+            </Stack>
+        );
     };
 
     if (showJustPanel) {
@@ -1256,7 +1079,7 @@ const HomeButton = ({
                 justifyContent: "center",
             }}
         >
-            {/* {!signedInUser?._id ||
+            {/* Do not delete used for cp logic later {!signedInUser?._id ||
             (currentStreamerBlerpUser?.soundEmotesObject &&
                 currentStreamerBlerpUser.soundEmotesObject.extensionDisabled) ||
             (currentStreamerBlerpUser?.soundEmotesObject &&
@@ -1493,195 +1316,3 @@ const HomeButton = ({
 };
 
 export default HomeButton;
-
-{
-    /* 
-            <BlerpModalShare
-                activeBlerp={activeBlerp}
-                setActiveBlerp={setActiveBlerp}
-                isOpen={activeBlerp?._id}
-                blerpStreamer={currentStreamerBlerpUser}
-                userSignedIn={signedInUser}
-                refetchAll={async () => {
-                    await refetch();
-                }}
-                activeSearchQuery={searchTerm}
-                beetBasket={
-                    signedInUser &&
-                    signedInUser.userWallet &&
-                    signedInUser.userWallet
-                }
-                pointsBasket={
-                    currentStreamerBlerpUser &&
-                    currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                    currentStreamerBlerpUser.loggedInChannelPointBasket
-                }
-            /> */
-}
-
-{
-    /* 
-                    <Tabs
-                        value={tabState}
-                        onChange={(e, newValue) => {
-                            setTabState(newValue);
-                        }}
-                        variant='fullWidth'
-                        textColor='white'
-                        indicatorColor='white'
-                        TabIndicatorProps={{
-                            children: (
-                                <span className='MuiTabs-indicatorSpan' />
-                            ),
-                        }}
-                        sx={{
-                            position: "absolute",
-                            bottom: "0px",
-                            margin: "0 auto",
-                            backgroundColor: "#000",
-                            width: "100%",
-                            height: "44px",
-                            minHeight: "0px",
-                            borderRadius: false ? "0px" : "0 0 0 0",
-
-                            "& .MuiTabs-flexContainer": {
-                                height: "44px",
-                            },
-                            "& .MuiTabs-indicator": {
-                                backgroundColor: "notBlack.main",
-                                display: "flex",
-                                justifyContent: "center",
-                                backgroundColor: "transparent",
-                                bottom: "5px",
-                            },
-                            "& .MuiTabs-indicatorSpan": {
-                                height: "3px",
-                                borderRadius: "5px",
-                                maxWidth: 20,
-                                width: "100%",
-                                backgroundColor: "notBlack.main",
-                            },
-                        }}
-                    >
-                        <div
-                            style={{
-                                position: "absolute",
-                                width: "100%",
-                                backgroundColor: "#00000033",
-                                height: "100%",
-                            }}
-                        ></div>
-
-                        <Tab
-                            value='HOME'
-                            label='Home'
-                            icon={
-                                <HomeRoundedIcon
-                                    sx={{
-                                        margin: "0 6px 0 0 !important",
-                                        fontSize: "18px",
-                                        color:
-                                            tabState === "HOME"
-                                                ? "notBlack.main"
-                                                : "rgba(255,255,255,0.5)",
-                                    }}
-                                />
-                            }
-                            // icon={
-                            //     <img
-                            //         src={
-                            //             data?.twitch?.twitchChannelViewerPanel
-                            //                 ?.twitchChannel?.customLogoCachedUrl
-                            //         }
-                            //         style={{
-                            //             width: "15px",
-                            //             height: "15px",
-                            //             borderRadius: "20px",
-                            //             margin: "0 6px 0 0 !important",
-                            //             backgroundColor: "white.main",
-                            //         }}
-                            //     />
-                            // }
-                            iconPosition='start'
-                            sx={{
-                                fontWeight: "600",
-                                minHeight: "0px !important",
-                                padding: "5px",
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                fontSize: "16px",
-                                color:
-                                    tabState === "HOME"
-                                        ? "notBlack.main"
-                                        : "rgba(255,255,255,0.5)",
-                            }}
-                        />
-
-                        <Tab
-                            value='FAVES'
-                            label='Faves'
-                            icon={
-                                <FavoriteRoundedIcon
-                                    sx={{
-                                        margin: "0 6px 0 0 !important",
-                                        fontSize: "18px",
-                                        color:
-                                            tabState === "FAVES"
-                                                ? "notBlack.main"
-                                                : "rgba(255,255,255,0.5)",
-                                    }}
-                                />
-                            }
-                            iconPosition='start'
-                            sx={{
-                                "& > .MuiTab-iconWrapper": {
-                                    margin: "0 6px 0 0 !important",
-                                },
-                                fontWeight: "600",
-                                minHeight: "0px !important",
-                                padding: "5px",
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                fontSize: "16px",
-                                color:
-                                    tabState === "FAVES"
-                                        ? "notBlack.main"
-                                        : "rgba(255,255,255,0.5)",
-                            }}
-                        />
-
-                        <Tab
-                            value='SETTINGS'
-                            label='Profile'
-                            iconPosition='start'
-                            icon={
-                                <CogIcon
-                                    sx={{
-                                        margin: "0 6px 0 0 !important",
-                                        fontSize: "18px",
-                                        color:
-                                            tabState === "SETTINGS"
-                                                ? "notBlack.main"
-                                                : "rgba(255,255,255,0.5)",
-                                    }}
-                                />
-                            }
-                            sx={{
-                                minHeight: "0px !important",
-                                padding: "5px",
-                                display: "flex",
-                                fontWeight: "600",
-                                flexDirection: "row",
-                                whiteSpace: "nowrap",
-                                alignItems: "center",
-                                fontSize: "16px",
-                                color:
-                                    tabState === "SETTINGS"
-                                        ? "notBlack.main"
-                                        : "rgba(255,255,255,0.5)",
-                            }}
-                        />
-                    </Tabs> */
-}

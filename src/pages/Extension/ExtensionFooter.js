@@ -8,6 +8,7 @@ import {
     Text,
     Tooltip,
     SnackbarContext,
+    GiftIcon,
 } from "@blerp/design";
 import FavoriteRoundedIcon from "@mui/icons-material/FavoriteRounded";
 import FavoriteBorderRoundedIcon from "@mui/icons-material/FavoriteBorderRounded";
@@ -20,6 +21,7 @@ import ChannelPointsCollector from "./ChannelPointsCollector";
 import selectedProject from "../../projectConfig";
 import { EARN_SNOOT_POINTS } from "../../mainGraphQl";
 import { useMutation } from "@apollo/client";
+import RedeemRoundedIcon from "@mui/icons-material/RedeemRounded";
 
 const CurrencyTab = styled(Box)`
     display: flex;
@@ -27,6 +29,9 @@ const CurrencyTab = styled(Box)`
     border-radius: 4px;
     padding: 2px 6px;
     font-size: 14px;
+    max-width: 60px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 `;
 
 const CurrencyIcon = styled("img")`
@@ -57,6 +62,8 @@ const ExtensionFooter = ({
     const [earnSnootPoints, { loading }] = useMutation(EARN_SNOOT_POINTS);
     const [pointsAdded, setPointsAdded] = useState(false);
     const [pointsError, setPointsError] = useState(false);
+    const [clickedLogin, setClickedLogin] = useState(false);
+    const [finishingLogin, setFinishingLogin] = useState(false);
 
     const [openBeets, setOpenBeets] = useState(true);
     const handleIconClick = (state) => {
@@ -150,7 +157,41 @@ const ExtensionFooter = ({
                 zIndex: 5001,
             }}
         >
-            {!userSignedIn ? (
+            {!userSignedIn && clickedLogin ? (
+                <Button
+                    variant='contained'
+                    rel='noreferrer'
+                    color='notBlack'
+                    sx={{
+                        padding: "4px 2px",
+                        width: "100px",
+                        border: finishingLogin ? "2px solid #8A9193" : "none",
+                    }}
+                    onClick={async () => {
+                        if (finishingLogin) {
+                            return;
+                        }
+
+                        try {
+                            setFinishingLogin(true);
+                            await refetchAll();
+                            setFinishingLogin(false);
+                        } catch (err) {
+                            setFinishingLogin(false);
+                        }
+                    }}
+                >
+                    <Text
+                        sx={{
+                            color: "#000000",
+                            fontSize: "14px",
+                            fontWeight: "600",
+                        }}
+                    >
+                        Finish Login
+                    </Text>
+                </Button>
+            ) : !userSignedIn ? (
                 <Button
                     variant='contained'
                     href={`${
@@ -163,6 +204,12 @@ const ExtensionFooter = ({
                         padding: "4px 2px",
                     }}
                     onClick={async () => {
+                        setClickedLogin(true);
+
+                        setTimeout(() => {
+                            setClickedLogin(false);
+                        }, 15000);
+
                         setTimeout(() => {
                             refetchAll();
                         }, 5000);
@@ -175,7 +222,7 @@ const ExtensionFooter = ({
                             fontWeight: "600",
                         }}
                     >
-                        Log in
+                        Login
                     </Text>
                 </Button>
             ) : (
@@ -298,76 +345,104 @@ const ExtensionFooter = ({
               (!currentStreamerBlerpUser.loggedInChannelPointBasket ||
                   currentStreamerBlerpUser.loggedInChannelPointBasket
                       ?.showManualButton) ? (
-                <Button
-                    variant='text'
-                    color='notBlack'
-                    disableElevation={true}
-                    sx={{
-                        fontSize: "10px",
-                        cursor: "pointer",
-                        padding: "0px",
-
-                        "&:hover": {
-                            color: "seafoam.main",
+                <Tooltip
+                    title={"Click to claim a bonus!"}
+                    placement='top'
+                    componentsProps={{
+                        popper: {
+                            sx: {
+                                zIndex: 10000000,
+                            },
                         },
-                        textTransform: "capitalize",
-                    }}
-                    onClick={async () => {
-                        try {
-                            const { data } = await earnSnootPoints({
-                                variables: {
-                                    channelOwnerId:
-                                        currentStreamerBlerpUser?._id,
-                                    manualEarn: true,
-                                },
-                            });
-
-                            const pointsIncremented =
-                                data?.browserExtension?.earningSnoots
-                                    ?.pointsIncremented;
-
-                            setPointsAdded(pointsIncremented);
-                            const timeoutId = setTimeout(() => {
-                                setPointsAdded(false);
-                            }, 3000);
-
-                            if (
-                                !currentStreamerBlerpUser.loggedInChannelPointBasket
-                            ) {
-                                refetchAll();
-                            }
-
-                            // snackbarContext.triggerSnackbar({
-                            //     message: "Points Collected!",
-                            //     severity: "success",
-                            //     transitionType: "fade",
-                            //     position: {
-                            //         vertical: "bottom",
-                            //         horizontal: "right",
-                            //     },
-                            // });
-                        } catch (err) {
-                            setPointsError(
-                                "Streamer must be live to collect points!",
-                            );
-                            const timeoutId = setTimeout(() => {
-                                setPointsError(false);
-                            }, 3000);
-                            // snackbarContext.triggerSnackbar({
-                            //     message:
-                            //         "Can only collect points when stream is live!",
-                            //     severity: "error",
-                            //     transitionType: "fade",
-                            //     position: {
-                            //         vertical: "bottom",
-                            //         horizontal: "right",
-                            //     },
-                            // });
-                        }
+                        tooltip: {
+                            sx: {
+                                // color: "#000",
+                                backgroundColor: "#000",
+                                color: "white",
+                                borderRadius: "4px",
+                            },
+                        },
                     }}
                 >
-                    Bonus Points
-                </Button>
+                    <Button
+                        variant='text'
+                        color='notBlack'
+                        disableElevation={true}
+                        sx={{
+                            fontSize: "10px",
+                            cursor: "pointer",
+                            padding: "0px",
+                            backgroundColor: "seafoam.main",
+                            borderRadius: "6px",
+                            width: "30px",
+                            height: "30px",
+                            minWidth: "30px",
+
+                            "&:hover": {
+                                color: "#000",
+                                backgroundColor: "seafoam.main",
+                            },
+                            textTransform: "capitalize",
+                        }}
+                        onClick={async () => {
+                            try {
+                                const { data } = await earnSnootPoints({
+                                    variables: {
+                                        channelOwnerId:
+                                            currentStreamerBlerpUser?._id,
+                                        manualEarn: true,
+                                    },
+                                });
+
+                                const pointsIncremented =
+                                    data?.browserExtension?.earningSnoots
+                                        ?.pointsIncremented;
+
+                                setPointsAdded(pointsIncremented);
+                                const timeoutId = setTimeout(() => {
+                                    setPointsAdded(false);
+                                }, 3000);
+
+                                if (
+                                    !currentStreamerBlerpUser.loggedInChannelPointBasket
+                                ) {
+                                    refetchAll();
+                                }
+
+                                // snackbarContext.triggerSnackbar({
+                                //     message: "Points Collected!",
+                                //     severity: "success",
+                                //     transitionType: "fade",
+                                //     position: {
+                                //         vertical: "bottom",
+                                //         horizontal: "right",
+                                //     },
+                                // });
+                            } catch (err) {
+                                setPointsError(
+                                    "Streamer must be live to collect points!",
+                                );
+                                const timeoutId = setTimeout(() => {
+                                    setPointsError(false);
+                                }, 3000);
+                                // snackbarContext.triggerSnackbar({
+                                //     message:
+                                //         "Can only collect points when stream is live!",
+                                //     severity: "error",
+                                //     transitionType: "fade",
+                                //     position: {
+                                //         vertical: "bottom",
+                                //         horizontal: "right",
+                                //     },
+                                // });
+                            }
+                        }}
+                    >
+                        <RedeemRoundedIcon
+                            sx={{ color: "#000", fontSize: "20px" }}
+                        />
+                    </Button>
+                </Tooltip>
             ) : (
                 <></>
             )}
@@ -377,7 +452,7 @@ const ExtensionFooter = ({
                     direction='row'
                     spacing={1}
                     sx={{
-                        padding: "4px 4px",
+                        padding: "2px",
                         backgroundColor: "transparent",
                         borderRadius: "4px",
                     }}
@@ -407,6 +482,7 @@ const ExtensionFooter = ({
                             },
                             tooltip: {
                                 sx: {
+                                    // color: "#000",
                                     backgroundColor: "#000",
                                     color: "white",
                                     borderRadius: "4px",
@@ -428,14 +504,24 @@ const ExtensionFooter = ({
                                 }}
                                 src='https://cdn.blerp.com/design/browser-extension/cp_sub.svg'
                             />
-                            {currentStreamerBlerpUser?.soundEmotesObject
-                                ?.channelPointsDisabled
-                                ? "N/A"
-                                : (currentStreamerBlerpUser &&
-                                      currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                                      currentStreamerBlerpUser
-                                          .loggedInChannelPointBasket.points) ||
-                                  0}
+                            <Text
+                                sx={{
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    color: "#fff",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                {currentStreamerBlerpUser?.soundEmotesObject
+                                    ?.channelPointsDisabled
+                                    ? "N/A"
+                                    : (currentStreamerBlerpUser &&
+                                          currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                                          currentStreamerBlerpUser
+                                              .loggedInChannelPointBasket
+                                              .points) ||
+                                      0}
+                            </Text>
                         </CurrencyTab>
                     </Tooltip>
 
@@ -556,13 +642,23 @@ const ExtensionFooter = ({
                                 }}
                                 src='https://cdn.blerp.com/design/browser-extension/beet.svg'
                             />
-                            {currentStreamerBlerpUser?.soundEmotesObject
-                                ?.beetsDisabled
-                                ? "N/A"
-                                : (userSignedIn &&
-                                      userSignedIn.userWallet &&
-                                      userSignedIn.userWallet.beetBalance) ||
-                                  0}{" "}
+                            <Text
+                                sx={{
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    color: "#fff",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                {currentStreamerBlerpUser?.soundEmotesObject
+                                    ?.beetsDisabled
+                                    ? "N/A"
+                                    : (userSignedIn &&
+                                          userSignedIn.userWallet &&
+                                          userSignedIn.userWallet
+                                              .beetBalance) ||
+                                      0}{" "}
+                            </Text>
                         </CurrencyTab>
                     </Tooltip>
                 </Stack>
@@ -571,7 +667,7 @@ const ExtensionFooter = ({
                     direction='row'
                     spacing={1}
                     sx={{
-                        padding: "4px 4px",
+                        padding: "2px",
                         backgroundColor: "rgba(103, 111, 112, 0.6)",
                         borderRadius: "4px",
                     }}
@@ -671,14 +767,27 @@ const ExtensionFooter = ({
                                         : "https://cdn.blerp.com/design/browser-extension/cp_sub.svg"
                                 }
                             />
-                            {currentStreamerBlerpUser?.soundEmotesObject
-                                ?.channelPointsDisabled
-                                ? "N/A"
-                                : (currentStreamerBlerpUser &&
-                                      currentStreamerBlerpUser.loggedInChannelPointBasket &&
-                                      currentStreamerBlerpUser
-                                          .loggedInChannelPointBasket.points) ||
-                                  0}
+                            <Text
+                                sx={{
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    color:
+                                        currencyGlobalState === "POINTS"
+                                            ? "#000000"
+                                            : "grey3.real",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                {currentStreamerBlerpUser?.soundEmotesObject
+                                    ?.channelPointsDisabled
+                                    ? "N/A"
+                                    : (currentStreamerBlerpUser &&
+                                          currentStreamerBlerpUser.loggedInChannelPointBasket &&
+                                          currentStreamerBlerpUser
+                                              .loggedInChannelPointBasket
+                                              .points) ||
+                                      0}
+                            </Text>
                         </CurrencyTab>
                     </Tooltip>
 
@@ -844,13 +953,26 @@ const ExtensionFooter = ({
                                 }}
                                 src='https://cdn.blerp.com/design/browser-extension/beet.svg'
                             />
-                            {currentStreamerBlerpUser?.soundEmotesObject
-                                ?.beetsDisabled
-                                ? "N/A"
-                                : (userSignedIn &&
-                                      userSignedIn.userWallet &&
-                                      userSignedIn.userWallet.beetBalance) ||
-                                  0}
+                            <Text
+                                sx={{
+                                    textOverflow: "ellipsis",
+                                    overflow: "hidden",
+                                    color:
+                                        currencyGlobalState === "BEETS"
+                                            ? "#fff"
+                                            : "grey3.real",
+                                    fontSize: "12px",
+                                }}
+                            >
+                                {currentStreamerBlerpUser?.soundEmotesObject
+                                    ?.beetsDisabled
+                                    ? "N/A"
+                                    : (userSignedIn &&
+                                          userSignedIn.userWallet &&
+                                          userSignedIn.userWallet
+                                              .beetBalance) ||
+                                      0}
+                            </Text>
                         </CurrencyTab>
                     </Tooltip>
                 </Stack>

@@ -510,3 +510,79 @@ export const BITE_WITH_SOUND_EMOTES = gql`
         }
     }
 `;
+
+export const ALL_CONTENT = gql`
+    ${BITE_WITH_SOUND_EMOTES}
+    query browserExtensionSearchContent(
+        $searchTerm: String!
+        $page: Int
+        $perPage: Int
+        $audienceRatings: [AudienceRating]
+        $audioDuration: Int
+        $streamerId: MongoID
+        $analytics: JSON
+        $showUserContent: Boolean
+    ) {
+        browserExtension {
+            biteElasticSearch(
+                query: $searchTerm
+                page: $page
+                perPage: $perPage
+                audienceRating: $audienceRatings
+                optionalAudioDuration: $audioDuration
+                analytics: { data: $analytics }
+                userId: $streamerId
+                viewerSide: true
+                showUserContent: $showUserContent
+            ) {
+                pageInfo {
+                    perPage
+                    currentPage
+                    hasNextPage
+                }
+                items {
+                    ...BiteSoundEmotesFragment
+                }
+            }
+        }
+    }
+`;
+
+export const GET_FEATURED_LIST_SOUND_EMOTES = gql`
+    ${BITE_WITH_SOUND_EMOTES}
+    query browserExtensionGetFeaturedBites(
+        $page: Int
+        $perPage: Int
+        $streamerId: MongoID!
+        $showSaved: Boolean
+        $sortOverride: String
+        $searchTerm: String
+    ) {
+        browserExtension {
+            soundEmotesFeaturedContentPagination(
+                page: $page
+                perPage: $perPage
+                userId: $streamerId
+                showSavedOnly: $showSaved
+                sortOverride: $sortOverride
+                searchQuery: $searchTerm
+            ) {
+                count
+                items {
+                    _id
+                    biteId
+                    beetAmount
+                    bite {
+                        ...BiteSoundEmotesFragment
+                    }
+                }
+                pageInfo {
+                    currentPage
+                    pageCount
+                    itemCount
+                    hasNextPage
+                }
+            }
+        }
+    }
+`;

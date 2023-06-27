@@ -12,144 +12,21 @@ import { useQuery } from "@apollo/client";
 import gql from "graphql-tag";
 import styled from "styled-components";
 
-import { BITE_WITH_SOUND_EMOTES } from "../../mainGraphQl";
+import {
+    BITE_WITH_SOUND_EMOTES,
+    ALL_CONTENT,
+    GET_FEATURED_LIST_SOUND_EMOTES,
+} from "../../mainGraphQl";
 import EllipsisLoader from "./EllipsisLoader";
 import StreamerNeedsToSetup from "./StreamerNeedsToSetup";
 import NoSearchResults from "./NoSearchResults";
 
-import CustomDropdown from "./CustomDropdown";
 import NoSearchResultsFavorites from "./NoSearchResultsFavorites";
 import BlerpComponent from "./BlerpComponent";
 import { EXTENSION_HEIGHT } from "../../constants";
 import FavoritesFooter from "./FavoritesFooter";
 import NoSearchResultsFooter from "./NoSearchResultsFooter";
-
-const SleekStack = styled(Stack)`
-    @keyframes fade-in-out {
-        0%,
-        100% {
-            opacity: 0.3;
-        }
-        50% {
-            opacity: 1;
-        }
-    }
-
-    width: 86px;
-    height: 127px;
-    background-color: ${(props) => props.theme.colors.grey7};
-    margin: 4px;
-    border-radius: 8px;
-    animation: fade-in-out 1.8s linear infinite;
-    ${({ delay }) => delay && `animation-delay: ${delay}s;`}
-`;
-
-const ALL_CONTENT = gql`
-    ${BITE_WITH_SOUND_EMOTES}
-    query browserExtensionSearchContent(
-        $searchTerm: String!
-        $page: Int
-        $perPage: Int
-        $audienceRatings: [AudienceRating]
-        $audioDuration: Int
-        $streamerId: MongoID
-        $analytics: JSON
-        $showUserContent: Boolean
-    ) {
-        browserExtension {
-            biteElasticSearch(
-                query: $searchTerm
-                page: $page
-                perPage: $perPage
-                audienceRating: $audienceRatings
-                optionalAudioDuration: $audioDuration
-                analytics: { data: $analytics }
-                userId: $streamerId
-                viewerSide: true
-                showUserContent: $showUserContent
-            ) {
-                pageInfo {
-                    perPage
-                    currentPage
-                    hasNextPage
-                }
-                items {
-                    ...BiteSoundEmotesFragment
-                }
-            }
-        }
-    }
-`;
-
-const GET_FEATURED_LIST_SOUND_EMOTES = gql`
-    ${BITE_WITH_SOUND_EMOTES}
-    query browserExtensionGetFeaturedBites(
-        $page: Int
-        $perPage: Int
-        $streamerId: MongoID!
-        $showSaved: Boolean
-        $sortOverride: String
-        $searchTerm: String
-    ) {
-        browserExtension {
-            soundEmotesFeaturedContentPagination(
-                page: $page
-                perPage: $perPage
-                userId: $streamerId
-                showSavedOnly: $showSaved
-                sortOverride: $sortOverride
-                searchQuery: $searchTerm
-            ) {
-                count
-                items {
-                    _id
-                    biteId
-                    beetAmount
-                    bite {
-                        ...BiteSoundEmotesFragment
-                    }
-                }
-                pageInfo {
-                    currentPage
-                    pageCount
-                    itemCount
-                    hasNextPage
-                }
-            }
-        }
-    }
-`;
-
-const FEATURED_CONTENT = gql`
-    ${BITE_WITH_SOUND_EMOTES}
-    query browserExtensionFeatured(
-        $streamerId: MongoID
-        $audienceRatings: [AudienceRating]
-    ) {
-        browserExtension {
-            globalBlerps(
-                limit: 10
-                platforms: [GLOBAL]
-                audienceRating: $audienceRatings
-            ) {
-                bites {
-                    ...BiteSoundEmotesFragment
-                }
-            }
-
-            globalTwo: globalBlerps(
-                limit: 10
-                platforms: [GLOBAL]
-                audienceRating: $audienceRatings
-                forcedSorting: 5
-            ) {
-                bites {
-                    ...BiteSoundEmotesFragment
-                }
-            }
-        }
-    }
-`;
+import ExtensionLoadingBites from "./ExtensionLoadingBites";
 
 export const getArrayOfMpaaRatings = (rating) => {
     switch (rating) {
@@ -168,12 +45,7 @@ export const getArrayOfMpaaRatings = (rating) => {
     }
 };
 
-const PER_PAGE = 250;
-
-const renderEmptyBite = ({ index }) => {
-    const delay = index * 0.2;
-    return <SleekStack delay={delay}></SleekStack>;
-};
+const PER_PAGE = 180;
 
 const NewSection = ({
     bites,
@@ -189,11 +61,13 @@ const NewSection = ({
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                padding: "5px 0",
+                // padding: "5px 0",
                 background:
                     "linear-gradient(0deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.1)), linear-gradient(315deg, rgba(253, 41, 92, 0.4) 0%, rgba(53, 7, 180, 0.4) 100%)",
-                borderRadius: "12px",
-                margin: "8px 8px",
+                borderRadius: "0",
+                // margin: "8px 8px",
+                width: "100%",
+                marginBottom: "8px",
             }}
         >
             <Text
@@ -236,28 +110,6 @@ const NewSection = ({
     );
 };
 
-const renderLoadingBites = () => {
-    return (
-        <Stack
-            sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: "row",
-                overflowY: "scroll",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                paddingTop: "4px",
-                width: "100%",
-            }}
-        >
-            {[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((num) => {
-                return renderEmptyBite({ index: num });
-            })}
-        </Stack>
-    );
-};
-
 const SearchPage = ({
     setActiveBlerp,
     activeBlerp,
@@ -283,7 +135,7 @@ const SearchPage = ({
     });
 
     if (loading) {
-        return renderLoadingBites();
+        return <ExtensionLoadingBites />;
     }
 
     return (
@@ -300,25 +152,6 @@ const SearchPage = ({
                 width: "100%",
             }}
         >
-            {/* {showSaved && (
-                <Stack direction='row' sx={{ width: "100%" }}>
-                    <Text sx={{ width: "100%", margin: "4px 12px 12px" }}>
-                        Your Favorite Sounds on this Channel
-                    </Text>
-                </Stack>
-            )}
-
-            {searchTerm && !showSaved && (
-                <Stack
-                    direction='row'
-                    sx={{ width: "100%", margin: "4px 12px 12px" }}
-                >
-                    <Text sx={{ width: "98%" }}>
-                        Search Results for {searchTerm}
-                    </Text>
-                </Stack>
-            )} */}
-
             {!data?.browserExtension?.biteElasticSearch?.items?.length &&
                 (showFavorites ? (
                     <Stack
@@ -488,24 +321,35 @@ const FeaturedPageNew = ({
     }, [allBites, lastViewedAt]);
 
     if (loading) {
-        return renderLoadingBites();
+        return <ExtensionLoadingBites />;
     }
 
     return (
-        <Stack
-            sx={{
-                display: "flex",
-                flexWrap: "wrap",
-                flexDirection: "row",
-                overflowY: "scroll",
-                alignItems: "center",
-                justifyContent: "center",
-                display: "flex",
-                paddingTop: "4px",
-                width: "100%",
-            }}
-        >
-            {/* <Stack
+        <>
+            <Stack
+                sx={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    flexDirection: "row",
+                    overflowY: "scroll",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    display: "flex",
+                    // paddingTop: "4px",
+                    width: "100%",
+                }}
+            >
+                {!!newBites?.length && newBites.length > 0 && (
+                    <NewSection
+                        bites={newBites}
+                        userSignedIn={userSignedIn}
+                        setActiveBlerp={setActiveBlerp}
+                        activeBlerp={activeBlerp}
+                        currencyGlobalState={currencyGlobalState}
+                        searchTerm={searchTerm}
+                    />
+                )}
+                {/* <Stack
                 direction='row'
                 sx={{ width: "100%", margin: "4px 12px 12px" }}
             >
@@ -540,114 +384,110 @@ const FeaturedPageNew = ({
                     ]}
                 />
             </Stack> */}
-            {!data?.browserExtension?.soundEmotesFeaturedContentPagination
-                ?.items?.length ? (
-                showFavorites ? (
-                    <Stack
-                        direction='column'
-                        sx={{ width: "100%", margin: "4px 12px 0px" }}
-                    >
-                        <NoSearchResultsFavorites
+                {!data?.browserExtension?.soundEmotesFeaturedContentPagination
+                    ?.items?.length ? (
+                    showFavorites ? (
+                        <Stack
+                            direction='column'
+                            sx={{ width: "100%", margin: "4px 12px 0px" }}
+                        >
+                            <NoSearchResultsFavorites
+                                searchTerm={searchTerm}
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
+                            />
+                        </Stack>
+                    ) : (
+                        <Stack
+                            direction='column'
+                            sx={{ width: "100%", margin: "4px 12px 0px" }}
+                        >
+                            <StreamerNeedsToSetup
+                                currentStreamerBlerpUser={
+                                    currentStreamerBlerpUser
+                                }
+                            />
+                        </Stack>
+                    )
+                ) : (
+                    <></>
+                )}
+
+                {loading && <EllipsisLoader />}
+
+                {!!oldBites?.length &&
+                    oldBites.map((bite) => {
+                        return (
+                            <>
+                                <BlerpComponent
+                                    bite={bite?.bite || bite}
+                                    setActiveBlerp={setActiveBlerp}
+                                    activeBlerp={activeBlerp}
+                                    currencyGlobalState={currencyGlobalState}
+                                    searchTerm={searchTerm}
+                                    userSignedIn={userSignedIn}
+                                />
+                            </>
+                        );
+                    })}
+
+                {!!data?.browserExtension?.soundEmotesFeaturedContentPagination
+                    ?.items?.length &&
+                    (showFavorites ? (
+                        <FavoritesFooter
                             searchTerm={searchTerm}
                             currentStreamerBlerpUser={currentStreamerBlerpUser}
+                            channelOwner={currentStreamerBlerpUser}
                         />
-                    </Stack>
-                ) : (
-                    <Stack
-                        direction='column'
-                        sx={{ width: "100%", margin: "4px 12px 0px" }}
-                    >
-                        <StreamerNeedsToSetup
+                    ) : (
+                        <NoSearchResultsFooter
+                            searchTerm={searchTerm}
                             currentStreamerBlerpUser={currentStreamerBlerpUser}
+                            channelOwner={currentStreamerBlerpUser}
                         />
-                    </Stack>
-                )
-            ) : (
-                <></>
-            )}
+                    ))}
 
-            {loading && <EllipsisLoader />}
-
-            {!!newBites?.length && newBites.length > 0 && (
-                <NewSection
-                    bites={newBites}
-                    userSignedIn={userSignedIn}
-                    setActiveBlerp={setActiveBlerp}
-                    activeBlerp={activeBlerp}
-                    currencyGlobalState={currencyGlobalState}
-                    searchTerm={searchTerm}
-                />
-            )}
-
-            {!!oldBites?.length &&
-                oldBites.map((bite) => {
-                    return (
-                        <>
-                            <BlerpComponent
-                                bite={bite?.bite || bite}
-                                setActiveBlerp={setActiveBlerp}
-                                activeBlerp={activeBlerp}
-                                currencyGlobalState={currencyGlobalState}
-                                searchTerm={searchTerm}
-                                userSignedIn={userSignedIn}
-                            />
-                        </>
-                    );
-                })}
-
-            {!!data?.browserExtension?.soundEmotesFeaturedContentPagination
-                ?.items?.length &&
-                (showFavorites ? (
-                    <FavoritesFooter
-                        searchTerm={searchTerm}
-                        currentStreamerBlerpUser={currentStreamerBlerpUser}
-                        channelOwner={currentStreamerBlerpUser}
-                    />
-                ) : (
-                    <NoSearchResultsFooter
-                        searchTerm={searchTerm}
-                        currentStreamerBlerpUser={currentStreamerBlerpUser}
-                        channelOwner={currentStreamerBlerpUser}
-                    />
-                ))}
-
-            <Stack
-                direction={"column"}
-                sx={{
-                    padding: "4px",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    width: "100%",
-                }}
-            >
-                {!loading &&
-                    data?.browserExtension
-                        ?.soundEmotesFeaturedContentPagination &&
-                    data?.browserExtension?.soundEmotesFeaturedContentPagination
-                        .items?.length &&
-                    data.browserExtension.soundEmotesFeaturedContentPagination
-                        .items?.length >= PER_PAGE && (
-                        <Button
-                            variant='outlined'
-                            onClick={handleLoadMore}
-                            sx={{
-                                backgroundColor: "transparent",
-                                border: "#fff 1px solid",
-                                color: "white.override",
-                                margin: "0 auto",
-                                alignSelf: "center",
-                            }}
-                            disabled={
-                                !data.browserExtension
-                                    .soundEmotesFeaturedContentPagination
-                                    .pageInfo.hasNextPage
-                            }
-                        >
-                            {loadingMore ? "Loading..." : "Load More"}
-                        </Button>
-                    )}
+                <Stack
+                    direction={"column"}
+                    sx={{
+                        padding: "4px",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                    }}
+                >
+                    {!loading &&
+                        data?.browserExtension
+                            ?.soundEmotesFeaturedContentPagination &&
+                        data?.browserExtension
+                            ?.soundEmotesFeaturedContentPagination.items
+                            ?.length &&
+                        data.browserExtension
+                            .soundEmotesFeaturedContentPagination.items
+                            ?.length >= PER_PAGE && (
+                            <Button
+                                variant='outlined'
+                                onClick={handleLoadMore}
+                                sx={{
+                                    backgroundColor: "transparent",
+                                    border: "#fff 1px solid",
+                                    color: "white.override",
+                                    margin: "0 auto",
+                                    alignSelf: "center",
+                                }}
+                                disabled={
+                                    !data.browserExtension
+                                        .soundEmotesFeaturedContentPagination
+                                        .pageInfo.hasNextPage
+                                }
+                            >
+                                {loadingMore ? "Loading..." : "Load More"}
+                            </Button>
+                        )}
+                </Stack>
             </Stack>
-        </Stack>
+        </>
     );
 };
 
@@ -686,10 +526,11 @@ const ExtensionRoot = ({
             sx={{
                 display: "flex",
                 alignItems: "center",
-                padding: "0 4px 4px",
+                padding: "0 4px 0",
                 width: "100%",
                 height: "100%",
                 maxHeight: isPopup ? "100%" : `${EXTENSION_HEIGHT - 40}px`,
+                zIndex: 1,
             }}
         >
             {!blerpSoundEmotesStreamer && !searchTerm ? (

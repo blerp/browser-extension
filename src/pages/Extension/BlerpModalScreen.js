@@ -1786,7 +1786,10 @@ const BlerpModalScreen = ({
                 alignItems: "center",
                 width: "100%",
                 height: "100%",
-                position: "relative",
+                position: "absolute",
+                paddingTop: "28px",
+                zIndex: 100,
+                backgroundColor: "grey8.real",
             }}
         >
             {showSharedSuccess && (
